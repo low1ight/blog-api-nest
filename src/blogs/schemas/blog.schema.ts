@@ -9,13 +9,13 @@ export class Blog {
   name: string;
 
   @Prop({ type: String, required: true })
-  description: number;
+  description: string;
 
   @Prop({ type: String, required: true })
   websiteUrl: string;
 
   @Prop({ type: Boolean, required: true })
-  isMembership: string;
+  isMembership: boolean;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
