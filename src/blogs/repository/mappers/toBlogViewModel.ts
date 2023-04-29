@@ -1,11 +1,11 @@
-import { BlogDbType } from '../../types/Blog.db.type';
 import { BlogViewModel } from '../../types/Blog.view.model';
+import { BlogDocument } from '../../schemas/blog.schema';
 
-export const blogsArrToViewModel = (arr: BlogDbType[]): BlogViewModel[] => {
+export const blogsArrToViewModel = (arr: BlogDocument[]): BlogViewModel[] => {
   return arr.map((item) => blogObjToViewModel(item));
 };
 
-export const blogObjToViewModel = (item: BlogDbType): BlogViewModel => {
+export const blogObjToViewModel = (item: BlogDocument): BlogViewModel => {
   return {
     id: item._id.toString(),
     name: item.name,

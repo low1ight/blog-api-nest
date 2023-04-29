@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, now } from 'mongoose';
 
 export type BlogDocument = HydratedDocument<Blog>;
 
@@ -16,6 +16,12 @@ export class Blog {
 
   @Prop({ type: Boolean, required: true })
   isMembership: boolean;
+
+  @Prop({ default: now() })
+  createdAt: Date;
+
+  @Prop({ default: now() })
+  updatedAt: Date;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
