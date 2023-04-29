@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BlogsRepository } from './blogs.repository';
+import { BlogsRepository } from './repository/blogs.repository';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
 

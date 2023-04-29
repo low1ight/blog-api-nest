@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlogsController } from './blogs/blogs.controller';
 import { BlogsService } from './blogs/blogs.service';
-import { BlogsRepository } from './blogs/blogs.repository';
+import { BlogsRepository } from './blogs/repository/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BlogSchema, Blog } from './blogs/schemas/blog.schema';
+import { BlogsQueryRepository } from './blogs/repository/blogs.query.repository';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { BlogSchema, Blog } from './blogs/schemas/blog.schema';
     MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
   ],
   controllers: [AppController, BlogsController],
-  providers: [AppService, BlogsService, BlogsRepository],
+  providers: [AppService, BlogsService, BlogsRepository, BlogsQueryRepository],
 })
 export class AppModule {}

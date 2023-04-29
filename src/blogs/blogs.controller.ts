@@ -1,23 +1,26 @@
 import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
-import { CustomResponse } from '../utils/customResponse/CustomResponse';
+import { BlogsQueryRepository } from './repository/blogs.query.repository';
+import { BlogViewModel } from './types/Blog.view.model';
 
-@Controller('users')
+@Controller('blogs')
 export class BlogsController {
-  constructor(private readonly userService: BlogsService) {}
+  constructor(
+    private readonly blogsService: BlogsService,
+    private readonly blogsQueryRepository: BlogsQueryRepository,
+  ) {}
   @Get()
-  async getUsers() {
-    // return await this.userService.getUsers();
-    return null;
+  async getBlogs() {
+    return await this.blogsQueryRepository.getUsers();
   }
 
   @Get(':id')
-  async getUserById(@Param('id') id: string) {
-    const user: CustomResponse<any> = await this.userService.getUserById(id);
+  async getBlogById(@Param('id') id: string) {
+    const blog: BlogViewModel | null =
+      await this.blogsQueryRepository.getUserById(id);
 
-    if (user.errStatusCode)
-      throw new NotFoundException(`User with id ${id} not found`);
+    if (!blog) throw new NotFoundException(`Blog with id ${id} not found`);
 
-    return user.content;
+    return blog;
   }
 }
