@@ -18,6 +18,14 @@ export class BlogsRepository {
     return blogObjToViewModel(blog);
   }
 
+  async deleteBlog(id: string) {
+    if (!Types.ObjectId.isValid(id)) return false;
+
+    const deleteResult = await this.blogModel.deleteOne({ _id: id }).exec();
+
+    return deleteResult.deletedCount > 0;
+  }
+
   async getUserById(id: string): Promise<BlogDocument | null> {
     if (!Types.ObjectId.isValid(id)) return null;
 

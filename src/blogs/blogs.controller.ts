@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -45,12 +46,19 @@ export class BlogsController {
   @Put(':id')
   @HttpCode(204)
   async updateBlog(@Param('id') id: string, @Body() dto: UpdateBlogDto) {
-    const result: CustomResponse<null> = await this.blogsService.updateBlog(
-      dto,
-      id,
-    );
-    if (result.errStatusCode)
-      CustomResponse.throwHttpException(result.errStatusCode);
+    const result: boolean = await this.blogsService.updateBlog(dto, id);
+
+    if (!result) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+
+    return;
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteBlog(@Param('id') id: string) {
+    const result = await this.blogsService.deleteBlog(id);
+
+    if (!result) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
 
     return;
   }
