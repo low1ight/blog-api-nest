@@ -1,4 +1,4 @@
-export const blogQueryMapper = ({
+export const postQueryMapper = ({
   sortBy,
   sortDirection,
   pageNumber,

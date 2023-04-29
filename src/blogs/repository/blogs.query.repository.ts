@@ -10,7 +10,9 @@ import { createFindByOneFieldObj } from '../../utils/paginatorHelpers/createFind
 import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
 import { calcSkipCount } from '../../utils/paginatorHelpers/calcSkipCount';
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
+import { Injectable } from '@nestjs/common';
 
+Injectable();
 export class BlogsQueryRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<Blog>) {}
   async getUsers(query: BlogQueryType) {
