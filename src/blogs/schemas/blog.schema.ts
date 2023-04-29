@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, now } from 'mongoose';
+import { UpdateBlogDto } from '../dto/UpdateBlogDto';
 
 export type BlogDocument = HydratedDocument<Blog>;
 
@@ -14,7 +15,7 @@ export class Blog {
   @Prop({ type: String, required: true })
   websiteUrl: string;
 
-  @Prop({ type: Boolean, required: true })
+  @Prop({ type: Boolean, default: false })
   isMembership: boolean;
 
   @Prop({ default: now() })
@@ -22,6 +23,18 @@ export class Blog {
 
   @Prop({ default: now() })
   updatedAt: Date;
+
+  updateData({ name, description, websiteUrl }: UpdateBlogDto) {
+    if (name && description && websiteUrl) {
+      this.name = name;
+      this.description = description;
+      this.websiteUrl = websiteUrl;
+    }
+  }
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
+
+BlogSchema.methods = {
+  updateData: Blog.prototype.updateData,
+};
