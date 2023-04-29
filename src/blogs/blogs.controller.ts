@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { BlogsQueryRepository } from './repository/blogs.query.repository';
@@ -15,6 +16,10 @@ import { CreateBlogDto } from './dto/CreateBlogDto';
 import { UpdateBlogDto } from './dto/UpdateBlogDto';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
+import {
+  BlogInputQueryType,
+  blogQueryMapper,
+} from '../utils/query-mappers/blog-query-mapper';
 
 @Controller('blogs')
 export class BlogsController {
@@ -23,8 +28,10 @@ export class BlogsController {
     private readonly blogsQueryRepository: BlogsQueryRepository,
   ) {}
   @Get()
-  async getBlogs() {
-    return await this.blogsQueryRepository.getUsers();
+  async getBlogs(@Query() query: BlogInputQueryType) {
+    const blogQuery = blogQueryMapper(query);
+
+    return await this.blogsQueryRepository.getUsers(blogQuery);
   }
 
   @Get(':id')
