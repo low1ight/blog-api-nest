@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -17,6 +18,7 @@ import { PostsService } from './posts.service';
 import { CreatePostInputDto } from './dto/CreatePostInputDto';
 import { UpdatePostInputDto } from './dto/UpdatePostInputDto';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
 
 @Controller('posts')
 export class PostsController {
@@ -48,6 +50,15 @@ export class PostsController {
     if (!result.isSuccess)
       return CustomResponse.throwHttpException(result.errStatusCode);
 
+    return;
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async deletePost(@Param('id') id: string) {
+    const deleteResult = await this.postService.deletePost(id);
+    if (!deleteResult)
+      return CustomResponse.throwHttpException(CustomResponseEnum.notExist);
     return;
   }
 }

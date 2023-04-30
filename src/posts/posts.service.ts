@@ -64,4 +64,12 @@ export class PostsService {
       blogName: blogName,
     };
   }
+
+  async deletePost(id: string) {
+    const isPostExist: boolean = await this.postRepository.isPostExist(id);
+
+    if (!isPostExist) return false;
+
+    return this.postRepository.deletePost(id);
+  }
 }
