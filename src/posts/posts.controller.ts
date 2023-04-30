@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import {
   PostInputQueryType,
   postQueryMapper,
@@ -6,6 +15,8 @@ import {
 import { PostsQueryRepository } from './repository/posts.query.repository';
 import { PostsService } from './posts.service';
 import { CreatePostInputDto } from './dto/CreatePostInputDto';
+import { UpdatePostInputDto } from './dto/UpdatePostInputDto';
+import { CustomResponse } from '../utils/customResponse/CustomResponse';
 
 @Controller('posts')
 export class PostsController {
@@ -24,5 +35,19 @@ export class PostsController {
   @HttpCode(201)
   async createPost(@Body() dto: CreatePostInputDto) {
     return await this.postService.createPost(dto);
+  }
+
+  @Put(':id')
+  @HttpCode(204)
+  async updatePost(@Body() dto: UpdatePostInputDto, @Param('id') id: string) {
+    const result: CustomResponse<null> = await this.postService.updatePost(
+      dto,
+      id,
+    );
+
+    if (!result.isSuccess)
+      return CustomResponse.throwHttpException(result.errStatusCode);
+
+    return;
   }
 }
