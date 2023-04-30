@@ -20,12 +20,21 @@ import {
   BlogInputQueryType,
   blogQueryMapper,
 } from '../utils/query-mappers/blog-query-mapper';
+import { PostsQueryRepository } from '../posts/repository/posts.query.repository';
+import {
+  PostInputQueryType,
+  postQueryMapper,
+} from '../utils/query-mappers/post-query-mapper';
+import { PostForBlogInputDto } from '../posts/dto/PostForBlogInputDto';
+import { PostsService } from '../posts/posts.service';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     private readonly blogsService: BlogsService,
     private readonly blogsQueryRepository: BlogsQueryRepository,
+    private readonly postsQueryRepository: PostsQueryRepository,
+    private readonly postsService: PostsService,
   ) {}
   @Get()
   async getBlogs(@Query() query: BlogInputQueryType) {
@@ -68,5 +77,23 @@ export class BlogsController {
     if (!result) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
 
     return;
+  }
+  //posts for blog
+  @Get(':id/posts')
+  async getPostsForBlog(
+    @Param() id: string,
+    @Query() query: PostInputQueryType,
+  ) {
+    const postQuery = postQueryMapper(query);
+    return await this.postsQueryRepository.getPostsForBlog(postQuery, id);
+  }
+
+  @Post(':id/posts')
+  @HttpCode(201)
+  async createPostForBlog(
+    @Body() inputData: PostForBlogInputDto,
+    @Param('id') id: string,
+  ) {
+    return await this.postsService.createPost({ ...inputData, blogId: id });
   }
 }
