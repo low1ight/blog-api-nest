@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, now, Types } from 'mongoose';
-import { Blog } from '../../blogs/schemas/blog.schema';
+import { UpdatePostDto } from '../dto/UpdatePostDto';
 
 export type PostDocument = HydratedDocument<Post>;
 
@@ -16,13 +16,10 @@ export class Post {
   content: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Blogs' })
-  blogId: Blog;
+  blogId: Types.ObjectId;
 
   @Prop({ type: String, required: true })
   blogName: string;
-
-  @Prop({ default: now() })
-  blogsName: Date;
 
   @Prop({ default: now() })
   createdAt: Date;
@@ -30,13 +27,21 @@ export class Post {
   @Prop({ default: now() })
   updatedAt: Date;
 
-  // updateData({ name, description, websiteUrl }: UpdateBlogDto) {
-  //   if (name && description && websiteUrl) {
-  //     this.name = name;
-  //     this.description = description;
-  //     this.websiteUrl = websiteUrl;
-  //   }
-  //}
+  updateData({
+    title,
+    shortDescription,
+    content,
+    blogId,
+    blogName,
+  }: UpdatePostDto) {
+    if (title && shortDescription && content && blogId && blogName) {
+      this.title = title;
+      this.shortDescription = shortDescription;
+      this.content = content;
+      this.blogId = new Types.ObjectId(blogId);
+      this.blogName = blogName;
+    }
+  }
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
@@ -47,6 +52,6 @@ PostSchema.virtual('likes', {
   foreignField: 'targetId',
 });
 
-// PostSchema.methods = {
-//   updateData: Post.prototype.updateData,
-// };
+PostSchema.methods = {
+  updateData: Post.prototype.updateData,
+};

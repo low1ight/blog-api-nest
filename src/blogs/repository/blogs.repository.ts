@@ -26,10 +26,19 @@ export class BlogsRepository {
     return deleteResult.deletedCount > 0;
   }
 
-  async getUserById(id: string): Promise<BlogDocument | null> {
+  async getBlogById(id: string): Promise<BlogDocument | null> {
     if (!Types.ObjectId.isValid(id)) return null;
 
     return this.blogModel.findById(id);
+  }
+
+  async getBlogNameById(id: string): Promise<string | null> {
+    if (!Types.ObjectId.isValid(id)) return null;
+
+    const blog = await this.blogModel.findById(id);
+
+    //return blog name or null
+    return blog && blog.name;
   }
 
   async save(blog: BlogDocument) {

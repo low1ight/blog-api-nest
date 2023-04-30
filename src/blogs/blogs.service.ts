@@ -13,7 +13,7 @@ export class BlogsService {
   }
 
   async updateBlog(dto: UpdateBlogDto, blogId: string): Promise<boolean> {
-    const blog: BlogDocument | null = await this.blogRepository.getUserById(
+    const blog: BlogDocument | null = await this.blogRepository.getBlogById(
       blogId,
     );
     if (!blog) return false;
@@ -26,7 +26,7 @@ export class BlogsService {
   }
 
   async deleteBlog(blogId: string): Promise<boolean> {
-    const blog: BlogDocument | null = await this.blogRepository.getUserById(
+    const blog: BlogDocument | null = await this.blogRepository.getBlogById(
       blogId,
     );
     if (!blog) return false;

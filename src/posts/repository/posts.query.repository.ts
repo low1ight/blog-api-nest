@@ -10,7 +10,7 @@ import { PostPopulatedDocument, PostViewModel } from '../types/post.types';
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 
 @Injectable()
-export class PostQueryRepository {
+export class PostsQueryRepository {
   constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
 
   async getPosts(query: PostQueryType) {

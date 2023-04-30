@@ -8,9 +8,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BlogSchema, Blog } from './blogs/schemas/blog.schema';
 import { BlogsQueryRepository } from './blogs/repository/blogs.query.repository';
 import { PostsController } from './posts/posts.controller';
-import { PostQueryRepository } from './posts/repository/post.query.repository';
+import { PostsQueryRepository } from './posts/repository/posts.query.repository';
 import { Post, PostSchema } from './posts/schemas/post.schema';
 import { Like, LikeSchema } from './likes/shemas/like.schema';
+import { PostsRepository } from './posts/repository/posts.repository';
+import { PostsService } from './posts/posts.service';
 
 @Module({
   imports: [
@@ -29,7 +31,9 @@ import { Like, LikeSchema } from './likes/shemas/like.schema';
     BlogsService,
     BlogsRepository,
     BlogsQueryRepository,
-    PostQueryRepository,
+    PostsQueryRepository,
+    PostsRepository,
+    PostsService,
   ],
 })
 export class AppModule {}
