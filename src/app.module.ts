@@ -13,6 +13,9 @@ import { Post, PostSchema } from './posts/schemas/post.schema';
 import { Like, LikeSchema } from './likes/shemas/like.schema';
 import { PostsRepository } from './posts/repository/posts.repository';
 import { PostsService } from './posts/posts.service';
+import { UsersController } from './users/users.controller';
+import { UsersQueryRepository } from './users/repository/users.query.repository';
+import { User, UserSchema } from './users/schemas/user.schema';
 
 @Module({
   imports: [
@@ -23,9 +26,15 @@ import { PostsService } from './posts/posts.service';
       { name: Blog.name, schema: BlogSchema },
       { name: Post.name, schema: PostSchema },
       { name: Like.name, schema: LikeSchema },
+      { name: User.name, schema: UserSchema },
     ]),
   ],
-  controllers: [AppController, BlogsController, PostsController],
+  controllers: [
+    AppController,
+    BlogsController,
+    PostsController,
+    UsersController,
+  ],
   providers: [
     AppService,
     BlogsService,
@@ -34,6 +43,7 @@ import { PostsService } from './posts/posts.service';
     PostsQueryRepository,
     PostsRepository,
     PostsService,
+    UsersQueryRepository,
   ],
 })
 export class AppModule {}
