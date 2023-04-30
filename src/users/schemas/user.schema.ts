@@ -1,9 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, now } from 'mongoose';
+import { HydratedDocument, Model, now } from 'mongoose';
+import { CreateUserDto } from '../dto/CreateUserDto';
+import * as bcrypt from 'bcrypt';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema({ autoIndex: false, timestamps: true })
+export interface UserModel extends Model<UserDocument> {
+  createAlreadyRegisteredUser(
+    dto: CreateUserDto,
+    userModel: UserModel,
+  ): Promise<UserDocument>;
+}
+
+@Schema({ _id: false, timestamps: true })
 export class UserData {
   @Prop({ type: String, required: true })
   login: string;
@@ -24,7 +33,7 @@ export class UserData {
   updatedAt: Date;
 }
 
-@Schema({ autoIndex: false })
+@Schema({ _id: false })
 export class UserConfirmationData {
   @Prop({ type: String, required: true })
   confirmationCode: string;
@@ -42,7 +51,31 @@ export class User {
   userData: UserData;
 
   @Prop({ type: UserConfirmationData, required: true })
-  UserConfirmationData: UserConfirmationData;
+  userConfirmationData: UserConfirmationData;
+
+  static async createAlreadyRegisteredUser(
+    dto: CreateUserDto,
+    userModel: Model<User>,
+  ) {
+    const user = new userModel({
+      userData: {
+        login: dto.login,
+        password: await bcrypt.hash(dto.password, 10),
+        passwordRecoveryCode: null,
+        email: dto.email,
+      },
+      userConfirmationData: {
+        confirmationCode: 'auto-confirmed',
+        isConfirmed: true,
+        expirationDate: new Date(),
+      },
+    });
+    return await user.save();
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.statics = {
+  createAlreadyRegisteredUser: User.createAlreadyRegisteredUser,
+};

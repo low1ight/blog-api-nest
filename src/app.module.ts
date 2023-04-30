@@ -16,6 +16,8 @@ import { PostsService } from './posts/posts.service';
 import { UsersController } from './users/users.controller';
 import { UsersQueryRepository } from './users/repository/users.query.repository';
 import { User, UserSchema } from './users/schemas/user.schema';
+import { UsersRepository } from './users/repository/Users.repository';
+import { UsersService } from './users/users.service';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { User, UserSchema } from './users/schemas/user.schema';
     PostsRepository,
     PostsService,
     UsersQueryRepository,
+    UsersRepository,
+    UsersService,
   ],
 })
 export class AppModule {}
