@@ -1,4 +1,13 @@
-import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UsersQueryRepository } from './repository/users.query.repository';
 import {
   UserInputQueryType,
@@ -6,6 +15,8 @@ import {
 } from '../utils/query-mappers/user-query-mapper';
 import { CreateUserDto } from './dto/CreateUserDto';
 import { UsersService } from './users.service';
+import { CustomResponse } from '../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
 
 @Controller('users')
 export class UsersController {
@@ -25,5 +36,16 @@ export class UsersController {
   @HttpCode(201)
   async createUser(@Body() dto: CreateUserDto) {
     return await this.userService.createUser(dto);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteUser(@Param('id') id: string) {
+    const isDeleted = await this.userService.deleteUser(id);
+
+    if (!isDeleted)
+      return CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+
+    return;
   }
 }

@@ -9,4 +9,12 @@ export class UsersService {
   async createUser(dto: CreateUserDto) {
     return await this.usersRepository.createUser(dto);
   }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const isUserExist = await this.usersRepository.isUserExist(id);
+
+    if (!isUserExist) return false;
+
+    return await this.usersRepository.deleteUserById(id);
+  }
 }
