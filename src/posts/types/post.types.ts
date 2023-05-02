@@ -1,5 +1,5 @@
 import { PostDocument } from '../schemas/post.schema';
-import { LikeDocument } from '../../likes/shemas/like.schema';
+import { LikeDocument } from '../../likes/schemas/like.schema';
 
 interface PostWithLikes extends PostDocument {
   likes?: LikeDocument[];

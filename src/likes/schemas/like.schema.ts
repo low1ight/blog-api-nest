@@ -17,8 +17,7 @@ export class Like {
   @Prop({ type: String, default: false })
   userLogin: string;
 
-  //todo add ref to user
-  @Prop({ type: Types.ObjectId, default: false })
+  @Prop({ type: Types.ObjectId, default: false, ref: 'Users' })
   userId: Types.ObjectId;
 
   @Prop({ default: now() })

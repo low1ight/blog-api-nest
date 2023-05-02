@@ -33,6 +33,14 @@ export class PostsController {
 
     return await this.postQueryRepository.getPosts(postQuery);
   }
+
+  @Get(':id')
+  async getPostById(@Param('id') id: string) {
+    const post = await this.postQueryRepository.getPostById(id);
+    if (!post)
+      return CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    return post;
+  }
   @Post()
   @HttpCode(201)
   async createPost(@Body() dto: CreatePostInputDto) {

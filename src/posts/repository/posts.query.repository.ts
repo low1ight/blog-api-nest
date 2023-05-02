@@ -5,7 +5,10 @@ import { Post } from '../schemas/post.schema';
 import { PostQueryType } from '../../utils/query-mappers/post-query-mapper';
 import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
 import { calcSkipCount } from '../../utils/paginatorHelpers/calcSkipCount';
-import { postsArrToViewModel } from './mappers/toPostViewModel';
+import {
+  postsArrToViewModel,
+  postsObjToViewModel,
+} from './mappers/toPostViewModel';
 import { PostPopulatedDocument, PostViewModel } from '../types/post.types';
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 
@@ -15,6 +18,18 @@ export class PostsQueryRepository {
 
   async getPosts(query: PostQueryType) {
     return this.getPostWithPaginator(query, null);
+  }
+
+  async getPostById(id: string) {
+    const query = this.postModel.findOne({ _id: id });
+
+    query.populate('likes');
+
+    const post: PostPopulatedDocument = await query.exec();
+
+    if (!post) return null;
+
+    return postsObjToViewModel(post, null);
   }
 
   async getPostsForBlog(query: PostQueryType, blogId: string) {

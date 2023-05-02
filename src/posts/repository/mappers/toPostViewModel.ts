@@ -1,4 +1,4 @@
-import { LikeDocument } from '../../../likes/shemas/like.schema';
+import { LikeDocument } from '../../../likes/schemas/like.schema';
 import { PostDocument } from '../../schemas/post.schema';
 import { PostPopulatedDocument, PostViewModel } from '../../types/post.types';
 
