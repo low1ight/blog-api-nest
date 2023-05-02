@@ -19,12 +19,18 @@ import { CreatePostInputDto } from './dto/CreatePostInputDto';
 import { UpdatePostInputDto } from './dto/UpdatePostInputDto';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
+import {
+  CommentInputQueryType,
+  commentQueryMapper,
+} from '../utils/query-mappers/comment-query-mapper';
+import { CommentsQueryRepository } from '../comments/repository/comments.query.repository';
 
 @Controller('posts')
 export class PostsController {
   constructor(
     private readonly postQueryRepository: PostsQueryRepository,
     private readonly postService: PostsService,
+    private readonly commentQueryRepository: CommentsQueryRepository,
   ) {}
 
   @Get()
@@ -68,5 +74,18 @@ export class PostsController {
     if (!deleteResult)
       return CustomResponse.throwHttpException(CustomResponseEnum.notExist);
     return;
+  }
+
+  @Get(':id/comments')
+  async getPostComments(
+    @Param('id') id: string,
+    @Query() inputQuery: CommentInputQueryType,
+  ) {
+    const commentQuery = commentQueryMapper(inputQuery);
+
+    return await this.commentQueryRepository.getPostCommentsWithPaginator(
+      commentQuery,
+      id,
+    );
   }
 }
