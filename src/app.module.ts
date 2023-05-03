@@ -21,6 +21,9 @@ import { UsersService } from './users/users.service';
 import { Comment, CommentSchema } from './comments/schemas/comment.schema';
 import { CommentsQueryRepository } from './comments/repository/comments.query.repository';
 import { CommentsController } from './comments/comments.controller';
+import { TestingController } from './testing/testing.controller';
+import { TestingService } from './testing/testing.service';
+import { TestingRepository } from './testing/repository/testing.repository';
 
 @Module({
   imports: [
@@ -41,6 +44,7 @@ import { CommentsController } from './comments/comments.controller';
     PostsController,
     UsersController,
     CommentsController,
+    TestingController,
   ],
   providers: [
     AppService,
@@ -54,6 +58,8 @@ import { CommentsController } from './comments/comments.controller';
     UsersRepository,
     UsersService,
     CommentsQueryRepository,
+    TestingService,
+    TestingRepository,
   ],
 })
 export class AppModule {}
