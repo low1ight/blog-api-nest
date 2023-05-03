@@ -27,6 +27,8 @@ import {
 } from '../utils/query-mappers/post-query-mapper';
 import { PostForBlogInputDto } from '../posts/dto/PostForBlogInputDto';
 import { PostsService } from '../posts/posts.service';
+import { PostViewModel } from '../posts/types/post.types';
+import { BlogsRepository } from './repository/blogs.repository';
 
 @Controller('blogs')
 export class BlogsController {
@@ -35,6 +37,7 @@ export class BlogsController {
     private readonly blogsQueryRepository: BlogsQueryRepository,
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly postsService: PostsService,
+    private readonly blogRepository: BlogsRepository,
   ) {}
   @Get()
   async getBlogs(@Query() query: BlogInputQueryType) {
@@ -81,9 +84,14 @@ export class BlogsController {
   //posts for blog
   @Get(':id/posts')
   async getPostsForBlog(
-    @Param() id: string,
+    @Param('id') id: string,
     @Query() query: PostInputQueryType,
   ) {
+    const isBlogExist = await this.blogRepository.isBlogExist(id);
+
+    if (!isBlogExist)
+      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+
     const postQuery = postQueryMapper(query);
     return await this.postsQueryRepository.getPostsForBlog(postQuery, id);
   }
@@ -94,6 +102,11 @@ export class BlogsController {
     @Body() inputData: PostForBlogInputDto,
     @Param('id') id: string,
   ) {
-    return await this.postsService.createPost({ ...inputData, blogId: id });
+    const post: PostViewModel | null = await this.postsService.createPost({
+      ...inputData,
+      blogId: id,
+    });
+    if (!post) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    return post;
   }
 }

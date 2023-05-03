@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Post } from '../schemas/post.schema';
 import { PostQueryType } from '../../utils/query-mappers/post-query-mapper';
 import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
@@ -33,9 +33,7 @@ export class PostsQueryRepository {
   }
 
   async getPostsForBlog(query: PostQueryType, blogId: string) {
-    return this.getPostWithPaginator(query, null, {
-      blogId: new Types.ObjectId(blogId),
-    });
+    return this.getPostWithPaginator(query, null, { blogId });
   }
 
   async getPostWithPaginator(

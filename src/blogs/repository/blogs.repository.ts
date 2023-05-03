@@ -48,7 +48,7 @@ export class BlogsRepository {
   async isBlogExist(id: string): Promise<boolean> {
     if (!Types.ObjectId.isValid(id)) return null;
 
-    const result = await this.blogModel.exists({ _id: id });
+    const result = await this.blogModel.exists({ _id: new Types.ObjectId(id) });
 
     return !!result;
   }
