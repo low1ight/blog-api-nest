@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, now, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type CommentDocument = HydratedDocument<Comment>;
 
@@ -23,10 +23,10 @@ export class Comment {
   @Prop({ type: CommentatorInfo, required: true })
   commentatorInfo: CommentatorInfo;
 
-  @Prop({ default: now() })
+  @Prop()
   createdAt: Date;
 
-  @Prop({ default: now() })
+  @Prop()
   updatedAt: Date;
 }
 

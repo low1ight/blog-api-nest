@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, now, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { UpdatePostDto } from '../dto/UpdatePostDto';
 
 export type PostDocument = HydratedDocument<Post>;
@@ -21,10 +21,10 @@ export class Post {
   @Prop({ type: String, required: true })
   blogName: string;
 
-  @Prop({ default: now() })
+  @Prop()
   createdAt: Date;
 
-  @Prop({ default: now() })
+  @Prop()
   updatedAt: Date;
 
   updateData({

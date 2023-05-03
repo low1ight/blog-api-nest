@@ -28,12 +28,12 @@ export class UsersQueryRepository {
     }: UserQueryType,
     additionalParams: object = {},
   ) {
-    const sortObj = createSortObject(sortBy, sortDirection);
+    const sortObj = createSortObject('userData.' + sortBy, sortDirection);
 
     const skipCount = calcSkipCount(pageNumber, pageSize);
 
     const findFields = createFindBySeveralFieldObj(
-      { login: searchLoginTerm, email: searchEmailTerm },
+      { 'userData.login': searchLoginTerm, 'userData.email': searchEmailTerm },
       '$or',
     );
 

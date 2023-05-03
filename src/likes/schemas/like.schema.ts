@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, now, Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type LikeDocument = HydratedDocument<Like>;
 
@@ -20,10 +20,10 @@ export class Like {
   @Prop({ type: Types.ObjectId, default: false, ref: 'Users' })
   userId: Types.ObjectId;
 
-  @Prop({ default: now() })
+  @Prop()
   createdAt: Date;
 
-  @Prop({ default: now() })
+  @Prop()
   updatedAt: Date;
 }
 

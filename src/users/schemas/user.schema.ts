@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model, now } from 'mongoose';
+import { HydratedDocument, Model } from 'mongoose';
 import { CreateUserDto } from '../dto/CreateUserDto';
 import * as bcrypt from 'bcrypt';
 
@@ -26,10 +26,10 @@ export class UserData {
   @Prop({ type: String, required: true })
   email: string;
 
-  @Prop({ default: now() })
+  @Prop()
   createdAt: Date;
 
-  @Prop({ default: now() })
+  @Prop()
   updatedAt: Date;
 }
 
