@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserModel } from '../schemas/user.schema';
+import { User, UserDocument, UserModel } from '../schemas/user.schema';
 import { CreateUserDto } from '../dto/CreateUserDto';
 import { userObjToViewModel } from './mappers/toUserViewModel';
 import { Types } from 'mongoose';
@@ -15,7 +15,9 @@ export class UsersRepository {
       this.userModel,
     );
 
-    return userObjToViewModel(user);
+    const createdUser: UserDocument = await user.save();
+
+    return userObjToViewModel(createdUser);
   }
 
   async deleteUserById(id: string): Promise<boolean> {

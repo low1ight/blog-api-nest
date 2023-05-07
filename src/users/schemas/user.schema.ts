@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateUserDto } from '../dto/CreateUserDto';
-import * as bcrypt from 'bcrypt';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -57,10 +56,10 @@ export class User {
     dto: CreateUserDto,
     userModel: Model<User>,
   ) {
-    const user = new userModel({
+    return new userModel({
       userData: {
         login: dto.login,
-        password: await bcrypt.hash(dto.password, 10),
+        password: dto.password,
         passwordRecoveryCode: null,
         email: dto.email,
       },
@@ -70,7 +69,6 @@ export class User {
         expirationDate: new Date(),
       },
     });
-    return await user.save();
   }
 }
 
