@@ -1,10 +1,36 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as ngrok from 'ngrok';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './http-exception.filter';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      stopAtFirstError: true,
+      exceptionFactory: (errors) => {
+        const errorsArr = [];
+
+        errors.forEach((error) => {
+          const errorsMessagesKeys = Object.keys(error.constraints);
+
+          errorsMessagesKeys.forEach((key) => {
+            errorsArr.push({
+              field: error.property,
+              message: error.constraints[key],
+            });
+          });
+        });
+
+        throw new BadRequestException(errorsArr);
+      },
+    }),
+  );
+  app.useGlobalFilters(new HttpExceptionFilter());
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(3000);
 

@@ -33,4 +33,14 @@ export class UsersRepository {
 
     return !!user;
   }
+
+  async isUserLoginExist(login: string): Promise<boolean> {
+    const user = await this.userModel.findOne({ 'userData.login': login });
+    return !!user;
+  }
+
+  async isUserEmailExist(email: string): Promise<boolean> {
+    const user = await this.userModel.findOne({ 'userData.email': email });
+    return !!user;
+  }
 }

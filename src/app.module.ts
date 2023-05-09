@@ -24,6 +24,11 @@ import { CommentsController } from './comments/comments.controller';
 import { TestingController } from './testing/testing.controller';
 import { TestingService } from './testing/testing.service';
 import { TestingRepository } from './testing/repository/testing.repository';
+import {
+  IsUserEmailAlreadyExist,
+  IsUserFiledAlreadyExistConstraint,
+  IsUserLoginAlreadyExist,
+} from './custromValidators/IsUserFieldsExist';
 
 @Module({
   imports: [
@@ -48,6 +53,9 @@ import { TestingRepository } from './testing/repository/testing.repository';
   ],
   providers: [
     AppService,
+    IsUserFiledAlreadyExistConstraint,
+    IsUserLoginAlreadyExist,
+    IsUserEmailAlreadyExist,
     BlogsService,
     BlogsRepository,
     BlogsQueryRepository,

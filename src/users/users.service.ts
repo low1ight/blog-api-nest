@@ -19,4 +19,12 @@ export class UsersService {
 
     return await this.usersRepository.deleteUserById(id);
   }
+
+  async isUserLoginExist(login: string) {
+    return await this.usersRepository.isUserLoginExist(login);
+  }
+
+  async isEmailLoginExist(email: string) {
+    return await this.usersRepository.isUserEmailExist(email);
+  }
 }
