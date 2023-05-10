@@ -27,4 +27,8 @@ export class UsersService {
   async isEmailLoginExist(email: string) {
     return await this.usersRepository.isUserEmailExist(email);
   }
+
+  async findByLoginOrEmail(loginOrEmail: string) {
+    return await this.usersRepository.findByLoginOrEmail(loginOrEmail);
+  }
 }

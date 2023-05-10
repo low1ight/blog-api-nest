@@ -29,6 +29,12 @@ import {
   IsUserFiledAlreadyExistConstraint,
   IsUserLoginAlreadyExist,
 } from './custromValidators/IsUserFieldsExist';
+import { PassportModule } from '@nestjs/passport';
+import { AuthService } from './auth/auth.service';
+import { LocalStrategy } from './auth/strategies/local.strategy';
+import { AuthController } from './auth/auth.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './auth/jwtConstants';
 
 @Module({
   imports: [
@@ -42,6 +48,11 @@ import {
       { name: User.name, schema: UserSchema },
       { name: Comment.name, schema: CommentSchema },
     ]),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+    }),
+    PassportModule,
   ],
   controllers: [
     AppController,
@@ -50,6 +61,7 @@ import {
     UsersController,
     CommentsController,
     TestingController,
+    AuthController,
   ],
   providers: [
     AppService,
@@ -68,6 +80,8 @@ import {
     CommentsQueryRepository,
     TestingService,
     TestingRepository,
+    AuthService,
+    LocalStrategy,
   ],
 })
 export class AppModule {}
