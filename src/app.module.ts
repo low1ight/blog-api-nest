@@ -38,6 +38,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Device, DeviceSchema } from './devices/schemas/device.schema';
 import { DevicesRepository } from './devices/repository/devices.repository';
 import { DevicesService } from './devices/devices.service';
+import { AccessTokenStrategy } from './auth/strategies/accessToken.strategy';
 
 @Module({
   imports: [
@@ -89,6 +90,7 @@ import { DevicesService } from './devices/devices.service';
     LocalStrategy,
     DevicesRepository,
     DevicesService,
+    AccessTokenStrategy,
   ],
 })
 export class AppModule {}
