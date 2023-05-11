@@ -8,7 +8,7 @@ export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async createUser(dto: CreateUserDto) {
-    dto.password = await bcrypt.hash(dto.password, 10);
+    dto.password = await bcrypt.hash(dto.password, process.env.SALT_ROUNDS);
     return await this.usersRepository.createUser(dto);
   }
 

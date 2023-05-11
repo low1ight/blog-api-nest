@@ -8,13 +8,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Ip() ip) {
-    const payload = {
-      id: req.user._id.toString(),
-      userName: req.user.userData.login,
-      ip: ip,
-      title: req.headers['user-agent'],
-    };
+    const id = req.user._id.toString();
+    const login = req.user.userData.login;
+    const title = req.headers['user-agent'];
 
-    return await this.authService.createJwtTokens(payload);
+    return await this.authService.login(id, login, title, ip);
   }
 }

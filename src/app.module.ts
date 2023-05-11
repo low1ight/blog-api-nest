@@ -34,10 +34,14 @@ import { AuthService } from './auth/auth.service';
 import { LocalStrategy } from './auth/strategies/local.strategy';
 import { AuthController } from './auth/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './auth/jwtConstants';
+import { ConfigModule } from '@nestjs/config';
+import { Device, DeviceSchema } from './devices/schemas/device.schema';
+import { DevicesRepository } from './devices/repository/devices.repository';
+import { DevicesService } from './devices/devices.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MongooseModule.forRoot(
       'mongodb+srv://qlowlight:uNrmiq0xtAknlUjI@cluster0.xahjpqu.mongodb.net/blog?retryWrites=true&w=majority',
     ),
@@ -47,10 +51,11 @@ import { jwtConstants } from './auth/jwtConstants';
       { name: Like.name, schema: LikeSchema },
       { name: User.name, schema: UserSchema },
       { name: Comment.name, schema: CommentSchema },
+      { name: Device.name, schema: DeviceSchema },
     ]),
     JwtModule.register({
       global: true,
-      secret: jwtConstants.secret,
+      secret: process.env.JWT_SECRET,
     }),
     PassportModule,
   ],
@@ -82,6 +87,8 @@ import { jwtConstants } from './auth/jwtConstants';
     TestingRepository,
     AuthService,
     LocalStrategy,
+    DevicesRepository,
+    DevicesService,
   ],
 })
 export class AppModule {}
