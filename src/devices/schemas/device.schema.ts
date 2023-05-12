@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model, Types } from 'mongoose';
 import { CreateDeviceDto } from '../dto/CreateDeviceDto';
-
 export type DeviceDocument = HydratedDocument<Device>;
 
 export interface DeviceModel extends Model<DeviceDocument> {
@@ -37,10 +36,21 @@ export class Device {
   ) {
     return new deviceModel(dto);
   }
+
+  updateData({ sessionId, title, ip }) {
+    if (sessionId && title && ip) {
+      this.sessionId = sessionId;
+      this.title = title;
+      this.ip = ip;
+    }
+  }
 }
 
 export const DeviceSchema = SchemaFactory.createForClass(Device);
 
 DeviceSchema.statics = {
   createNewDevice: Device.createNewDevice,
+};
+DeviceSchema.methods = {
+  updateData: Device.prototype.updateData,
 };
