@@ -39,6 +39,7 @@ import { Device, DeviceSchema } from './devices/schemas/device.schema';
 import { DevicesRepository } from './devices/repository/devices.repository';
 import { DevicesService } from './devices/devices.service';
 import { AccessTokenStrategy } from './auth/strategies/accessToken.strategy';
+import { RefreshTokenStrategy } from './auth/strategies/refreshToken.strategy';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { AccessTokenStrategy } from './auth/strategies/accessToken.strategy';
     DevicesRepository,
     DevicesService,
     AccessTokenStrategy,
+    RefreshTokenStrategy,
   ],
 })
 export class AppModule {}
