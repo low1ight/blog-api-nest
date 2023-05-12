@@ -2,6 +2,7 @@ import { Controller, Request, Post, UseGuards, Ip, Res } from '@nestjs/common';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
+import { RefreshTokenGuard } from './guards/refresh-token-guard.service';
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +25,30 @@ export class AuthController {
       ip,
     );
     //add httponly + secure
+    response.cookie('refreshToken ', refreshToken);
+
+    return { accessToken };
+  }
+  @UseGuards(RefreshTokenGuard)
+  @Post('refresh-token')
+  async refreshToken(
+    @Request() req,
+    @Ip() ip,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const title = req.headers['user-agent'];
+
+    const { userId, login, deviceId } = req.user;
+
+    const { refreshToken, accessToken } =
+      await this.authService.updateJwtTokens(
+        userId,
+        login,
+        deviceId,
+        title,
+        ip,
+      );
+
     response.cookie('refreshToken ', refreshToken);
 
     return { accessToken };

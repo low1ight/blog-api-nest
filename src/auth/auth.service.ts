@@ -22,9 +22,14 @@ export class AuthService {
       ip,
     };
 
-    await this.deviceService.createDevice(newDeviceDto);
+    const deviceId = await this.deviceService.createDevice(newDeviceDto);
 
-    return await this.createJwtTokens(userId, login, newDeviceDto.sessionId);
+    return await this.createJwtTokens(
+      userId,
+      login,
+      deviceId,
+      newDeviceDto.sessionId,
+    );
   }
 
   async validateUser(loginOrEmail: string, pass: string): Promise<any> {
@@ -43,14 +48,14 @@ export class AuthService {
     return null;
   }
   //userLogin, title, ip
-  async createJwtTokens(userId, login, sessionId) {
+  async createJwtTokens(userId, login, deviceId, sessionId) {
     const [at, rt]: string[] = await Promise.all([
       this.jwtService.signAsync(
         { id: userId, userName: login },
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION_TIME },
       ),
       this.jwtService.signAsync(
-        { userId, sessionId },
+        { userId, login, deviceId, sessionId },
         { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION_TIME },
       ),
     ]);
@@ -59,5 +64,24 @@ export class AuthService {
       accessToken: at,
       refreshToken: rt,
     };
+  }
+
+  async updateJwtTokens(
+    userId: string,
+    login: string,
+    deviceId: string,
+    title: string,
+    ip: string,
+  ) {
+    const sessionId = uuidv4();
+
+    await this.deviceService.updateDevice({
+      deviceId,
+      sessionId,
+      title,
+      ip,
+    });
+
+    return await this.createJwtTokens(userId, login, deviceId, sessionId);
   }
 }
