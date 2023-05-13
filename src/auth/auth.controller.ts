@@ -1,8 +1,8 @@
 import { Controller, Request, Post, UseGuards, Ip, Res } from '@nestjs/common';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LocalAuthGuard } from './guards/local.auth.guard';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
-import { RefreshTokenGuard } from './guards/refresh-token-guard.service';
+import { RefreshTokenGuard } from './guards/refresh.token.guard.';
 
 @Controller('auth')
 export class AuthController {
