@@ -5,9 +5,15 @@ import { CreateUserDto } from '../dto/CreateUserDto';
 export type UserDocument = HydratedDocument<User>;
 
 export interface UserModel extends Model<UserDocument> {
-  createAlreadyRegisteredUser(
+  createAlreadyConfirmedUser(
     dto: CreateUserDto,
     userModel: UserModel,
+  ): Promise<UserDocument>;
+
+  createUnconfirmedUser(
+    dto: CreateUserDto,
+    userModel: Model<User>,
+    confirmationCode: string,
   ): Promise<UserDocument>;
 }
 
@@ -52,7 +58,7 @@ export class User {
   @Prop({ type: UserConfirmationData, required: true })
   userConfirmationData: UserConfirmationData;
 
-  static async createAlreadyRegisteredUser(
+  static async createAlreadyConfirmedUser(
     dto: CreateUserDto,
     userModel: Model<User>,
   ) {
@@ -70,10 +76,34 @@ export class User {
       },
     });
   }
+
+  static async createUnconfirmedUser(
+    dto: CreateUserDto,
+    userModel: Model<User>,
+    confirmationCode: string,
+  ) {
+    return new userModel({
+      userData: {
+        login: dto.login,
+        password: dto.password,
+        passwordRecoveryCode: null,
+        email: dto.email,
+      },
+      userConfirmationData: {
+        confirmationCode: confirmationCode,
+        isConfirmed: false,
+        expirationDate: new Date(
+          Date.now() +
+            1000 * 60 * +process.env.MIN_TO_EXPIRE_EMAIL_CONFIRMATION_CODE,
+        ),
+      },
+    });
+  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.statics = {
-  createAlreadyRegisteredUser: User.createAlreadyRegisteredUser,
+  createAlreadyConfirmedUser: User.createAlreadyConfirmedUser,
+  createUnconfirmedUser: User.createUnconfirmedUser,
 };

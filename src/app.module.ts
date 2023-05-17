@@ -40,10 +40,30 @@ import { DevicesRepository } from './devices/repository/devices.repository';
 import { DevicesService } from './devices/devices.service';
 import { AccessTokenStrategy } from './auth/strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './auth/strategies/refreshToken.strategy';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailManager } from './adapters/email.manager';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.local', '.env'],
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 465,
+        ignoreTLS: true,
+        secure: true,
+        auth: {
+          user: process.env.MAILDEV_INCOMING_USER,
+          pass: process.env.MAILDEV_INCOMING_PASS,
+        },
+      },
+      defaults: {
+        from: '"No Reply" <no-reply@localhost>',
+      },
+    }),
     MongooseModule.forRoot(
       'mongodb+srv://qlowlight:uNrmiq0xtAknlUjI@cluster0.xahjpqu.mongodb.net/blog?retryWrites=true&w=majority',
     ),
@@ -72,6 +92,7 @@ import { RefreshTokenStrategy } from './auth/strategies/refreshToken.strategy';
   ],
   providers: [
     AppService,
+    EmailManager,
     IsUserFiledAlreadyExistConstraint,
     IsUserLoginAlreadyExist,
     IsUserEmailAlreadyExist,
