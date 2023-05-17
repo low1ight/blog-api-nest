@@ -9,8 +9,8 @@ import { Types } from 'mongoose';
 export class UsersRepository {
   constructor(@InjectModel(User.name) private userModel: UserModel) {}
 
-  async createUser(dto: CreateUserDto) {
-    const user = await this.userModel.createAlreadyRegisteredUser(
+  async createConfirmedUser(dto: CreateUserDto) {
+    const user = await this.userModel.createAlreadyConfirmedUser(
       dto,
       this.userModel,
     );
@@ -18,6 +18,18 @@ export class UsersRepository {
     const createdUser: UserDocument = await user.save();
 
     return userObjToViewModel(createdUser);
+  }
+
+  async createUnconfirmedUser(dto: CreateUserDto, confirmationCode: string) {
+    return await this.userModel.createUnconfirmedUser(
+      dto,
+      this.userModel,
+      confirmationCode,
+    );
+  }
+
+  async save(user: UserDocument) {
+    await user.save();
   }
 
   async deleteUserById(id: string): Promise<boolean> {

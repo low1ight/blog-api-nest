@@ -8,8 +8,20 @@ export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async createUser(dto: CreateUserDto) {
-    dto.password = await bcrypt.hash(dto.password, process.env.SALT_ROUNDS);
-    return await this.usersRepository.createUser(dto);
+    dto.password = await bcrypt.hash(dto.password, +process.env.SALT_ROUNDS);
+
+    return await this.usersRepository.createConfirmedUser(dto);
+  }
+
+  async registerUser(dto: CreateUserDto, confirmationCode: string) {
+    dto.password = await bcrypt.hash(dto.password, +process.env.SALT_ROUNDS);
+    const user = await this.usersRepository.createUnconfirmedUser(
+      dto,
+      confirmationCode,
+    );
+    await this.usersRepository.save(user);
+
+    return user._id.toString();
   }
 
   async deleteUser(id: string): Promise<boolean> {

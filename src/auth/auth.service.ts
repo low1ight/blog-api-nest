@@ -6,12 +6,15 @@ import { JwtService } from '@nestjs/jwt';
 import { DevicesService } from '../devices/devices.service';
 import { CreateDeviceDto } from '../devices/dto/CreateDeviceDto';
 import { v4 as uuidv4 } from 'uuid';
+import { CreateUserDto } from '../users/dto/CreateUserDto';
+import { EmailManager } from '../adapters/email.manager';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly deviceService: DevicesService,
+    private readonly emailManager: EmailManager,
   ) {}
 
   async login(userId: string, login: string, title: string, ip: string) {
@@ -30,6 +33,14 @@ export class AuthService {
       deviceId,
       newDeviceDto.sessionId,
     );
+  }
+
+  async registration(dto: CreateUserDto) {
+    const confirmationCode = uuidv4();
+
+    await this.usersService.registerUser(dto, confirmationCode);
+
+    await this.emailManager.sendConfirmationCode(dto.email, confirmationCode);
   }
 
   async validateUser(loginOrEmail: string, pass: string): Promise<any> {
