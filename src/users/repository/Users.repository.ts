@@ -32,6 +32,12 @@ export class UsersRepository {
     await user.save();
   }
 
+  async getUserByConfirmationCode(code: string) {
+    return this.userModel.findOne({
+      'userConfirmationData.confirmationCode': code,
+    });
+  }
+
   async deleteUserById(id: string): Promise<boolean> {
     const deleteResult = await this.userModel.deleteOne({ _id: id });
 

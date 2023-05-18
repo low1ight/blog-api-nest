@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './repository/Users.repository';
 import { CreateUserDto } from './dto/CreateUserDto';
 import * as bcrypt from 'bcrypt';
+import { UserDocument } from './schemas/user.schema';
+import { CustomResponse } from '../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +25,31 @@ export class UsersService {
     await this.usersRepository.save(user);
 
     return user._id.toString();
+  }
+
+  async confirmUserEmail(code: string) {
+    const user: UserDocument | null =
+      await this.usersRepository.getUserByConfirmationCode(code);
+
+    if (!user)
+      return new CustomResponse(
+        false,
+        CustomResponseEnum.badRequest,
+        `incorrect confirmation code`,
+      );
+
+    if (!user.isEmailCanBeConfirmed())
+      return new CustomResponse(
+        false,
+        CustomResponseEnum.badRequest,
+        `email already confirmed or`,
+      );
+
+    user.confirmEmail();
+
+    await this.usersRepository.save(user);
+
+    return new CustomResponse(true);
   }
 
   async deleteUser(id: string): Promise<boolean> {

@@ -13,10 +13,16 @@ import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { RefreshTokenGuard } from './guards/refresh.token.guard.';
 import { CreateUserDto } from '../users/dto/CreateUserDto';
+import { ConfirmEmailDto } from './dto/ConfirmEmailDto';
+import { UsersService } from '../users/users.service';
+import { CustomResponse } from '../utils/customResponse/CustomResponse';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(
@@ -45,7 +51,19 @@ export class AuthController {
   async register(@Body() dto: CreateUserDto) {
     await this.authService.registration(dto);
   }
+
+  @Post('registration-confirmation')
+  @HttpCode(204)
+  async registrationConfirmation(@Body() dto: ConfirmEmailDto) {
+    const response: CustomResponse<any> =
+      await this.usersService.confirmUserEmail(dto.code);
+
+    if (!response.isSuccess)
+      CustomResponse.throwHttpException(response.errStatusCode);
+  }
+
   @UseGuards(RefreshTokenGuard)
+  @Post('refresh-token')
   async refreshToken(
     @Request() req,
     @Ip() ip,
