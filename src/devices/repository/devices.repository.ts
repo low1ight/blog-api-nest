@@ -16,6 +16,12 @@ export class DevicesRepository {
     return device._id.toString();
   }
 
+  async deleteDeviceById(id: string): Promise<boolean> {
+    const result = await this.deviceModel.deleteOne({ _id: id });
+
+    return result.deletedCount === 1;
+  }
+
   async getDeviceById(id: string) {
     return this.deviceModel.findById(id);
   }

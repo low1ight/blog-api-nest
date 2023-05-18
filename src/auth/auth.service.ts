@@ -58,6 +58,10 @@ export class AuthService {
     await this.emailManager.sendConfirmationCode(dto.email, confirmationCode);
   }
 
+  async logout(deviceId) {
+    await this.deviceService.deleteDeviceById(deviceId);
+  }
+
   async validateUser(loginOrEmail: string, pass: string): Promise<any> {
     const user: UserDocument | null =
       await this.usersService.findByLoginOrEmail(loginOrEmail);

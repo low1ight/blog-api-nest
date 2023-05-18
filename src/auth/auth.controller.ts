@@ -57,6 +57,12 @@ export class AuthController {
   async registrationEmailResending(@Body() dto: EmailResendingDto) {
     await this.authService.registrationEmailResending(dto.email);
   }
+  @Post('logout')
+  @UseGuards(RefreshTokenGuard)
+  @HttpCode(204)
+  async logout(@Request() req) {
+    await this.authService.logout(req.user.deviceId);
+  }
 
   @Post('registration-confirmation')
   @HttpCode(204)

@@ -13,6 +13,10 @@ export class DevicesService {
     return this.deviceRepository.save(device);
   }
 
+  async deleteDeviceById(deviceId: string): Promise<boolean> {
+    return await this.deviceRepository.deleteDeviceById(deviceId);
+  }
+
   async isSessionIdForDeviceValid(deviceId: string, sessionId: string) {
     const device: DeviceDocument | null =
       await this.deviceRepository.getDeviceById(deviceId);
