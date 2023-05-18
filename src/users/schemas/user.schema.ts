@@ -58,6 +58,20 @@ export class User {
   @Prop({ type: UserConfirmationData, required: true })
   userConfirmationData: UserConfirmationData;
 
+  isEmailCanBeConfirmed() {
+    //return true if email not confirmed and confirmation code not expired
+    return (
+      !this.userConfirmationData.isConfirmed &&
+      this.userConfirmationData.expirationDate > new Date()
+    );
+  }
+
+  confirmEmail() {
+    if (!this.isEmailCanBeConfirmed())
+      throw new Error(`user can't be confirmed`);
+    this.userConfirmationData.isConfirmed = true;
+  }
+
   static async createAlreadyConfirmedUser(
     dto: CreateUserDto,
     userModel: Model<User>,
@@ -102,6 +116,11 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.methods = {
+  isEmailCanBeConfirmed: User.prototype.isEmailCanBeConfirmed,
+  confirmEmail: User.prototype.confirmEmail,
+};
 
 UserSchema.statics = {
   createAlreadyConfirmedUser: User.createAlreadyConfirmedUser,
