@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateUserDto } from '../dto/CreateUserDto';
+import { EmailHelper } from '../../utils/emailHelper';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -66,6 +67,12 @@ export class User {
     );
   }
 
+  setNewConfirmationCode(code: string) {
+    this.userConfirmationData.confirmationCode = code;
+    this.userConfirmationData.expirationDate =
+      EmailHelper.setNewConfirmationCodeDate();
+  }
+
   confirmEmail() {
     if (!this.isEmailCanBeConfirmed())
       throw new Error(`user can't be confirmed`);
@@ -106,10 +113,7 @@ export class User {
       userConfirmationData: {
         confirmationCode: confirmationCode,
         isConfirmed: false,
-        expirationDate: new Date(
-          Date.now() +
-            1000 * 60 * +process.env.MIN_TO_EXPIRE_EMAIL_CONFIRMATION_CODE,
-        ),
+        expirationDate: EmailHelper.setNewConfirmationCodeDate(),
       },
     });
   }
@@ -120,6 +124,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.methods = {
   isEmailCanBeConfirmed: User.prototype.isEmailCanBeConfirmed,
   confirmEmail: User.prototype.confirmEmail,
+  setNewConfirmationCode: User.prototype.setNewConfirmationCode,
 };
 
 UserSchema.statics = {
