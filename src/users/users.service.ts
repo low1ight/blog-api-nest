@@ -52,6 +52,20 @@ export class UsersService {
     return new CustomResponse(true);
   }
 
+  async setNewConfirmationCode(email: string, code: string): Promise<boolean> {
+    const user: UserDocument | null = await this.usersRepository.getUserByEmail(
+      email,
+    );
+
+    if (!user) return false;
+
+    user.setNewConfirmationCode(code);
+
+    await this.usersRepository.save(user);
+
+    return true;
+  }
+
   async deleteUser(id: string): Promise<boolean> {
     const isUserExist = await this.usersRepository.isUserExist(id);
 

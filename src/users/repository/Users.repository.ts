@@ -20,6 +20,10 @@ export class UsersRepository {
     return userObjToViewModel(createdUser);
   }
 
+  async getUserByEmail(email: string) {
+    return this.userModel.findOne({ 'userData.email': email });
+  }
+
   async createUnconfirmedUser(dto: CreateUserDto, confirmationCode: string) {
     return await this.userModel.createUnconfirmedUser(
       dto,

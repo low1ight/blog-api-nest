@@ -35,6 +35,21 @@ export class AuthService {
     );
   }
 
+  async registrationEmailResending(email): Promise<boolean> {
+    const confirmationCode = uuidv4();
+
+    const isSuccessfulSet = await this.usersService.setNewConfirmationCode(
+      email,
+      confirmationCode,
+    );
+
+    if (!isSuccessfulSet) return false;
+
+    await this.emailManager.sendConfirmationCode(email, confirmationCode);
+
+    return true;
+  }
+
   async registration(dto: CreateUserDto) {
     const confirmationCode = uuidv4();
 

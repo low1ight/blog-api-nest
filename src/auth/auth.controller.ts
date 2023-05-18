@@ -16,6 +16,7 @@ import { CreateUserDto } from '../users/dto/CreateUserDto';
 import { ConfirmEmailDto } from './dto/ConfirmEmailDto';
 import { UsersService } from '../users/users.service';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
+import { EmailResendingDto } from './dto/EmailResendingDto';
 
 @Controller('auth')
 export class AuthController {
@@ -50,6 +51,11 @@ export class AuthController {
   @HttpCode(204)
   async register(@Body() dto: CreateUserDto) {
     await this.authService.registration(dto);
+  }
+  @Post('registration-email-resending')
+  @HttpCode(204)
+  async registrationEmailResending(@Body() dto: EmailResendingDto) {
+    await this.authService.registrationEmailResending(dto.email);
   }
 
   @Post('registration-confirmation')
