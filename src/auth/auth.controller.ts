@@ -7,6 +7,7 @@ import {
   Res,
   Body,
   HttpCode,
+  Get,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './guards/local.auth.guard';
 import { AuthService } from './auth.service';
@@ -17,12 +18,15 @@ import { ConfirmEmailDto } from './dto/ConfirmEmailDto';
 import { UsersService } from '../users/users.service';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { EmailResendingDto } from './dto/EmailResendingDto';
+import { UsersQueryRepository } from '../users/repository/users.query.repository';
+import { JwtAuthGuard } from './guards/jwt.auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -45,6 +49,11 @@ export class AuthController {
     response.cookie('refreshToken ', refreshToken);
 
     return { accessToken };
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async me(@Request() req) {
+    return await this.usersQueryRepository.getUserByIdForAuthMe(req.user.id);
   }
 
   @Post('registration')
