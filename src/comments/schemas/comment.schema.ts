@@ -1,7 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
+import { CreateCommentDto } from '../dto/CreateCommentDto';
 
 export type CommentDocument = HydratedDocument<Comment>;
+
+export interface CommentModel extends Model<CommentDocument> {
+  createComment(
+    dto: CreateCommentDto,
+    commentModel: Model<Comment>,
+  ): Promise<CommentDocument>;
+}
 
 @Schema({ _id: false })
 export class CommentatorInfo {
@@ -28,9 +36,27 @@ export class Comment {
 
   @Prop()
   updatedAt: Date;
+
+  static async createComment(
+    dto: CreateCommentDto,
+    commentModel: Model<Comment>,
+  ) {
+    return new commentModel({
+      content: dto.content,
+      postId: new Types.ObjectId(dto.postId),
+      commentatorInfo: {
+        userId: new Types.ObjectId(dto.commentatorId),
+        userLogin: dto.commentatorName,
+      },
+    });
+  }
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
+
+CommentSchema.statics = {
+  createComment: Comment.createComment,
+};
 
 CommentSchema.virtual('likes', {
   ref: 'Like',
