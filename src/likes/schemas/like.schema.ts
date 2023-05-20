@@ -1,7 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
+import { LikeDto } from '../dto/LikeDto';
 
 export type LikeDocument = HydratedDocument<Like>;
+
+export interface LikeModel extends Model<LikeDocument> {
+  createLike(
+    dto: LikeDto,
+    likeTarget: string,
+    LikeModel: Model<Like>,
+  ): LikeDocument;
+}
 
 @Schema({ timestamps: true })
 export class Like {
@@ -25,6 +34,32 @@ export class Like {
 
   @Prop()
   updatedAt: Date;
+
+  async setLikeStatus(likeStatus: string) {
+    this.likeStatus = likeStatus;
+  }
+
+  static async createLike(
+    dto: LikeDto,
+    likeTarget: string,
+    LikeModel: Model<Like>,
+  ) {
+    return new LikeModel({
+      likeTarget: likeTarget,
+      targetId: dto.targetId,
+      likeStatus: dto.likeStatus,
+      userLogin: dto.userLogin,
+      userId: dto.userId,
+    });
+  }
 }
 
 export const LikeSchema = SchemaFactory.createForClass(Like);
+
+LikeSchema.statics = {
+  createLike: Like.createLike,
+};
+
+LikeSchema.methods = {
+  setLikeStatus: Like.prototype.setLikeStatus,
+};
