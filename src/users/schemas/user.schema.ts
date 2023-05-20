@@ -77,6 +77,11 @@ export class User {
     this.userData.passwordRecoveryCode = code;
   }
 
+  setNewPassword(newPassword: string) {
+    this.userData.password = newPassword;
+    this.userData.passwordRecoveryCode = null;
+  }
+
   confirmEmail() {
     if (!this.isEmailCanBeConfirmed())
       throw new Error(`user can't be confirmed`);
@@ -130,6 +135,7 @@ UserSchema.methods = {
   confirmEmail: User.prototype.confirmEmail,
   setNewConfirmationCode: User.prototype.setNewConfirmationCode,
   setPasswordRecoveryCode: User.prototype.setPasswordRecoveryCode,
+  setNewPassword: User.prototype.setNewPassword,
 };
 
 UserSchema.statics = {
