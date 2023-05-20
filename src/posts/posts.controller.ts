@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   PostInputQueryType,
@@ -24,6 +25,10 @@ import {
   commentQueryMapper,
 } from '../utils/query-mappers/comment-query-mapper';
 import { CommentsQueryRepository } from '../comments/repository/comments.query.repository';
+import { CreateCommentForPostDto } from './dto/CreateCommentForPostDto';
+import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
+import { CommentsService } from '../comments/comments.service';
+import { CurrentUser } from '../common/decorators/current.user.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -31,6 +36,7 @@ export class PostsController {
     private readonly postQueryRepository: PostsQueryRepository,
     private readonly postService: PostsService,
     private readonly commentQueryRepository: CommentsQueryRepository,
+    private readonly commentsService: CommentsService,
   ) {}
 
   @Get()
@@ -87,5 +93,29 @@ export class PostsController {
       commentQuery,
       id,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/comments')
+  async createCommentForPost(
+    @Param('id') id: string,
+    @Body() dto: CreateCommentForPostDto,
+    @CurrentUser() user: { id: string; userName: string },
+  ) {
+    const createdCommentId: string | null =
+      await this.commentsService.createComment(
+        dto.content,
+        id,
+        user.id,
+        user.userName,
+      );
+    if (!createdCommentId)
+      CustomResponse.throwHttpException(CustomResponseEnum.badRequest);
+    const comment = await this.commentQueryRepository.getCommentById(
+      createdCommentId,
+    );
+    if (!comment)
+      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    return comment;
   }
 }

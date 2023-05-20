@@ -65,6 +65,10 @@ export class PostsService {
     };
   }
 
+  async checkIsPostExistById(id: string) {
+    return await this.postRepository.isPostExist(id);
+  }
+
   async deletePost(id: string) {
     const isPostExist: boolean = await this.postRepository.isPostExist(id);
 

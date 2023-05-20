@@ -42,6 +42,8 @@ import { AccessTokenStrategy } from './auth/strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './auth/strategies/refreshToken.strategy';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailManager } from './adapters/email.manager';
+import { CommentsService } from './comments/comments.service';
+import { CommentsRepository } from './comments/repository/comments.repository';
 
 @Module({
   imports: [
@@ -113,6 +115,8 @@ import { EmailManager } from './adapters/email.manager';
     DevicesRepository,
     DevicesService,
     AccessTokenStrategy,
+    CommentsService,
+    CommentsRepository,
     RefreshTokenStrategy,
   ],
 })
