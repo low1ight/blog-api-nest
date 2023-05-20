@@ -35,6 +35,24 @@ export class UsersService {
     await this.usersRepository.save(user);
   }
 
+  async setNewPassword(newPassword: string, recoveryCode: string) {
+    const user: UserDocument | null =
+      await this.usersRepository.getUserByPasswordRecoveryCode(recoveryCode);
+
+    if (!user) return false;
+
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      +process.env.SALT_ROUNDS,
+    );
+
+    user.setNewPassword(hashedPassword);
+
+    await this.usersRepository.save(user);
+
+    return true;
+  }
+
   async confirmUserEmail(code: string) {
     const user: UserDocument | null =
       await this.usersRepository.getUserByConfirmationCode(code);

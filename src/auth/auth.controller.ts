@@ -20,6 +20,7 @@ import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { EmailDto } from './dto/EmailDto';
 import { UsersQueryRepository } from '../users/repository/users.query.repository';
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
+import { PasswordRecoveryDto } from './dto/PasswordRecoveryDto';
 
 @Controller('auth')
 export class AuthController {
@@ -77,6 +78,17 @@ export class AuthController {
   @HttpCode(204)
   async passwordRecovery(@Body() dto: EmailDto) {
     return await this.authService.passwordRecovery(dto.email);
+  }
+
+  @Post('new-password')
+  @HttpCode(204)
+  async newPassword(@Body() dto: PasswordRecoveryDto) {
+    const isSuccessful: boolean = await this.usersService.setNewPassword(
+      dto.newPassword,
+      dto.recoveryCode,
+    );
+
+    if (!isSuccessful) CustomResponse.throwHttpException(2);
   }
 
   @Post('registration-confirmation')

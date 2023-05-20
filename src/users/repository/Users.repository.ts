@@ -24,6 +24,10 @@ export class UsersRepository {
     return this.userModel.findOne({ 'userData.email': email });
   }
 
+  async getUserByPasswordRecoveryCode(code: string) {
+    return this.userModel.findOne({ 'userData.passwordRecoveryCode': code });
+  }
+
   async createUnconfirmedUser(dto: CreateUserDto, confirmationCode: string) {
     return await this.userModel.createUnconfirmedUser(
       dto,
