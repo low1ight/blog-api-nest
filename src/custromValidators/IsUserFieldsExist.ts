@@ -32,7 +32,7 @@ export class IsUserLoginAlreadyExist extends IsUserFiledAlreadyExistConstraint {
 @ValidatorConstraint({ async: true })
 export class IsUserEmailAlreadyExist extends IsUserFiledAlreadyExistConstraint {
   async validate(email: any) {
-    const isEmailExist = await this.usersService.isEmailLoginExist(email);
+    const isEmailExist = await this.usersService.isUserEmailExist(email);
 
     return !isEmailExist;
   }

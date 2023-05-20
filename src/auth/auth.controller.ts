@@ -14,10 +14,10 @@ import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { RefreshTokenGuard } from './guards/refresh.token.guard.';
 import { CreateUserDto } from '../users/dto/CreateUserDto';
-import { ConfirmEmailDto } from './dto/ConfirmEmailDto';
+import { EmailConfirmationDto } from './dto/EmailConfirmationDto';
 import { UsersService } from '../users/users.service';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
-import { EmailResendingDto } from './dto/EmailResendingDto';
+import { EmailDto } from './dto/EmailDto';
 import { UsersQueryRepository } from '../users/repository/users.query.repository';
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
 
@@ -63,7 +63,7 @@ export class AuthController {
   }
   @Post('registration-email-resending')
   @HttpCode(204)
-  async registrationEmailResending(@Body() dto: EmailResendingDto) {
+  async registrationEmailResending(@Body() dto: EmailDto) {
     await this.authService.registrationEmailResending(dto.email);
   }
   @Post('logout')
@@ -73,9 +73,15 @@ export class AuthController {
     await this.authService.logout(req.user.deviceId);
   }
 
+  @Post('password-recovery')
+  @HttpCode(204)
+  async passwordRecovery(@Body() dto: EmailDto) {
+    return await this.authService.passwordRecovery(dto.email);
+  }
+
   @Post('registration-confirmation')
   @HttpCode(204)
-  async registrationConfirmation(@Body() dto: ConfirmEmailDto) {
+  async registrationConfirmation(@Body() dto: EmailConfirmationDto) {
     const response: CustomResponse<any> =
       await this.usersService.confirmUserEmail(dto.code);
 

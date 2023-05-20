@@ -27,6 +27,14 @@ export class UsersService {
     return user._id.toString();
   }
 
+  async setNewPasswordRecoveryCode(email: string, code: string) {
+    const user: UserDocument = await this.usersRepository.getUserByEmail(email);
+
+    user.setPasswordRecoveryCode(code);
+
+    await this.usersRepository.save(user);
+  }
+
   async confirmUserEmail(code: string) {
     const user: UserDocument | null =
       await this.usersRepository.getUserByConfirmationCode(code);
@@ -78,7 +86,7 @@ export class UsersService {
     return await this.usersRepository.isUserLoginExist(login);
   }
 
-  async isEmailLoginExist(email: string) {
+  async isUserEmailExist(email: string) {
     return await this.usersRepository.isUserEmailExist(email);
   }
 

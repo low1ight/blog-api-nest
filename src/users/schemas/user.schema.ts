@@ -73,6 +73,10 @@ export class User {
       EmailHelper.setNewConfirmationCodeDate();
   }
 
+  setPasswordRecoveryCode(code: string) {
+    this.userData.passwordRecoveryCode = code;
+  }
+
   confirmEmail() {
     if (!this.isEmailCanBeConfirmed())
       throw new Error(`user can't be confirmed`);
@@ -125,6 +129,7 @@ UserSchema.methods = {
   isEmailCanBeConfirmed: User.prototype.isEmailCanBeConfirmed,
   confirmEmail: User.prototype.confirmEmail,
   setNewConfirmationCode: User.prototype.setNewConfirmationCode,
+  setPasswordRecoveryCode: User.prototype.setPasswordRecoveryCode,
 };
 
 UserSchema.statics = {

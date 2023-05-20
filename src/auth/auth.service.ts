@@ -62,6 +62,24 @@ export class AuthService {
     await this.deviceService.deleteDeviceById(deviceId);
   }
 
+  async passwordRecovery(email: string) {
+    const isUserEmailExist = await this.usersService.isUserEmailExist(email);
+
+    if (!isUserEmailExist) return;
+
+    const passwordRecoveryCode = uuidv4();
+
+    await this.usersService.setNewPasswordRecoveryCode(
+      email,
+      passwordRecoveryCode,
+    );
+
+    await this.emailManager.sendPasswordRecoveryCode(
+      email,
+      passwordRecoveryCode,
+    );
+  }
+
   async validateUser(loginOrEmail: string, pass: string): Promise<any> {
     const user: UserDocument | null =
       await this.usersService.findByLoginOrEmail(loginOrEmail);
