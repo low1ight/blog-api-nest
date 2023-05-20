@@ -44,6 +44,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailManager } from './adapters/email.manager';
 import { CommentsService } from './comments/comments.service';
 import { CommentsRepository } from './comments/repository/comments.repository';
+import { LikesService } from './likes/likes.service';
+import { LikeRepository } from './likes/repository/like.repository';
 
 @Module({
   imports: [
@@ -118,6 +120,8 @@ import { CommentsRepository } from './comments/repository/comments.repository';
     CommentsService,
     CommentsRepository,
     RefreshTokenStrategy,
+    LikesService,
+    LikeRepository,
   ],
 })
 export class AppModule {}
