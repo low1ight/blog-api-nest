@@ -18,4 +18,8 @@ export class CommentsRepository {
     const savedComment: CommentDocument = await comment.save();
     return savedComment._id.toString();
   }
+
+  async isCommentExist(id: string) {
+    return this.commentModel.exists({ _id: id });
+  }
 }
