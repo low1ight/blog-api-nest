@@ -29,6 +29,7 @@ import { CreateCommentForPostDto } from './dto/CreateCommentForPostDto';
 import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
 import { CommentsService } from '../comments/comments.service';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
+import { LikeInputDto } from '../likes/dto/LikeInputDto';
 
 @Controller('posts')
 export class PostsController {
@@ -117,5 +118,24 @@ export class PostsController {
     if (!comment)
       CustomResponse.throwHttpException(CustomResponseEnum.notExist);
     return comment;
+  }
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/like-status')
+  async setLikeStatus(
+    @Param('id') id: string,
+    @Body() dto: LikeInputDto,
+    @CurrentUser() user: { id: string; userName: string },
+  ) {
+    const isLikeSet = await this.postService.setLikeStatus(
+      dto.likeStatus,
+      id,
+      user.id,
+      user.userName,
+    );
+
+    if (!isLikeSet)
+      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+
+    return;
   }
 }
