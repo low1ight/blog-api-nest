@@ -4,14 +4,14 @@ import { PostPopulatedDocument, PostViewModel } from '../../types/post.types';
 
 export const postsArrToViewModel = (
   arr: PostPopulatedDocument[],
-  userPostsLikes: LikeDocument[] | null,
+  currentAuthUserId: string | null,
 ): PostViewModel[] => {
-  return arr.map((item) => postsObjToViewModel(item, userPostsLikes));
+  return arr.map((item) => postsObjToViewModel(item, currentAuthUserId));
 };
 
 export const postsObjToViewModel = (
   item: PostPopulatedDocument,
-  userPostsLikes: LikeDocument[] | null,
+  currentAuthUserId: string | null,
 ): PostViewModel => {
   let likeItem;
   let lastLikeArr: LikeDocument[] = [];
@@ -29,10 +29,10 @@ export const postsObjToViewModel = (
       .slice(0, 3);
   }
 
-  if (userPostsLikes) {
+  if (currentAuthUserId) {
     //find current user like for this item
-    likeItem = userPostsLikes.find(
-      (i) => i.targetId.toString() === item._id.toString(),
+    likeItem = item.likes.find(
+      (i) => i.userId.toString() === currentAuthUserId,
     );
   }
 

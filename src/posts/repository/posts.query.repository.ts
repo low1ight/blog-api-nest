@@ -16,8 +16,8 @@ import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModel
 export class PostsQueryRepository {
   constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
 
-  async getPosts(query: PostQueryType) {
-    return this.getPostWithPaginator(query, null);
+  async getPosts(query: PostQueryType, currentUserId: string | null) {
+    return this.getPostWithPaginator(query, currentUserId);
   }
 
   async getPostById(id: string) {
@@ -38,7 +38,7 @@ export class PostsQueryRepository {
 
   async getPostWithPaginator(
     { sortBy, sortDirection, pageNumber, pageSize }: PostQueryType,
-    userPostsLikes: null,
+    currentAuthUserId: null | string,
     additionalParams: object = {},
   ) {
     //userPostsLikes is temporary null
@@ -65,7 +65,10 @@ export class PostsQueryRepository {
 
     const posts: PostPopulatedDocument[] = await query.exec();
 
-    const postViewModel: PostViewModel[] = postsArrToViewModel(posts, null);
+    const postViewModel: PostViewModel[] = postsArrToViewModel(
+      posts,
+      currentAuthUserId,
+    );
 
     return toViwModelWithPaginator(
       postViewModel,

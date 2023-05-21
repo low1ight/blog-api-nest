@@ -30,6 +30,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
 import { CommentsService } from '../comments/comments.service';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
 import { LikeInputDto } from '../likes/dto/LikeInputDto';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -41,10 +42,12 @@ export class PostsController {
   ) {}
 
   @Get()
-  async getBlogs(@Query() query: PostInputQueryType) {
+  @UseGuards(OptionalJwtAuthGuard)
+  async getBlogs(@Query() query: PostInputQueryType, @CurrentUser() user) {
     const postQuery = postQueryMapper(query);
+    const currentUserId = user?.id || null;
 
-    return await this.postQueryRepository.getPosts(postQuery);
+    return await this.postQueryRepository.getPosts(postQuery, currentUserId);
   }
 
   @Get(':id')
