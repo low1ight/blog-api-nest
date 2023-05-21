@@ -46,10 +46,10 @@ export class Like {
   ) {
     return new LikeModel({
       likeTarget: likeTarget,
-      targetId: dto.targetId,
+      targetId: new Types.ObjectId(dto.targetId),
       likeStatus: dto.likeStatus,
       userLogin: dto.userLogin,
-      userId: dto.userId,
+      userId: new Types.ObjectId(dto.userId),
     });
   }
 }
