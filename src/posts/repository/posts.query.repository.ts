@@ -20,7 +20,7 @@ export class PostsQueryRepository {
     return this.getPostWithPaginator(query, currentUserId);
   }
 
-  async getPostById(id: string) {
+  async getPostById(id: string, currentAuthUserId: string | null) {
     const query = this.postModel.findOne({ _id: id });
 
     query.populate('likes');
@@ -29,7 +29,7 @@ export class PostsQueryRepository {
 
     if (!post) return null;
 
-    return postsObjToViewModel(post, null);
+    return postsObjToViewModel(post, currentAuthUserId);
   }
 
   async getPostsForBlog(query: PostQueryType, blogId: string) {

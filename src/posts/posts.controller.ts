@@ -51,8 +51,9 @@ export class PostsController {
   }
 
   @Get(':id')
-  async getPostById(@Param('id') id: string) {
-    const post = await this.postQueryRepository.getPostById(id);
+  async getPostById(@Param('id') id: string, @CurrentUser() user) {
+    const currentUserId = user?.id || null;
+    const post = await this.postQueryRepository.getPostById(id, currentUserId);
     if (!post)
       return CustomResponse.throwHttpException(CustomResponseEnum.notExist);
     return post;
