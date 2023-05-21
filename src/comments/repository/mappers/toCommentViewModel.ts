@@ -6,14 +6,14 @@ import { CommentDocument } from '../../schemas/comment.schema';
 
 export const commentsArrToViewModel = (
   arr: CommentPopulatedDocument[],
-  userActivity: null,
+  currentAuthUserId: null | string,
 ): CommentViewModel[] => {
-  return arr.map((item) => commentsObjToViewModel(item, userActivity));
+  return arr.map((item) => commentsObjToViewModel(item, currentAuthUserId));
 };
 
 export const commentsObjToViewModel = (
   item: CommentPopulatedDocument,
-  userActivity: null,
+  currentAuthUserId: null | string,
 ): CommentViewModel => {
   let likeItem;
   let likeCount = 0;
@@ -24,12 +24,12 @@ export const commentsObjToViewModel = (
     dislikeCount = item.likes.length - likeCount;
   }
 
-  // if (userActivity) {
-  //   //find current user like for this item
-  //   likeItem = userActivity.find(
-  //     (i) => i.targetId.toString() === item._id.toString(),
-  //   );
-  // }
+  if (currentAuthUserId) {
+    //find current user like for this item
+    likeItem = item.likes.find(
+      (i) => i.userId.toString() === currentAuthUserId,
+    );
+  }
 
   return {
     id: item._id.toString(),

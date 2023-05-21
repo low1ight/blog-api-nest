@@ -18,7 +18,7 @@ export class CommentsQueryRepository {
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
   ) {}
 
-  async getCommentById(id: string) {
+  async getCommentById(id: string, currentAuthUserId: string | null) {
     const query = this.commentModel.findOne({ _id: id });
 
     query.populate('likes');
@@ -27,18 +27,22 @@ export class CommentsQueryRepository {
 
     if (!comment) return null;
 
-    return commentsObjToViewModel(comment, null);
+    return commentsObjToViewModel(comment, currentAuthUserId);
   }
 
-  async getPostCommentsWithPaginator(query: CommentQueryType, postId: string) {
-    return await this.getCommentsWithPaginator(query, null, {
+  async getPostCommentsWithPaginator(
+    query: CommentQueryType,
+    postId: string,
+    currentAuthUserId: string,
+  ) {
+    return await this.getCommentsWithPaginator(query, currentAuthUserId, {
       postId: new Types.ObjectId(postId),
     });
   }
 
   async getCommentsWithPaginator(
     { sortBy, sortDirection, pageNumber, pageSize }: CommentQueryType,
-    userLikes: null,
+    currentAuthUserId: null | string,
     additionalParams: object = {},
   ) {
     const sortObj = createSortObject(sortBy, sortDirection);
@@ -61,7 +65,10 @@ export class CommentsQueryRepository {
 
     const comments: CommentPopulatedDocument[] = await query.exec();
 
-    const commentsViewModel = commentsArrToViewModel(comments, null);
+    const commentsViewModel = commentsArrToViewModel(
+      comments,
+      currentAuthUserId,
+    );
 
     return toViwModelWithPaginator(
       commentsViewModel,

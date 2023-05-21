@@ -6,6 +6,7 @@ import { LikeInputDto } from '../likes/dto/LikeInputDto';
 import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
 import { CommentsService } from './comments.service';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
 
 @Controller('comments')
 export class CommentsController {
@@ -15,8 +16,13 @@ export class CommentsController {
   ) {}
 
   @Get(':id')
-  async getComment(@Param('id') id: string) {
-    const comment = await this.commentQueryRepository.getCommentById(id);
+  @UseGuards(OptionalJwtAuthGuard)
+  async getComment(@Param('id') id: string, @CurrentUser() user) {
+    const currentUserId = user?.id || null;
+    const comment = await this.commentQueryRepository.getCommentById(
+      id,
+      currentUserId,
+    );
     if (!comment)
       CustomResponse.throwHttpException(CustomResponseEnum.notExist);
     return comment;

@@ -88,15 +88,19 @@ export class PostsController {
   }
 
   @Get(':id/comments')
+  @UseGuards(OptionalJwtAuthGuard)
   async getPostComments(
     @Param('id') id: string,
     @Query() inputQuery: CommentInputQueryType,
+    @CurrentUser() user,
   ) {
     const commentQuery = commentQueryMapper(inputQuery);
+    const currentUserId = user?.id || null;
 
     return await this.commentQueryRepository.getPostCommentsWithPaginator(
       commentQuery,
       id,
+      currentUserId,
     );
   }
 
@@ -118,6 +122,7 @@ export class PostsController {
       CustomResponse.throwHttpException(CustomResponseEnum.badRequest);
     const comment = await this.commentQueryRepository.getCommentById(
       createdCommentId,
+      null,
     );
     if (!comment)
       CustomResponse.throwHttpException(CustomResponseEnum.notExist);
