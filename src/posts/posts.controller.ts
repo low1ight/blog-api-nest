@@ -51,6 +51,7 @@ export class PostsController {
   }
 
   @Get(':id')
+  @UseGuards(OptionalJwtAuthGuard)
   async getPostById(@Param('id') id: string, @CurrentUser() user) {
     const currentUserId = user?.id || null;
     const post = await this.postQueryRepository.getPostById(id, currentUserId);
@@ -65,6 +66,7 @@ export class PostsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   async updatePost(@Body() dto: UpdatePostInputDto, @Param('id') id: string) {
     const result: CustomResponse<null> = await this.postService.updatePost(
@@ -79,6 +81,7 @@ export class PostsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   async deletePost(@Param('id') id: string) {
     const deleteResult = await this.postService.deletePost(id);
