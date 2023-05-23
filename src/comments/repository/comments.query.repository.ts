@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { Comment } from '../schemas/comment.schema';
 import {
   commentsArrToViewModel,
@@ -19,6 +19,8 @@ export class CommentsQueryRepository {
   ) {}
 
   async getCommentById(id: string, currentAuthUserId: string | null) {
+    if (!mongoose.isValidObjectId(id)) return null;
+
     const query = this.commentModel.findOne({ _id: id });
 
     query.populate('likes');
