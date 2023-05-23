@@ -28,6 +28,7 @@ export class UsersController {
   ) {}
 
   @Get()
+  @UseGuards(BasicAuthGuard)
   async getUsers(@Query() query: UserInputQueryType) {
     const userQuery = userQueryMapper(query);
 
@@ -42,6 +43,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteUser(@Param('id') id: string) {
     const isDeleted = await this.userService.deleteUser(id);
