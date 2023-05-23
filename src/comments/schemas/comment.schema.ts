@@ -37,6 +37,14 @@ export class Comment {
   @Prop()
   updatedAt: Date;
 
+  isCommentOwner(userId: string) {
+    return this.commentatorInfo.userId.toString() === userId;
+  }
+
+  updateCommentContent(newContent: string) {
+    this.content = newContent;
+  }
+
   static async createComment(
     dto: CreateCommentDto,
     commentModel: Model<Comment>,
@@ -56,6 +64,11 @@ export const CommentSchema = SchemaFactory.createForClass(Comment);
 
 CommentSchema.statics = {
   createComment: Comment.createComment,
+};
+
+CommentSchema.methods = {
+  isCommentOwner: Comment.prototype.isCommentOwner,
+  updateCommentContent: Comment.prototype.updateCommentContent,
 };
 
 CommentSchema.virtual('likes', {
