@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CommentsQueryRepository } from './repository/comments.query.repository';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
@@ -7,6 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
 import { CommentsService } from './comments.service';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
+import { CommentDto } from './dto/CommentDto';
 
 @Controller('comments')
 export class CommentsController {
@@ -26,6 +36,33 @@ export class CommentsController {
     if (!comment)
       CustomResponse.throwHttpException(CustomResponseEnum.notExist);
     return comment;
+  }
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  @HttpCode(204)
+  async updateComment(
+    @Body() dto: CommentDto,
+    @Param('id') id: string,
+    @CurrentUser() user,
+  ) {
+    const isUpdated: CustomResponse<any> =
+      await this.commentsService.updateComment(dto, id, user.id);
+
+    if (!isUpdated.isSuccess)
+      CustomResponse.throwHttpException(isUpdated.errStatusCode);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteComment(@Param('id') id: string, @CurrentUser() user) {
+    const deletingResult = await this.commentsService.deleteComment(
+      id,
+      user.id,
+    );
+
+    if (!deletingResult.isSuccess)
+      CustomResponse.throwHttpException(deletingResult.errStatusCode);
   }
 
   @UseGuards(JwtAuthGuard)

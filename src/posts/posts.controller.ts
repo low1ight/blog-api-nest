@@ -25,7 +25,7 @@ import {
   commentQueryMapper,
 } from '../utils/query-mappers/comment-query-mapper';
 import { CommentsQueryRepository } from '../comments/repository/comments.query.repository';
-import { CreateCommentForPostDto } from './dto/CreateCommentForPostDto';
+import { CommentDto } from '../comments/dto/CommentDto';
 import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
 import { CommentsService } from '../comments/comments.service';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
@@ -111,7 +111,7 @@ export class PostsController {
   @Post(':id/comments')
   async createCommentForPost(
     @Param('id') id: string,
-    @Body() dto: CreateCommentForPostDto,
+    @Body() dto: CommentDto,
     @CurrentUser() user: { id: string; userName: string },
   ) {
     const createdCommentId: string | null =
