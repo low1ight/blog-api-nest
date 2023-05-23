@@ -21,8 +21,10 @@ import { EmailDto } from './dto/EmailDto';
 import { UsersQueryRepository } from '../users/repository/users.query.repository';
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { PasswordRecoveryDto } from './dto/PasswordRecoveryDto';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
+@Throttle(+process.env.THROTTLER_LIMIT, +process.env.THROTTLER_TTL)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -52,6 +54,7 @@ export class AuthController {
     return { accessToken };
   }
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle()
   @Get('me')
   async me(@Request() req) {
     return await this.usersQueryRepository.getUserByIdForAuthMe(req.user.id);
@@ -62,24 +65,25 @@ export class AuthController {
   async register(@Body() dto: CreateUserDto) {
     await this.authService.registration(dto);
   }
+
+  @Throttle(3, 60)
   @Post('registration-email-resending')
   @HttpCode(204)
   async registrationEmailResending(@Body() dto: EmailDto) {
     await this.authService.registrationEmailResending(dto.email);
   }
   @Post('logout')
+  @SkipThrottle()
   @UseGuards(RefreshTokenGuard)
   @HttpCode(204)
   async logout(@Request() req) {
     await this.authService.logout(req.user.deviceId);
   }
-
   @Post('password-recovery')
   @HttpCode(204)
   async passwordRecovery(@Body() dto: EmailDto) {
     return await this.authService.passwordRecovery(dto.email);
   }
-
   @Post('new-password')
   @HttpCode(204)
   async newPassword(@Body() dto: PasswordRecoveryDto) {
@@ -102,6 +106,7 @@ export class AuthController {
   }
 
   @UseGuards(RefreshTokenGuard)
+  @SkipThrottle()
   @Post('refresh-token')
   async refreshToken(
     @Request() req,

@@ -47,6 +47,8 @@ import { CommentsRepository } from './comments/repository/comments.repository';
 import { LikesService } from './likes/likes.service';
 import { LikeRepository } from './likes/repository/like.repository';
 import { BasicStrategy } from './auth/strategies/basic.strategy';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -84,6 +86,7 @@ import { BasicStrategy } from './auth/strategies/basic.strategy';
       global: true,
       secret: process.env.JWT_SECRET,
     }),
+    ThrottlerModule.forRoot({}),
     PassportModule,
   ],
   controllers: [
@@ -124,6 +127,10 @@ import { BasicStrategy } from './auth/strategies/basic.strategy';
     RefreshTokenStrategy,
     LikesService,
     LikeRepository,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
