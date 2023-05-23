@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersQueryRepository } from './repository/users.query.repository';
 import {
@@ -17,6 +18,7 @@ import { CreateUserDto } from './dto/CreateUserDto';
 import { UsersService } from './users.service';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -33,6 +35,7 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createUser(@Body() dto: CreateUserDto) {
     return await this.userService.createUser(dto);

@@ -46,6 +46,7 @@ import { CommentsService } from './comments/comments.service';
 import { CommentsRepository } from './comments/repository/comments.repository';
 import { LikesService } from './likes/likes.service';
 import { LikeRepository } from './likes/repository/like.repository';
+import { BasicStrategy } from './auth/strategies/basic.strategy';
 
 @Module({
   imports: [
@@ -111,6 +112,7 @@ import { LikeRepository } from './likes/repository/like.repository';
     UsersService,
     CommentsQueryRepository,
     TestingService,
+    BasicStrategy,
     TestingRepository,
     AuthService,
     LocalStrategy,
