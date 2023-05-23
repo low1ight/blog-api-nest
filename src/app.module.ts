@@ -28,7 +28,7 @@ import {
   IsUserEmailAlreadyExist,
   IsUserFiledAlreadyExistConstraint,
   IsUserLoginAlreadyExist,
-} from './custromValidators/IsUserFieldsExist';
+} from './common/custromValidators/IsUserFieldsExist';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { LocalStrategy } from './auth/strategies/local.strategy';

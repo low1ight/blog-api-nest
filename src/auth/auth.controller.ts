@@ -24,7 +24,7 @@ import { PasswordRecoveryDto } from './dto/PasswordRecoveryDto';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
-@Throttle(+process.env.THROTTLER_LIMIT, +process.env.THROTTLER_TTL)
+@Throttle(5, 10)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -38,6 +38,7 @@ export class AuthController {
     @Ip() ip,
     @Res({ passthrough: true }) response: Response,
   ) {
+    console.log(process.env.THROTTLER_LIMIT, process.env.THROTTLER_TTL);
     const id = req.user._id.toString();
     const login = req.user.userData.login;
     const title = req.headers['user-agent'];
