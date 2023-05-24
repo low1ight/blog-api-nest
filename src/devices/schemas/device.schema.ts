@@ -34,7 +34,12 @@ export class Device {
     dto: CreateDeviceDto,
     deviceModel: Model<Device>,
   ) {
-    return new deviceModel(dto);
+    return new deviceModel({
+      sessionId: dto.sessionId,
+      userId: new Types.ObjectId(dto.userId),
+      title: dto.title,
+      ip: dto.ip,
+    });
   }
 
   updateData({ sessionId, title, ip }) {
