@@ -19,6 +19,9 @@ export class DevicesController {
   @Delete('/devices')
   @UseGuards(RefreshTokenGuard)
   async deleteAllOthersDevices(@CurrentUser() user) {
-    return await this.devicesServices.getCurrentUserDevices(user.userId);
+    return await this.devicesServices.deleteAllOthersDevices(
+      user.userId,
+      user.deviceId,
+    );
   }
 }

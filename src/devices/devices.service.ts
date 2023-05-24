@@ -14,6 +14,13 @@ export class DevicesService {
     return this.deviceRepository.save(device);
   }
 
+  async deleteAllOthersDevices(userId: string, currentDeviceId: string) {
+    return await this.deviceRepository.deleteAllOthersDevices(
+      userId,
+      currentDeviceId,
+    );
+  }
+
   async deleteDeviceById(deviceId: string): Promise<boolean> {
     return await this.deviceRepository.deleteDeviceById(deviceId);
   }
