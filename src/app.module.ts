@@ -50,6 +50,7 @@ import { BasicStrategy } from './auth/strategies/basic.strategy';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { DevicesController } from './devices/devices.controller';
+import { DevicesQueryRepository } from './devices/repository/devices.query.repository';
 
 @Module({
   imports: [
@@ -124,6 +125,7 @@ import { DevicesController } from './devices/devices.controller';
     DevicesRepository,
     DevicesService,
     AccessTokenStrategy,
+    DevicesQueryRepository,
     CommentsService,
     CommentsRepository,
     RefreshTokenStrategy,

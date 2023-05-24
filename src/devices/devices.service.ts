@@ -8,9 +8,6 @@ import { UpdateDeviceDto } from './dto/UpdateDeviceDto';
 export class DevicesService {
   constructor(private readonly deviceRepository: DevicesRepository) {}
 
-  async getCurrentUserDevices(userId: string) {
-    return await this.deviceRepository.getUserDevices(userId);
-  }
   async createDevice(dto: CreateDeviceDto) {
     const device = await this.deviceRepository.createDevice(dto);
     //return device id
