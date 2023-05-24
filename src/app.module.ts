@@ -49,6 +49,7 @@ import { LikeRepository } from './likes/repository/like.repository';
 import { BasicStrategy } from './auth/strategies/basic.strategy';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { DevicesController } from './devices/devices.controller';
 
 @Module({
   imports: [
@@ -97,6 +98,7 @@ import { APP_GUARD } from '@nestjs/core';
     CommentsController,
     TestingController,
     AuthController,
+    DevicesController,
   ],
   providers: [
     AppService,

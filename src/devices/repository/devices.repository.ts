@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Device, DeviceDocument, DeviceModel } from '../schemas/device.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateDeviceDto } from '../dto/CreateDeviceDto';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class DevicesRepository {
@@ -9,6 +10,12 @@ export class DevicesRepository {
 
   async createDevice(dto: CreateDeviceDto) {
     return await this.deviceModel.createNewDevice(dto, this.deviceModel);
+  }
+
+  async getUserDevices(userId: string) {
+    return this.deviceModel.find({
+      userId: new Types.ObjectId(userId),
+    });
   }
 
   async save(deviceModel: DeviceDocument) {
