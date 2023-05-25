@@ -30,7 +30,7 @@ import { PostForBlogInputDto } from '../posts/dto/PostForBlogInputDto';
 import { PostsService } from '../posts/posts.service';
 import { PostViewModel } from '../posts/types/post.types';
 import { BlogsRepository } from './repository/blogs.repository';
-import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 
 @Controller('blogs')
 export class BlogsController {
@@ -59,14 +59,14 @@ export class BlogsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createBlog(@Body() dto: CreateBlogDto) {
     return await this.blogsService.createBlog(dto);
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updateBlog(@Param('id') id: string, @Body() dto: UpdateBlogDto) {
     const result: boolean = await this.blogsService.updateBlog(dto, id);
@@ -77,7 +77,7 @@ export class BlogsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteBlog(@Param('id') id: string) {
     const result = await this.blogsService.deleteBlog(id);
@@ -102,7 +102,7 @@ export class BlogsController {
   }
 
   @Post(':id/posts')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createPostForBlog(
     @Body() inputData: PostForBlogInputDto,

@@ -31,6 +31,7 @@ import { CommentsService } from '../comments/comments.service';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
 import { LikeInputDto } from '../likes/dto/LikeInputDto';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
+import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -60,13 +61,14 @@ export class PostsController {
     return post;
   }
   @Post()
+  @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createPost(@Body() dto: CreatePostInputDto) {
     return await this.postService.createPost(dto);
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updatePost(@Body() dto: UpdatePostInputDto, @Param('id') id: string) {
     const result: CustomResponse<null> = await this.postService.updatePost(
@@ -81,7 +83,7 @@ export class PostsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deletePost(@Param('id') id: string) {
     const deleteResult = await this.postService.deletePost(id);
