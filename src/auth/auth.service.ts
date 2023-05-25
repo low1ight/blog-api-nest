@@ -95,7 +95,7 @@ export class AuthService {
     }
     return null;
   }
-  //userLogin, title, ip
+
   async createJwtTokens(userId, login, deviceId, sessionId) {
     const [at, rt]: string[] = await Promise.all([
       this.jwtService.signAsync(

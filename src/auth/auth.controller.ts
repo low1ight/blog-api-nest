@@ -50,7 +50,10 @@ export class AuthController {
       ip,
     );
     //add httponly + secure
-    response.cookie('refreshToken ', refreshToken);
+    response.cookie('refreshToken ', refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
 
     return { accessToken };
   }
@@ -127,7 +130,10 @@ export class AuthController {
         ip,
       );
 
-    response.cookie('refreshToken ', refreshToken);
+    response.cookie('refreshToken ', refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
 
     return { accessToken };
   }
