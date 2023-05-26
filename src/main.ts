@@ -21,8 +21,8 @@ async function bootstrap() {
 
           errorsMessagesKeys.forEach((key) => {
             errorsArr.push({
-              field: error.property,
               message: error.constraints[key],
+              field: error.property,
             });
           });
         });
