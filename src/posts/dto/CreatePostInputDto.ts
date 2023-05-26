@@ -1,5 +1,6 @@
 import { IsMongoId, IsNotEmpty, MaxLength } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
+import { isBlogExist } from '../../common/custromValidators/isBlogExist';
 
 export class CreatePostInputDto {
   @IsNotEmpty()
@@ -19,5 +20,8 @@ export class CreatePostInputDto {
 
   @IsNotEmpty()
   @IsMongoId()
+  @isBlogExist({
+    message: `post can't be created for not existing blog`,
+  })
   blogId: string;
 }

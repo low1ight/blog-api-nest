@@ -62,7 +62,10 @@ export class PostsService {
 
     //create correct dto with blog name and return
     return {
-      ...dto,
+      title: dto.title,
+      shortDescription: dto.shortDescription,
+      content: dto.content,
+      blogId: dto.blogId,
       blogName: blogName,
     };
   }

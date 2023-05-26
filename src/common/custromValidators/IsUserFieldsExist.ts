@@ -11,9 +11,8 @@ import { Injectable } from '@nestjs/common';
 export class IsUserFiledAlreadyExistConstraint
   implements ValidatorConstraintInterface
 {
-  constructor(protected usersService: UsersService) {
-    console.log(this.usersService);
-  }
+  constructor(protected usersService: UsersService) {}
+
   async validate(login: any) {
     return false;
   }

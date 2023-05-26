@@ -33,4 +33,8 @@ export class BlogsService {
 
     return await this.blogRepository.deleteBlog(blogId);
   }
+
+  async isBlogExist(blogId: string) {
+    return await this.blogRepository.isBlogExist(blogId);
+  }
 }

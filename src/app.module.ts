@@ -51,6 +51,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { DevicesController } from './devices/devices.controller';
 import { DevicesQueryRepository } from './devices/repository/devices.query.repository';
+import { IsBlogExist } from './common/custromValidators/isBlogExist';
 
 @Module({
   imports: [
@@ -107,6 +108,7 @@ import { DevicesQueryRepository } from './devices/repository/devices.query.repos
     IsUserFiledAlreadyExistConstraint,
     IsUserLoginAlreadyExist,
     IsUserEmailAlreadyExist,
+    IsBlogExist,
     BlogsService,
     BlogsRepository,
     BlogsQueryRepository,
