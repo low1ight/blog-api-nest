@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Like, LikeDocument, LikeModel } from '../schemas/like.schema';
 import { LikeDto } from '../dto/LikeDto';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class LikeRepository {
@@ -12,7 +13,10 @@ export class LikeRepository {
   }
 
   async getCurrentTargetUserLike(userId, targetId) {
-    return this.likeModel.findOne({ userId, targetId });
+    return this.likeModel.findOne({
+      userId: new Types.ObjectId(userId),
+      targetId: new Types.ObjectId(targetId),
+    });
   }
 
   async deleteLikeById(id) {
