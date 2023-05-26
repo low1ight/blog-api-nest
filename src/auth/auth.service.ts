@@ -8,6 +8,7 @@ import { CreateDeviceDto } from '../devices/dto/CreateDeviceDto';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from '../users/dto/CreateUserDto';
 import { EmailManager } from '../adapters/email.manager';
+import { CustomResponse } from '../utils/customResponse/CustomResponse';
 @Injectable()
 export class AuthService {
   constructor(
@@ -35,19 +36,17 @@ export class AuthService {
     );
   }
 
-  async registrationEmailResending(email): Promise<boolean> {
+  async registrationEmailResending(email): Promise<CustomResponse<any>> {
     const confirmationCode = uuidv4();
 
-    const isSuccessfulSet = await this.usersService.setNewConfirmationCode(
-      email,
-      confirmationCode,
-    );
+    const result: CustomResponse<any> =
+      await this.usersService.setNewConfirmationCode(email, confirmationCode);
 
-    if (!isSuccessfulSet) return false;
+    if (!result.isSuccess) return result;
 
     await this.emailManager.sendConfirmationCode(email, confirmationCode);
 
-    return true;
+    return new CustomResponse(true);
   }
 
   async registration(dto: CreateUserDto) {

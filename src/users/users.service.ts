@@ -64,12 +64,10 @@ export class UsersService {
         `incorrect confirmation code`,
       );
 
-    if (!user.isEmailCanBeConfirmed())
-      return new CustomResponse(
-        false,
-        CustomResponseEnum.badRequest,
-        `email already confirmed or`,
-      );
+    //check is email can be confirmed and return custom response
+    const response: CustomResponse<any> = user.isEmailCanBeConfirmed();
+
+    if (!response.isSuccess) return response;
 
     user.confirmEmail();
 
@@ -78,18 +76,33 @@ export class UsersService {
     return new CustomResponse(true);
   }
 
-  async setNewConfirmationCode(email: string, code: string): Promise<boolean> {
+  async setNewConfirmationCode(
+    email: string,
+    code: string,
+  ): Promise<CustomResponse<any>> {
     const user: UserDocument | null = await this.usersRepository.getUserByEmail(
       email,
     );
 
-    if (!user) return false;
+    if (!user)
+      return new CustomResponse(
+        false,
+        CustomResponseEnum.badRequest,
+        `User with ${email} don't exist`,
+      );
+
+    if (user.userConfirmationData.isConfirmed)
+      return new CustomResponse(
+        false,
+        CustomResponseEnum.badRequest,
+        `Email has already confirmed!`,
+      );
 
     user.setNewConfirmationCode(code);
 
     await this.usersRepository.save(user);
 
-    return true;
+    return new CustomResponse(true);
   }
 
   async deleteUser(id: string): Promise<boolean> {

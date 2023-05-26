@@ -22,6 +22,7 @@ import { UsersQueryRepository } from '../users/repository/users.query.repository
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { PasswordRecoveryDto } from './dto/PasswordRecoveryDto';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { Exceptions } from '../utils/throwException';
 
 @Controller('auth')
 @Throttle(5, 10)
@@ -32,6 +33,7 @@ export class AuthController {
     private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
   @UseGuards(LocalAuthGuard)
+  @HttpCode(200)
   @Post('login')
   async login(
     @Request() req,
@@ -74,7 +76,14 @@ export class AuthController {
   @Post('registration-email-resending')
   @HttpCode(204)
   async registrationEmailResending(@Body() dto: EmailDto) {
-    await this.authService.registrationEmailResending(dto.email);
+    const result: CustomResponse<any> =
+      await this.authService.registrationEmailResending(dto.email);
+    if (!result.isSuccess)
+      Exceptions.throwHttpException(
+        result.errStatusCode,
+        result.content,
+        'email',
+      );
   }
   @Post('logout')
   @SkipThrottle()
@@ -91,12 +100,10 @@ export class AuthController {
   @Post('new-password')
   @HttpCode(204)
   async newPassword(@Body() dto: PasswordRecoveryDto) {
-    const isSuccessful: boolean = await this.usersService.setNewPassword(
+    return await this.usersService.setNewPassword(
       dto.newPassword,
       dto.recoveryCode,
     );
-
-    if (!isSuccessful) CustomResponse.throwHttpException(2);
   }
 
   @Post('registration-confirmation')
@@ -106,7 +113,11 @@ export class AuthController {
       await this.usersService.confirmUserEmail(dto.code);
 
     if (!response.isSuccess)
-      CustomResponse.throwHttpException(response.errStatusCode);
+      Exceptions.throwHttpException(
+        response.errStatusCode,
+        response.content,
+        'code',
+      );
   }
 
   @UseGuards(RefreshTokenGuard)

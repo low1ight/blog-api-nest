@@ -32,6 +32,7 @@ import { CurrentUser } from '../common/decorators/current.user.decorator';
 import { LikeInputDto } from '../likes/dto/LikeInputDto';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
+import { Exceptions } from '../utils/throwException';
 
 @Controller('posts')
 export class PostsController {
@@ -57,7 +58,7 @@ export class PostsController {
     const currentUserId = user?.id || null;
     const post = await this.postQueryRepository.getPostById(id, currentUserId);
     if (!post)
-      return CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+      return Exceptions.throwHttpException(CustomResponseEnum.notExist);
     return post;
   }
   @Post()
@@ -77,7 +78,7 @@ export class PostsController {
     );
 
     if (!result.isSuccess)
-      return CustomResponse.throwHttpException(result.errStatusCode);
+      return Exceptions.throwHttpException(result.errStatusCode);
 
     return;
   }
@@ -88,7 +89,7 @@ export class PostsController {
   async deletePost(@Param('id') id: string) {
     const deleteResult = await this.postService.deletePost(id);
     if (!deleteResult)
-      return CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+      return Exceptions.throwHttpException(CustomResponseEnum.notExist);
     return;
   }
 
@@ -124,13 +125,12 @@ export class PostsController {
         user.userName,
       );
     if (!createdCommentId)
-      CustomResponse.throwHttpException(CustomResponseEnum.badRequest);
+      Exceptions.throwHttpException(CustomResponseEnum.badRequest);
     const comment = await this.commentQueryRepository.getCommentById(
       createdCommentId,
       null,
     );
-    if (!comment)
-      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!comment) Exceptions.throwHttpException(CustomResponseEnum.notExist);
     return comment;
   }
   @UseGuards(JwtAuthGuard)
@@ -147,8 +147,7 @@ export class PostsController {
       user.userName,
     );
 
-    if (!isLikeSet)
-      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!isLikeSet) Exceptions.throwHttpException(CustomResponseEnum.notExist);
 
     return;
   }

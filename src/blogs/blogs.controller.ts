@@ -15,7 +15,6 @@ import { BlogsQueryRepository } from './repository/blogs.query.repository';
 import { BlogViewModel } from './types/Blog.view.model';
 import { CreateBlogDto } from './dto/CreateBlogDto';
 import { UpdateBlogDto } from './dto/UpdateBlogDto';
-import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
 import {
   BlogInputQueryType,
@@ -31,6 +30,7 @@ import { PostsService } from '../posts/posts.service';
 import { PostViewModel } from '../posts/types/post.types';
 import { BlogsRepository } from './repository/blogs.repository';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
+import { Exceptions } from '../utils/throwException';
 
 @Controller('blogs')
 export class BlogsController {
@@ -53,7 +53,7 @@ export class BlogsController {
     const blog: BlogViewModel | null =
       await this.blogsQueryRepository.getUserById(id);
 
-    if (!blog) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!blog) Exceptions.throwHttpException(CustomResponseEnum.notExist);
 
     return blog;
   }
@@ -71,7 +71,7 @@ export class BlogsController {
   async updateBlog(@Param('id') id: string, @Body() dto: UpdateBlogDto) {
     const result: boolean = await this.blogsService.updateBlog(dto, id);
 
-    if (!result) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!result) Exceptions.throwHttpException(CustomResponseEnum.notExist);
 
     return;
   }
@@ -82,7 +82,7 @@ export class BlogsController {
   async deleteBlog(@Param('id') id: string) {
     const result = await this.blogsService.deleteBlog(id);
 
-    if (!result) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!result) Exceptions.throwHttpException(CustomResponseEnum.notExist);
 
     return;
   }
@@ -95,7 +95,7 @@ export class BlogsController {
     const isBlogExist = await this.blogRepository.isBlogExist(id);
 
     if (!isBlogExist)
-      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+      Exceptions.throwHttpException(CustomResponseEnum.notExist);
 
     const postQuery = postQueryMapper(query);
     return await this.postsQueryRepository.getPostsForBlog(postQuery, id);
@@ -112,7 +112,7 @@ export class BlogsController {
       ...inputData,
       blogId: id,
     });
-    if (!post) CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!post) Exceptions.throwHttpException(CustomResponseEnum.notExist);
     return post;
   }
 }

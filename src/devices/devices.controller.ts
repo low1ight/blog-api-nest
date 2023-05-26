@@ -11,6 +11,7 @@ import { RefreshTokenGuard } from '../auth/guards/refresh.token.guard.';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
 import { DevicesQueryRepository } from './repository/devices.query.repository';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
+import { Exceptions } from '../utils/throwException';
 
 @Controller('security')
 export class DevicesController {
@@ -47,6 +48,6 @@ export class DevicesController {
         user.userId,
       );
     if (!deletingResult.isSuccess)
-      return CustomResponse.throwHttpException(deletingResult.errStatusCode);
+      return Exceptions.throwHttpException(deletingResult.errStatusCode);
   }
 }

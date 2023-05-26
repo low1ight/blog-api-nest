@@ -2,6 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateUserDto } from '../dto/CreateUserDto';
 import { EmailHelper } from '../../utils/emailHelper';
+import { CustomResponse } from '../../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -60,11 +62,22 @@ export class User {
   userConfirmationData: UserConfirmationData;
 
   isEmailCanBeConfirmed() {
+    if (this.userConfirmationData.isConfirmed)
+      return new CustomResponse(
+        false,
+        CustomResponseEnum.badRequest,
+        'User email has already confirmed',
+      );
     //return true if email not confirmed and confirmation code not expired
-    return (
-      !this.userConfirmationData.isConfirmed &&
-      this.userConfirmationData.expirationDate > new Date()
-    );
+
+    if (this.userConfirmationData.expirationDate < new Date())
+      return new CustomResponse(
+        false,
+        CustomResponseEnum.badRequest,
+        'Confirmation code was expired',
+      );
+
+    return new CustomResponse(true);
   }
 
   setNewConfirmationCode(code: string) {

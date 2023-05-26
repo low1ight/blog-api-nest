@@ -17,6 +17,7 @@ import { CommentsService } from './comments.service';
 import { CurrentUser } from '../common/decorators/current.user.decorator';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
 import { CommentDto } from './dto/CommentDto';
+import { Exceptions } from '../utils/throwException';
 
 @Controller('comments')
 export class CommentsController {
@@ -33,8 +34,7 @@ export class CommentsController {
       id,
       currentUserId,
     );
-    if (!comment)
-      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!comment) Exceptions.throwHttpException(CustomResponseEnum.notExist);
     return comment;
   }
   @UseGuards(JwtAuthGuard)
@@ -49,7 +49,7 @@ export class CommentsController {
       await this.commentsService.updateComment(dto, id, user.id);
 
     if (!isUpdated.isSuccess)
-      CustomResponse.throwHttpException(isUpdated.errStatusCode);
+      Exceptions.throwHttpException(isUpdated.errStatusCode);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -62,7 +62,7 @@ export class CommentsController {
     );
 
     if (!deletingResult.isSuccess)
-      CustomResponse.throwHttpException(deletingResult.errStatusCode);
+      Exceptions.throwHttpException(deletingResult.errStatusCode);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -79,8 +79,7 @@ export class CommentsController {
       user.userName,
     );
 
-    if (!isLikeSet)
-      CustomResponse.throwHttpException(CustomResponseEnum.notExist);
+    if (!isLikeSet) Exceptions.throwHttpException(CustomResponseEnum.notExist);
 
     return;
   }
