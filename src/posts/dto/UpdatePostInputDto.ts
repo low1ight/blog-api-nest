@@ -1,6 +1,4 @@
-export type UpdatePostInputDto = {
-  title: string;
-  shortDescription: string;
-  content: string;
-  blogId: string;
-};
+import { PartialType } from '@nestjs/mapped-types';
+import { CreatePostInputDto } from './CreatePostInputDto';
+
+export class UpdatePostInputDto extends PartialType(CreatePostInputDto) {}
