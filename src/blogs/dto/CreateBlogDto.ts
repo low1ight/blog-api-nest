@@ -3,8 +3,8 @@ import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreateBlogDto {
   @IsNotEmpty()
-  @Transform(({ value }: TransformFnParams) => value?.trim())
   @MaxLength(15)
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   name: string;
 
   @IsNotEmpty()
