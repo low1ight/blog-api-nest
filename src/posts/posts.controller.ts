@@ -103,6 +103,10 @@ export class PostsController {
     const commentQuery = commentQueryMapper(inputQuery);
     const currentUserId = user?.id || null;
 
+    const isPostExist = await this.postService.checkIsPostExistById(id);
+    if (!isPostExist)
+      return Exceptions.throwHttpException(CustomResponseEnum.notExist);
+
     return await this.commentQueryRepository.getPostCommentsWithPaginator(
       commentQuery,
       id,
