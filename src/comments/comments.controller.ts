@@ -66,6 +66,7 @@ export class CommentsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
   @Put(':id/like-status')
   async setLike(
     @Param('id') id: string,

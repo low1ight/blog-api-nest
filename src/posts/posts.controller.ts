@@ -134,6 +134,7 @@ export class PostsController {
     return comment;
   }
   @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
   @Put(':id/like-status')
   async setLikeStatus(
     @Param('id') id: string,
