@@ -40,7 +40,6 @@ export class AuthController {
     @Ip() ip,
     @Res({ passthrough: true }) response: Response,
   ) {
-    console.log(process.env.THROTTLER_LIMIT, process.env.THROTTLER_TTL);
     const id = req.user._id.toString();
     const login = req.user.userData.login;
     const title = req.headers['user-agent'];
