@@ -31,6 +31,8 @@ import { PostViewModel } from '../posts/types/post.types';
 import { BlogsRepository } from './repository/blogs.repository';
 import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
 import { Exceptions } from '../utils/throwException';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
+import { CurrentUser } from '../common/decorators/current.user.decorator';
 
 @Controller('blogs')
 export class BlogsController {
@@ -88,17 +90,25 @@ export class BlogsController {
   }
   //posts for blog
   @Get(':id/posts')
+  @UseGuards(OptionalJwtAuthGuard)
   async getPostsForBlog(
     @Param('id') id: string,
     @Query() query: PostInputQueryType,
+    @CurrentUser() user,
   ) {
     const isBlogExist = await this.blogRepository.isBlogExist(id);
 
     if (!isBlogExist)
       Exceptions.throwHttpException(CustomResponseEnum.notExist);
 
+    const currentUserId = user?.id || null;
+
     const postQuery = postQueryMapper(query);
-    return await this.postsQueryRepository.getPostsForBlog(postQuery, id);
+    return await this.postsQueryRepository.getPostsForBlog(
+      postQuery,
+      id,
+      currentUserId,
+    );
   }
 
   @Post(':id/posts')

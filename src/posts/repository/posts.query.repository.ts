@@ -32,8 +32,12 @@ export class PostsQueryRepository {
     return postsObjToViewModel(post, currentAuthUserId);
   }
 
-  async getPostsForBlog(query: PostQueryType, blogId: string) {
-    return this.getPostWithPaginator(query, null, { blogId });
+  async getPostsForBlog(
+    query: PostQueryType,
+    blogId: string,
+    currentUserId: string | null,
+  ) {
+    return this.getPostWithPaginator(query, currentUserId, { blogId });
   }
 
   async getPostWithPaginator(
