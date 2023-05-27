@@ -121,7 +121,7 @@ export class AuthController {
 
   @UseGuards(RefreshTokenGuard)
   @SkipThrottle()
-  @HttpCode(201)
+  @HttpCode(200)
   @Post('refresh-token')
   async refreshToken(
     @Request() req,
