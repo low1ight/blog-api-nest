@@ -129,7 +129,7 @@ export class PostsController {
         user.userName,
       );
     if (!createdCommentId)
-      Exceptions.throwHttpException(CustomResponseEnum.badRequest);
+      Exceptions.throwHttpException(CustomResponseEnum.notExist);
     const comment = await this.commentQueryRepository.getCommentById(
       createdCommentId,
       null,
