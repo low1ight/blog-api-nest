@@ -71,7 +71,6 @@ export class AuthController {
     await this.authService.registration(dto);
   }
 
-  @Throttle(3, 60)
   @Post('registration-email-resending')
   @HttpCode(204)
   async registrationEmailResending(@Body() dto: EmailDto) {
