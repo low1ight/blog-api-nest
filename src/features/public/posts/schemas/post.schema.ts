@@ -50,6 +50,7 @@ PostSchema.virtual('likes', {
   ref: 'Like',
   localField: '_id',
   foreignField: 'targetId',
+  options: { match: { isLikeOwnerBanned: false } },
 });
 
 PostSchema.methods = {

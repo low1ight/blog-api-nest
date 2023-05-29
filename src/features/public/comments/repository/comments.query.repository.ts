@@ -39,6 +39,7 @@ export class CommentsQueryRepository {
   ) {
     return await this.getCommentsWithPaginator(query, currentAuthUserId, {
       postId: new Types.ObjectId(postId),
+      isCommentOwnerBanned: false,
     });
   }
 
