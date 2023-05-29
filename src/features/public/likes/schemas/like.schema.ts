@@ -26,6 +26,9 @@ export class Like {
   @Prop({ type: String, default: false })
   userLogin: string;
 
+  @Prop({ type: Boolean, default: false })
+  isLikeOwnerBanned: boolean;
+
   @Prop({ type: Types.ObjectId, default: false, ref: 'Users' })
   userId: Types.ObjectId;
 

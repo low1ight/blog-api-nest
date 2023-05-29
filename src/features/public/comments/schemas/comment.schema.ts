@@ -31,6 +31,9 @@ export class Comment {
   @Prop({ type: CommentatorInfo, required: true })
   commentatorInfo: CommentatorInfo;
 
+  @Prop({ type: Boolean, default: false })
+  isCommentOwnerBanned: boolean;
+
   @Prop()
   createdAt: Date;
 
