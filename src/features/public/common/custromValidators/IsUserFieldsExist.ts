@@ -4,14 +4,14 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { UsersService } from '../../users/users.service';
+import { UsersSaService } from '../../../sa/users/application/users.sa.service';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class IsUserFiledAlreadyExistConstraint
   implements ValidatorConstraintInterface
 {
-  constructor(protected usersService: UsersService) {}
+  constructor(protected usersService: UsersSaService) {}
 
   async validate(login: any) {
     return false;

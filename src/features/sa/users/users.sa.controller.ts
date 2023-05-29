@@ -13,18 +13,18 @@ import { UsersQueryRepository } from './repository/users.query.repository';
 import {
   UserInputQueryType,
   userQueryMapper,
-} from '../utils/query-mappers/user-query-mapper';
+} from '../../public/utils/query-mappers/user-query-mapper';
 import { CreateUserDto } from './dto/CreateUserDto';
-import { UsersService } from './users.service';
-import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
-import { BasicAuthGuard } from '../auth/guards/basic.auth.guard';
-import { Exceptions } from '../utils/throwException';
+import { UsersSaService } from './application/users.sa.service';
+import { CustomResponseEnum } from '../../public/utils/customResponse/CustomResponseEnum';
+import { BasicAuthGuard } from '../../public/auth/guards/basic.auth.guard';
+import { Exceptions } from '../../public/utils/throwException';
 
-@Controller('users')
-export class UsersController {
+@Controller('sa/users')
+export class UsersSaController {
   constructor(
     private readonly userQueryRepository: UsersQueryRepository,
-    private readonly userService: UsersService,
+    private readonly userService: UsersSaService,
   ) {}
 
   @Get()

@@ -13,12 +13,12 @@ import { LocalAuthGuard } from './guards/local.auth.guard';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { RefreshTokenGuard } from './guards/refresh.token.guard.';
-import { CreateUserDto } from '../users/dto/CreateUserDto';
+import { CreateUserDto } from '../../sa/users/dto/CreateUserDto';
 import { EmailConfirmationDto } from './dto/EmailConfirmationDto';
-import { UsersService } from '../users/users.service';
+import { UsersSaService } from '../../sa/users/application/users.sa.service';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { EmailDto } from './dto/EmailDto';
-import { UsersQueryRepository } from '../users/repository/users.query.repository';
+import { UsersQueryRepository } from '../../sa/users/repository/users.query.repository';
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { PasswordRecoveryDto } from './dto/PasswordRecoveryDto';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
@@ -29,7 +29,7 @@ import { Exceptions } from '../utils/throwException';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersSaService,
     private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
   @UseGuards(LocalAuthGuard)

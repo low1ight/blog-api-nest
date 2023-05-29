@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from './repository/Users.repository';
-import { CreateUserDto } from './dto/CreateUserDto';
+import { UsersRepository } from '../repository/Users.repository';
+import { CreateUserDto } from '../dto/CreateUserDto';
 import * as bcrypt from 'bcrypt';
-import { UserDocument } from './schemas/user.schema';
-import { CustomResponse } from '../utils/customResponse/CustomResponse';
-import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
+import { UserDocument } from '../schemas/user.schema';
+import { CustomResponse } from '../../../public/utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../../public/utils/customResponse/CustomResponseEnum';
 
 @Injectable()
-export class UsersService {
+export class UsersSaService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async createUser(dto: CreateUserDto) {

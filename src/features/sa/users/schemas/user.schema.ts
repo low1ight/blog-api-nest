@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateUserDto } from '../dto/CreateUserDto';
-import { EmailHelper } from '../../utils/emailHelper';
-import { CustomResponse } from '../../utils/customResponse/CustomResponse';
-import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
+import { EmailHelper } from '../../../public/utils/emailHelper';
+import { CustomResponse } from '../../../public/utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../../public/utils/customResponse/CustomResponseEnum';
 
 export type UserDocument = HydratedDocument<User>;
 

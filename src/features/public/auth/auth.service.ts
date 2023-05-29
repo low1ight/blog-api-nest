@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { UserDocument } from '../users/schemas/user.schema';
+import { UsersSaService } from '../../sa/users/application/users.sa.service';
+import { UserDocument } from '../../sa/users/schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { DevicesService } from '../devices/devices.service';
 import { CreateDeviceDto } from '../devices/dto/CreateDeviceDto';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto } from '../users/dto/CreateUserDto';
+import { CreateUserDto } from '../../sa/users/dto/CreateUserDto';
 import { EmailManager } from '../adapters/email.manager';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersSaService,
     private readonly jwtService: JwtService,
     private readonly deviceService: DevicesService,
     private readonly emailManager: EmailManager,

@@ -8,7 +8,7 @@ import {
 import {
   IsEmailAlreadyExist,
   IsUserAlreadyExist,
-} from '../../common/custromValidators/IsUserFieldsExist';
+} from '../../../public/common/custromValidators/IsUserFieldsExist';
 
 export class CreateUserDto {
   @IsNotEmpty()
