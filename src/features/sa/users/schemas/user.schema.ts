@@ -43,6 +43,18 @@ export class UserData {
 }
 
 @Schema({ _id: false })
+export class BanInfo {
+  @Prop({ type: Boolean, default: false })
+  isBanned: boolean;
+
+  @Prop({ type: String, default: null })
+  banReason: string;
+
+  @Prop({ type: Date, default: null })
+  banDate: Date;
+}
+
+@Schema({ _id: false })
 export class UserConfirmationData {
   @Prop({ type: String, required: true })
   confirmationCode: string;
@@ -62,11 +74,8 @@ export class User {
   @Prop({ type: UserConfirmationData, required: true })
   userConfirmationData: UserConfirmationData;
 
-  @Prop({ type: Boolean, default: false })
-  isBanned: boolean;
-
-  @Prop({ type: String, default: false })
-  banReason: string;
+  @Prop({ type: BanInfo, default: () => new BanInfo() })
+  banInfo: BanInfo;
 
   isEmailCanBeConfirmed() {
     if (this.userConfirmationData.isConfirmed)
@@ -88,8 +97,9 @@ export class User {
   }
 
   setBanStatus({ isBanned, banReason }: BanUserDto) {
-    this.isBanned = isBanned;
-    this.banReason = banReason;
+    this.banInfo.isBanned = isBanned;
+    this.banInfo.banReason = banReason;
+    this.banInfo.banDate = new Date();
   }
 
   setNewConfirmationCode(code: string) {
