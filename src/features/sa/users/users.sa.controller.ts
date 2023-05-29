@@ -44,7 +44,9 @@ export class UsersSaController {
     return await this.userService.createUser(dto);
   }
 
-  @Put(':id')
+  @Put(':id/ban')
+  @UseGuards(BasicAuthGuard)
+  @HttpCode(204)
   async banUnbanUser(@Param('id') id: string, @Body() dto: BanUserDto) {
     const result: boolean = await this.userService.banUnbanUser(id, dto);
     if (!result) Exceptions.throwHttpException(CustomResponseEnum.notExist);

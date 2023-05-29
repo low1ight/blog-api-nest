@@ -28,7 +28,7 @@ export class UsersSaService {
     const user: UserDocument | null = await this.usersRepository.getUserById(
       id,
     );
-    if (user) return false;
+    if (!user) return false;
 
     user.setBanStatus(dto);
 
