@@ -64,6 +64,9 @@ export class User {
   @Prop({ type: Boolean, default: false })
   isBanned: boolean;
 
+  @Prop({ type: String, default: false })
+  banReason: string;
+
   isEmailCanBeConfirmed() {
     if (this.userConfirmationData.isConfirmed)
       return new CustomResponse(
