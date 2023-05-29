@@ -6,10 +6,15 @@ export const usersArrToViewModel = (arr: UserDocument[]): UserViewModel[] => {
 };
 
 export const userObjToViewModel = (item: UserDocument): UserViewModel => {
-  return {
+  return <UserViewModel>{
     id: item._id.toString(),
     login: item.userData.login,
     email: item.userData.email,
     createdAt: item.userData.createdAt,
+    banInfo: {
+      isBanned: item.banInfo.isBanned,
+      banReason: item.banInfo.banReason,
+      banDate: item.banInfo.banDate,
+    },
   };
 };
