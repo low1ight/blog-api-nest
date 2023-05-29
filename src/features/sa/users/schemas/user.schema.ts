@@ -4,6 +4,7 @@ import { CreateUserDto } from '../dto/CreateUserDto';
 import { EmailHelper } from '../../../public/utils/emailHelper';
 import { CustomResponse } from '../../../public/utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../../../public/utils/customResponse/CustomResponseEnum';
+import { BanUserDto } from '../dto/BanUserDto';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -86,6 +87,11 @@ export class User {
     return new CustomResponse(true);
   }
 
+  setBanStatus({ isBanned, banReason }: BanUserDto) {
+    this.isBanned = isBanned;
+    this.banReason = banReason;
+  }
+
   setNewConfirmationCode(code: string) {
     this.userConfirmationData.confirmationCode = code;
     this.userConfirmationData.expirationDate =
@@ -155,6 +161,7 @@ UserSchema.methods = {
   setNewConfirmationCode: User.prototype.setNewConfirmationCode,
   setPasswordRecoveryCode: User.prototype.setPasswordRecoveryCode,
   setNewPassword: User.prototype.setNewPassword,
+  setBanStatus: User.prototype.setBanStatus,
 };
 
 UserSchema.statics = {

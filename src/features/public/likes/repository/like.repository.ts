@@ -19,6 +19,13 @@ export class LikeRepository {
     });
   }
 
+  async setNewBanStatus(userId: string, banStatus: boolean) {
+    return this.likeModel.updateMany(
+      { userId: new Types.ObjectId(userId) },
+      { isLikeOwnerBanned: banStatus },
+    );
+  }
+
   async deleteLikeById(id) {
     const result = await this.likeModel.deleteOne({ _id: id });
 

@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { UsersSaService } from './application/users.sa.service';
 import { CustomResponseEnum } from '../../public/utils/customResponse/CustomResponseEnum';
 import { BasicAuthGuard } from '../../public/auth/guards/basic.auth.guard';
 import { Exceptions } from '../../public/utils/throwException';
+import { BanUserDto } from './dto/BanUserDto';
 
 @Controller('sa/users')
 export class UsersSaController {
@@ -40,6 +42,12 @@ export class UsersSaController {
   @HttpCode(201)
   async createUser(@Body() dto: CreateUserDto) {
     return await this.userService.createUser(dto);
+  }
+
+  @Put(':id')
+  async banUnbanUser(@Param('id') id: string, @Body() dto: BanUserDto) {
+    const result: boolean = await this.userService.banUnbanUser(id, dto);
+    if (!result) Exceptions.throwHttpException(CustomResponseEnum.notExist);
   }
 
   @Delete(':id')

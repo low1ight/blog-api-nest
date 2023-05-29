@@ -60,6 +60,10 @@ export class UsersRepository {
     return !!user;
   }
 
+  async getUserById(id: string): Promise<UserDocument | null> {
+    return this.userModel.findById(id);
+  }
+
   async isUserLoginExist(login: string): Promise<boolean> {
     const user = await this.userModel.findOne({ 'userData.login': login });
     return !!user;

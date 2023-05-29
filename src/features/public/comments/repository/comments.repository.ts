@@ -6,7 +6,7 @@ import {
 } from '../schemas/comment.schema';
 import { CreateCommentDto } from '../dto/CreateCommentDto';
 import { Injectable } from '@nestjs/common';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 @Injectable()
 export class CommentsRepository {
   constructor(@InjectModel(Comment.name) private commentModel: CommentModel) {}
@@ -23,6 +23,15 @@ export class CommentsRepository {
   async save(comment: CommentDocument) {
     const savedComment: CommentDocument = await comment.save();
     return savedComment._id.toString();
+  }
+
+  async setNewBanStatus(userId: string, banStatus: boolean) {
+    return this.commentModel.updateMany(
+      {
+        'commentatorInfo.userId': new Types.ObjectId(userId),
+      },
+      { isCommentOwnerBanned: banStatus },
+    );
   }
 
   async deleteComment(id: string) {

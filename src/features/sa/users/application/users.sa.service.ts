@@ -5,15 +5,39 @@ import * as bcrypt from 'bcrypt';
 import { UserDocument } from '../schemas/user.schema';
 import { CustomResponse } from '../../../public/utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../../../public/utils/customResponse/CustomResponseEnum';
+import { BanUserDto } from '../dto/BanUserDto';
+import { LikeRepository } from '../../../public/likes/repository/like.repository';
+import { CommentsRepository } from '../../../public/comments/repository/comments.repository';
 
 @Injectable()
 export class UsersSaService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly likesRepository: LikeRepository,
+    private readonly commentsRepository: CommentsRepository,
+  ) {}
 
   async createUser(dto: CreateUserDto) {
     dto.password = await bcrypt.hash(dto.password, +process.env.SALT_ROUNDS);
 
     return await this.usersRepository.createConfirmedUser(dto);
+  }
+
+  async banUnbanUser(id, dto: BanUserDto) {
+    //get user and set new ban status and ban reason
+    const user: UserDocument | null = await this.usersRepository.getUserById(
+      id,
+    );
+    if (user) return false;
+
+    user.setBanStatus(dto);
+
+    await this.usersRepository.save(user);
+    //ban/unban all users comments and likes
+    await this.commentsRepository.setNewBanStatus(id, dto.isBanned);
+    await this.likesRepository.setNewBanStatus(id, dto.isBanned);
+
+    return true;
   }
 
   async registerUser(dto: CreateUserDto, confirmationCode: string) {
