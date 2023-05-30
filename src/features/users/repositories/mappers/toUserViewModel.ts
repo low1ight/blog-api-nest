@@ -1,4 +1,4 @@
-import { UserDocument } from '../../schemas/user.schema';
+import { UserDocument } from '../../entities/user.entity';
 import { UserViewModel } from '../../types/User.view.model';
 
 export const usersArrToViewModel = (arr: UserDocument[]): UserViewModel[] => {

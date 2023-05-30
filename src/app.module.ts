@@ -1,63 +1,60 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BlogsController } from './features/public/blogs/blogs.controller';
-import { BlogsService } from './features/public/blogs/blogs.service';
-import { BlogsRepository } from './features/public/blogs/repository/blogs.repository';
+import { BlogsController } from './features/blogs/blogs.controller';
+import { BlogsService } from './features/blogs/blogs.service';
+import { BlogsRepository } from './features/blogs/repository/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BlogSchema, Blog } from './features/public/blogs/schemas/blog.schema';
-import { BlogsQueryRepository } from './features/public/blogs/repository/blogs.query.repository';
-import { PostsController } from './features/public/posts/posts.controller';
-import { PostsQueryRepository } from './features/public/posts/repository/posts.query.repository';
-import { Post, PostSchema } from './features/public/posts/schemas/post.schema';
-import { Like, LikeSchema } from './features/public/likes/schemas/like.schema';
-import { PostsRepository } from './features/public/posts/repository/posts.repository';
-import { PostsService } from './features/public/posts/posts.service';
-import { UsersSaController } from './features/sa/users/users.sa.controller';
-import { UsersQueryRepository } from './features/sa/users/repository/users.query.repository';
-import { User, UserSchema } from './features/sa/users/schemas/user.schema';
-import { UsersRepository } from './features/sa/users/repository/Users.repository';
-import { UsersSaService } from './features/sa/users/application/users.sa.service';
+import { BlogSchema, Blog } from './features/blogs/schemas/blog.schema';
+import { BlogsQueryRepository } from './features/blogs/repository/blogs.query.repository';
+import { PostsController } from './features/posts/posts.controller';
+import { PostsQueryRepository } from './features/posts/repository/posts.query.repository';
+import { Post, PostSchema } from './features/posts/schemas/post.schema';
+import { Like, LikeSchema } from './features/likes/schemas/like.schema';
+import { PostsRepository } from './features/posts/repository/posts.repository';
+import { PostsService } from './features/posts/posts.service';
+import { UsersSaController } from './features/users/contollers/users.sa.controller';
+import { UsersQueryRepository } from './features/users/repositories/users.query.repository';
+import { User, UserEntity } from './features/users/entities/user.entity';
+import { UsersRepository } from './features/users/repositories/Users.repository';
+import { UsersSaService } from './features/users/application/users.sa.service';
 import {
   Comment,
   CommentSchema,
-} from './features/public/comments/schemas/comment.schema';
-import { CommentsQueryRepository } from './features/public/comments/repository/comments.query.repository';
-import { CommentsController } from './features/public/comments/comments.controller';
-import { TestingController } from './features/public/testing/testing.controller';
-import { TestingService } from './features/public/testing/testing.service';
-import { TestingRepository } from './features/public/testing/repository/testing.repository';
+} from './features/comments/schemas/comment.schema';
+import { CommentsQueryRepository } from './features/comments/repository/comments.query.repository';
+import { CommentsController } from './features/comments/comments.controller';
+import { TestingController } from './features/testing/testing.controller';
+import { TestingService } from './features/testing/testing.service';
+import { TestingRepository } from './features/testing/repository/testing.repository';
 import {
   IsUserEmailAlreadyExist,
   IsUserFiledAlreadyExistConstraint,
   IsUserLoginAlreadyExist,
-} from './features/public/common/custromValidators/IsUserFieldsExist';
+} from './features/common/custromValidators/IsUserFieldsExist';
 import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './features/public/auth/auth.service';
-import { LocalStrategy } from './features/public/auth/strategies/local.strategy';
-import { AuthController } from './features/public/auth/auth.controller';
+import { AuthService } from './features/auth/auth.service';
+import { LocalStrategy } from './features/auth/strategies/local.strategy';
+import { AuthController } from './features/auth/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import {
-  Device,
-  DeviceSchema,
-} from './features/public/devices/schemas/device.schema';
-import { DevicesRepository } from './features/public/devices/repository/devices.repository';
-import { DevicesService } from './features/public/devices/devices.service';
-import { AccessTokenStrategy } from './features/public/auth/strategies/accessToken.strategy';
-import { RefreshTokenStrategy } from './features/public/auth/strategies/refreshToken.strategy';
+import { Device, DeviceSchema } from './features/devices/schemas/device.schema';
+import { DevicesRepository } from './features/devices/repository/devices.repository';
+import { DevicesService } from './features/devices/devices.service';
+import { AccessTokenStrategy } from './features/auth/strategies/accessToken.strategy';
+import { RefreshTokenStrategy } from './features/auth/strategies/refreshToken.strategy';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { EmailManager } from './features/public/adapters/email.manager';
-import { CommentsService } from './features/public/comments/comments.service';
-import { CommentsRepository } from './features/public/comments/repository/comments.repository';
-import { LikesService } from './features/public/likes/likes.service';
-import { LikeRepository } from './features/public/likes/repository/like.repository';
-import { BasicStrategy } from './features/public/auth/strategies/basic.strategy';
+import { EmailManager } from './features/adapters/email.manager';
+import { CommentsService } from './features/comments/comments.service';
+import { CommentsRepository } from './features/comments/repository/comments.repository';
+import { LikesService } from './features/likes/likes.service';
+import { LikeRepository } from './features/likes/repository/like.repository';
+import { BasicStrategy } from './features/auth/strategies/basic.strategy';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { DevicesController } from './features/public/devices/devices.controller';
-import { DevicesQueryRepository } from './features/public/devices/repository/devices.query.repository';
-import { IsBlogExist } from './features/public/common/custromValidators/isBlogExist';
+import { DevicesController } from './features/devices/devices.controller';
+import { DevicesQueryRepository } from './features/devices/repository/devices.query.repository';
+import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
 
 @Module({
   imports: [
@@ -87,7 +84,7 @@ import { IsBlogExist } from './features/public/common/custromValidators/isBlogEx
       { name: Blog.name, schema: BlogSchema },
       { name: Post.name, schema: PostSchema },
       { name: Like.name, schema: LikeSchema },
-      { name: User.name, schema: UserSchema },
+      { name: User.name, schema: UserEntity },
       { name: Comment.name, schema: CommentSchema },
       { name: Device.name, schema: DeviceSchema },
     ]),

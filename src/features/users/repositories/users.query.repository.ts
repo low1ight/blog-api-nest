@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from '../schemas/user.schema';
-import { UserQueryType } from '../../../public/utils/query-mappers/user-query-mapper';
-import { createSortObject } from '../../../public/utils/paginatorHelpers/createSortObject';
-import { calcSkipCount } from '../../../public/utils/paginatorHelpers/calcSkipCount';
-import { createFindBySeveralFieldObj } from '../../../public/utils/paginatorHelpers/createFindBySeveralFieldObj';
-import { toViwModelWithPaginator } from '../../../public/utils/paginatorHelpers/toViwModelWithPaginator';
+import { User, UserDocument } from '../entities/user.entity';
+import { UserQueryType } from '../../utils/query-mappers/user-query-mapper';
+import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
+import { calcSkipCount } from '../../utils/paginatorHelpers/calcSkipCount';
+import { createFindBySeveralFieldObj } from '../../utils/paginatorHelpers/createFindBySeveralFieldObj';
+import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 import { usersArrToViewModel } from './mappers/toUserViewModel';
 
 Injectable();

@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model } from 'mongoose';
 import { CreateUserDto } from '../dto/CreateUserDto';
-import { EmailHelper } from '../../../public/utils/emailHelper';
-import { CustomResponse } from '../../../public/utils/customResponse/CustomResponse';
-import { CustomResponseEnum } from '../../../public/utils/customResponse/CustomResponseEnum';
+import { EmailHelper } from '../../utils/emailHelper';
+import { CustomResponse } from '../../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 import { BanUserDto } from '../dto/BanUserDto';
 
 export type UserDocument = HydratedDocument<User>;
@@ -163,9 +163,9 @@ export class User {
   }
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserEntity = SchemaFactory.createForClass(User);
 
-UserSchema.methods = {
+UserEntity.methods = {
   isEmailCanBeConfirmed: User.prototype.isEmailCanBeConfirmed,
   confirmEmail: User.prototype.confirmEmail,
   setNewConfirmationCode: User.prototype.setNewConfirmationCode,
@@ -174,7 +174,7 @@ UserSchema.methods = {
   setBanStatus: User.prototype.setBanStatus,
 };
 
-UserSchema.statics = {
+UserEntity.statics = {
   createAlreadyConfirmedUser: User.createAlreadyConfirmedUser,
   createUnconfirmedUser: User.createUnconfirmedUser,
 };

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UsersSaService } from '../../sa/users/application/users.sa.service';
-import { UserDocument } from '../../sa/users/schemas/user.schema';
+import { UsersSaService } from '../users/application/users.sa.service';
+import { UserDocument } from '../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { DevicesService } from '../devices/devices.service';
 import { CreateDeviceDto } from '../devices/dto/CreateDeviceDto';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto } from '../../sa/users/dto/CreateUserDto';
+import { CreateUserDto } from '../users/dto/CreateUserDto';
 import { EmailManager } from '../adapters/email.manager';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 @Injectable()

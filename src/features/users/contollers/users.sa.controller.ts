@@ -10,17 +10,17 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersQueryRepository } from './repository/users.query.repository';
+import { UsersQueryRepository } from '../repositories/users.query.repository';
 import {
   UserInputQueryType,
   userQueryMapper,
-} from '../../public/utils/query-mappers/user-query-mapper';
-import { CreateUserDto } from './dto/CreateUserDto';
-import { UsersSaService } from './application/users.sa.service';
-import { CustomResponseEnum } from '../../public/utils/customResponse/CustomResponseEnum';
-import { BasicAuthGuard } from '../../public/auth/guards/basic.auth.guard';
-import { Exceptions } from '../../public/utils/throwException';
-import { BanUserDto } from './dto/BanUserDto';
+} from '../../utils/query-mappers/user-query-mapper';
+import { CreateUserDto } from '../dto/CreateUserDto';
+import { UsersSaService } from '../application/users.sa.service';
+import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
+import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
+import { Exceptions } from '../../utils/throwException';
+import { BanUserDto } from '../dto/BanUserDto';
 
 @Controller('sa/users')
 export class UsersSaController {
