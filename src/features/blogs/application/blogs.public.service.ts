@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { BlogsRepository } from './repository/blogs.repository';
-import { CreateBlogDto } from './dto/CreateBlogDto';
-import { UpdateBlogDto } from './dto/UpdateBlogDto';
-import { BlogDocument } from './schemas/blog.schema';
+import { BlogsRepository } from '../repository/blogs.repository';
+import { CreateBlogDto } from '../dto/CreateBlogDto';
+import { UpdateBlogDto } from '../dto/UpdateBlogDto';
+import { BlogDocument } from '../entities/blog.entity';
 
 @Injectable()
-export class BlogsService {
+export class BlogsPublicService {
   constructor(protected readonly blogRepository: BlogsRepository) {}
 
-  async createBlog(dto: CreateBlogDto) {
-    return await this.blogRepository.createBlog(dto);
-  }
+  // async createBlog(dto: CreateBlogDto, currentUserId: string) {
+  //   return await this.blogRepository.createBlog(dto, currentUserId);
+  // }
 
   async updateBlog(dto: UpdateBlogDto, blogId: string): Promise<boolean> {
     const blog: BlogDocument | null = await this.blogRepository.getBlogById(

@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogDocument } from '../schemas/blog.schema';
+import { Blog, BlogDocument } from '../entities/blog.entity';
 import { Model, Types } from 'mongoose';
 import {
   blogObjToViewModel,
@@ -15,11 +15,19 @@ import { Injectable } from '@nestjs/common';
 Injectable();
 export class BlogsQueryRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<Blog>) {}
-  async getUsers(query: BlogQueryType) {
-    return await this.findUserWithQuery(query);
+  async getBlogs(query: BlogQueryType) {
+    return await this.findBlogWithQuery(query);
+  }
+  async getBlogsWitchCurrentUserIsOwner(
+    query: BlogQueryType,
+    currentUserId: string,
+  ) {
+    return await this.findBlogWithQuery(query, {
+      ownerId: new Types.ObjectId(currentUserId),
+    });
   }
 
-  async getUserById(id: string) {
+  async getBlogById(id: string) {
     if (!Types.ObjectId.isValid(id)) return null;
 
     const user: BlogDocument | null = await this.blogModel.findById(id);
@@ -28,20 +36,23 @@ export class BlogsQueryRepository {
     return blogObjToViewModel(user);
   }
 
-  async findUserWithQuery({
-    searchNameTerm,
-    sortBy,
-    sortDirection,
-    pageNumber,
-    pageSize,
-  }: BlogQueryType) {
+  async findBlogWithQuery(
+    {
+      searchNameTerm,
+      sortBy,
+      sortDirection,
+      pageNumber,
+      pageSize,
+    }: BlogQueryType,
+    additionFindParams: object = null,
+  ) {
     const findParams = createFindByOneFieldObj('name', searchNameTerm);
 
     const sortObj = createSortObject(sortBy, sortDirection);
 
     const skipCount = calcSkipCount(pageNumber, pageSize);
 
-    const query = this.blogModel.find(findParams);
+    const query = this.blogModel.find({ ...findParams, ...additionFindParams });
 
     query.skip(skipCount);
 

@@ -1,21 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Post, PostDocument } from '../schemas/post.schema';
-import { Model, Types } from 'mongoose';
-import { CreatePostDto } from '../dto/CreatePostDto';
-import { createdPostToViewModel } from './mappers/toPostViewModel';
-import { PostViewModel } from '../types/post.types';
+import { Post, PostDocument, PostModel } from '../schemas/post.schema';
+import { Types } from 'mongoose';
+import { CreateUpdateBlogPostDto } from '../dto/CreateUpdateBlogPostDto';
 
 @Injectable()
 export class PostsRepository {
-  constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
+  constructor(@InjectModel(Post.name) private postModel: PostModel) {}
 
-  async createPost(dto: CreatePostDto): Promise<PostViewModel> {
-    const createdPost = new this.postModel(dto);
-
-    const post: PostDocument = await createdPost.save();
-
-    return createdPostToViewModel(post);
+  async createPost(dto: CreateUpdateBlogPostDto): Promise<PostDocument> {
+    return this.postModel.createPost(dto, this.postModel);
   }
 
   async getPostById(id: string): Promise<PostDocument | null> {
@@ -23,8 +17,9 @@ export class PostsRepository {
     return this.postModel.findById(id);
   }
 
-  async save(post: PostDocument): Promise<PostDocument> {
-    return post.save();
+  async save(post: PostDocument): Promise<string> {
+    const savedPost: PostDocument = await post.save();
+    return savedPost._id.toString();
   }
 
   async isPostExist(id: string): Promise<boolean> {

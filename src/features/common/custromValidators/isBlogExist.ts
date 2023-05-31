@@ -5,12 +5,12 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { BlogsService } from '../../blogs/blogs.service';
+import { BlogsPublicService } from '../../blogs/application/blogs.public.service';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class IsBlogExist implements ValidatorConstraintInterface {
-  constructor(protected blogsService: BlogsService) {}
+  constructor(protected blogsService: BlogsPublicService) {}
 
   async validate(blogId: any) {
     return await this.blogsService.isBlogExist(blogId);

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogDocument } from '../schemas/blog.schema';
+import { Blog, BlogDocument, BlogModel } from '../entities/blog.entity';
 import { Model, Types } from 'mongoose';
 import { CreateBlogDto } from '../dto/CreateBlogDto';
 import { blogObjToViewModel } from './mappers/toBlogViewModel';
@@ -8,14 +8,22 @@ import { BlogViewModel } from '../types/Blog.view.model';
 
 Injectable();
 export class BlogsRepository {
-  constructor(@InjectModel(Blog.name) private blogModel: Model<Blog>) {}
+  constructor(@InjectModel(Blog.name) private blogModel: BlogModel) {}
 
-  async createBlog(dto: CreateBlogDto): Promise<BlogViewModel> {
-    const createdBlog = new this.blogModel(dto);
+  async createBlog(
+    dto: CreateBlogDto,
+    currentUserId: string,
+  ): Promise<BlogDocument> {
+    return await this.blogModel.createBlogForUser(
+      dto,
+      currentUserId,
+      this.blogModel,
+    );
+  }
 
-    const blog: BlogDocument = await createdBlog.save();
-
-    return blogObjToViewModel(blog);
+  async save(blog: BlogDocument): Promise<string> {
+    const savedBlog = await blog.save();
+    return savedBlog._id.toString();
   }
 
   async deleteBlog(id: string) {
@@ -39,10 +47,6 @@ export class BlogsRepository {
 
     //return blog name or null
     return blog && blog.name;
-  }
-
-  async save(blog: BlogDocument) {
-    await blog.save();
   }
 
   async isBlogExist(id: string): Promise<boolean> {

@@ -1,6 +1,6 @@
 import { CommentsRepository } from './repository/comments.repository';
 import { Injectable } from '@nestjs/common';
-import { PostsService } from '../posts/posts.service';
+import { PostsPublicService } from '../posts/application/posts.public.service';
 import { LikesService } from '../likes/likes.service';
 import { CommentDto } from './dto/CommentDto';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
@@ -10,7 +10,7 @@ import { CommentDocument } from './schemas/comment.schema';
 export class CommentsService {
   constructor(
     private readonly commentsRepository: CommentsRepository,
-    private readonly postsService: PostsService,
+    private readonly postsService: PostsPublicService,
     private readonly likesService: LikesService,
   ) {}
 

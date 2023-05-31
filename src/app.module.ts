@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BlogsController } from './features/blogs/blogs.controller';
-import { BlogsService } from './features/blogs/blogs.service';
+import { BlogsPublicController } from './features/blogs/controllers/blogs.public.controller';
+import { BlogsPublicService } from './features/blogs/application/blogs.public.service';
 import { BlogsRepository } from './features/blogs/repository/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { BlogSchema, Blog } from './features/blogs/schemas/blog.schema';
+import { BlogEntity, Blog } from './features/blogs/entities/blog.entity';
 import { BlogsQueryRepository } from './features/blogs/repository/blogs.query.repository';
 import { PostsController } from './features/posts/posts.controller';
 import { PostsQueryRepository } from './features/posts/repository/posts.query.repository';
 import { Post, PostSchema } from './features/posts/schemas/post.schema';
 import { Like, LikeSchema } from './features/likes/schemas/like.schema';
 import { PostsRepository } from './features/posts/repository/posts.repository';
-import { PostsService } from './features/posts/posts.service';
+import { PostsPublicService } from './features/posts/application/posts.public.service';
 import { UsersSaController } from './features/users/contollers/users.sa.controller';
 import { UsersQueryRepository } from './features/users/repositories/users.query.repository';
 import { User, UserEntity } from './features/users/entities/user.entity';
@@ -55,6 +55,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { DevicesController } from './features/devices/devices.controller';
 import { DevicesQueryRepository } from './features/devices/repository/devices.query.repository';
 import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
+import { BlogsBloggerService } from './features/blogs/application/blogs.blogger.service';
+import { BlogsBloggerController } from './features/blogs/controllers/blogs.blogger.controller';
+import { PostsBloggerService } from './features/posts/application/posts.blogger.service';
 
 @Module({
   imports: [
@@ -81,7 +84,7 @@ import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
       'mongodb+srv://qlowlight:uNrmiq0xtAknlUjI@cluster0.xahjpqu.mongodb.net/blog?retryWrites=true&w=majority',
     ),
     MongooseModule.forFeature([
-      { name: Blog.name, schema: BlogSchema },
+      { name: Blog.name, schema: BlogEntity },
       { name: Post.name, schema: PostSchema },
       { name: Like.name, schema: LikeSchema },
       { name: User.name, schema: UserEntity },
@@ -97,13 +100,14 @@ import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
   ],
   controllers: [
     AppController,
-    BlogsController,
+    BlogsPublicController,
     PostsController,
     UsersSaController,
     CommentsController,
     TestingController,
     AuthController,
     DevicesController,
+    BlogsBloggerController,
   ],
   providers: [
     AppService,
@@ -112,12 +116,12 @@ import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
     IsUserLoginAlreadyExist,
     IsUserEmailAlreadyExist,
     IsBlogExist,
-    BlogsService,
+    BlogsPublicService,
     BlogsRepository,
     BlogsQueryRepository,
     PostsQueryRepository,
     PostsRepository,
-    PostsService,
+    PostsPublicService,
     UsersQueryRepository,
     UsersRepository,
     UsersSaService,
@@ -136,6 +140,8 @@ import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
     RefreshTokenStrategy,
     LikesService,
     LikeRepository,
+    PostsBloggerService,
+    BlogsBloggerService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
