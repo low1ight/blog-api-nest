@@ -1,4 +1,4 @@
-export type CreatePostDto = {
+export type CreateUpdateBlogPostDto = {
   title: string;
   shortDescription: string;
   content: string;
