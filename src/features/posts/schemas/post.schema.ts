@@ -1,8 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
-import { UpdatePostDto } from '../dto/UpdatePostDto';
+import { HydratedDocument, Model, Types } from 'mongoose';
+import { UpdatePostInputDto } from '../dto/UpdatePostInputDto';
+import { CreateUpdateBlogPostDto } from '../dto/CreateUpdateBlogPostDto';
 
 export type PostDocument = HydratedDocument<Post>;
+
+export interface PostModel extends Model<Post> {
+  createPost(
+    {
+      title,
+      shortDescription,
+      content,
+      blogId,
+      blogName,
+    }: CreateUpdateBlogPostDto,
+    postModel: Model<Post>,
+  ): PostDocument;
+}
 
 @Schema({ timestamps: true })
 export class Post {
@@ -33,7 +47,7 @@ export class Post {
     content,
     blogId,
     blogName,
-  }: UpdatePostDto) {
+  }: CreateUpdateBlogPostDto) {
     if (title && shortDescription && content && blogId && blogName) {
       this.title = title;
       this.shortDescription = shortDescription;
@@ -41,6 +55,25 @@ export class Post {
       this.blogId = new Types.ObjectId(blogId);
       this.blogName = blogName;
     }
+  }
+
+  static async createPost(
+    {
+      title,
+      shortDescription,
+      content,
+      blogId,
+      blogName,
+    }: CreateUpdateBlogPostDto,
+    postModel: Model<Post>,
+  ) {
+    return new postModel({
+      title,
+      shortDescription,
+      content,
+      blogId: new Types.ObjectId(blogId),
+      blogName,
+    });
   }
 }
 
@@ -55,4 +88,8 @@ PostSchema.virtual('likes', {
 
 PostSchema.methods = {
   updateData: Post.prototype.updateData,
+};
+
+PostSchema.statics = {
+  createPost: Post.createPost,
 };
