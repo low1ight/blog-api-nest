@@ -1,5 +1,5 @@
 import { BlogViewModel } from '../../types/Blog.view.model';
-import { BlogDocument } from '../../schemas/blog.schema';
+import { BlogDocument } from '../../entities/blog.entity';
 
 export const blogsArrToViewModel = (arr: BlogDocument[]): BlogViewModel[] => {
   return arr.map((item) => blogObjToViewModel(item));
