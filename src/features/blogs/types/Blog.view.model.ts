@@ -6,3 +6,10 @@ export type BlogViewModel = {
   createdAt: Date;
   isMembership: boolean;
 };
+
+export type BlogSaViewModel = BlogViewModel & {
+  blogOwnerInfo: {
+    userId: string;
+    userLogin: string;
+  };
+};
