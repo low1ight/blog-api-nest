@@ -7,7 +7,7 @@ import { createSortObject } from '../../utils/paginatorHelpers/createSortObject'
 import { calcSkipCount } from '../../utils/paginatorHelpers/calcSkipCount';
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 import { Injectable } from '@nestjs/common';
-import { BlogViewModel } from '../types/Blog.view.model';
+import { BlogSaViewModel, BlogViewModel } from '../types/Blog.view.model';
 
 Injectable();
 export class BlogsQueryRepository {
@@ -26,10 +26,14 @@ export class BlogsQueryRepository {
     return await this.findBlogWithQuery(
       query,
       {
-        ownerId: new Types.ObjectId(currentUserId),
+        'blogOwnerInfo.userId': new Types.ObjectId(currentUserId),
       },
       this.blogObjToPublicViewModel,
     );
+  }
+
+  async getAllBlogsForSa(query: BlogQueryType) {
+    return await this.findBlogWithQuery(query, {}, this.blogObjToSaViewModel);
   }
 
   async getBlogById(id: string) {
@@ -99,7 +103,7 @@ export class BlogsQueryRepository {
     };
   };
 
-  blogObjToSaViewModel = (item: BlogDocument): BlogViewModel => {
+  blogObjToSaViewModel = (item: BlogDocument): BlogSaViewModel => {
     return {
       id: item._id.toString(),
       name: item.name,
@@ -107,6 +111,10 @@ export class BlogsQueryRepository {
       websiteUrl: item.websiteUrl,
       createdAt: item.createdAt,
       isMembership: item.isMembership,
+      blogOwnerInfo: {
+        userId: item.blogOwnerInfo.userId.toString(),
+        userLogin: item.blogOwnerInfo.userLogin,
+      },
     };
   };
 }
