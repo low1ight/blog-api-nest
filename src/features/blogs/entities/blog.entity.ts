@@ -53,6 +53,15 @@ export class Blog {
     }
   }
 
+  isCanBeBoundToUser(): boolean {
+    return this.blogOwnerInfo.userId === null;
+  }
+
+  bindToUser(userId: string, userLogin: string) {
+    this.blogOwnerInfo.userId = new Types.ObjectId(userId);
+    this.blogOwnerInfo.userLogin = userLogin;
+  }
+
   static async createBlogForUser(
     dto: CreateBlogDto,
     { id, userName }: AuthUserData,
@@ -75,6 +84,8 @@ export const BlogEntity = SchemaFactory.createForClass(Blog);
 
 BlogEntity.methods = {
   updateData: Blog.prototype.updateData,
+  isCanBeBoundToUser: Blog.prototype.isCanBeBoundToUser,
+  bindToUser: Blog.prototype.bindToUser,
 };
 
 BlogEntity.statics = {
