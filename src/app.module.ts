@@ -58,6 +58,7 @@ import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
 import { BlogsBloggerService } from './features/blogs/application/blogs.blogger.service';
 import { BlogsBloggerController } from './features/blogs/controllers/blogs.blogger.controller';
 import { PostsBloggerService } from './features/posts/application/posts.blogger.service';
+import { BlogsSaController } from './features/blogs/controllers/blogs.sa.controller';
 
 @Module({
   imports: [
@@ -104,6 +105,7 @@ import { PostsBloggerService } from './features/posts/application/posts.blogger.
     PostsController,
     UsersSaController,
     CommentsController,
+    BlogsSaController,
     TestingController,
     AuthController,
     DevicesController,
