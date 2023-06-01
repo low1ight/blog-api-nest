@@ -59,6 +59,7 @@ import { BlogsBloggerService } from './features/blogs/application/blogs.blogger.
 import { BlogsBloggerController } from './features/blogs/controllers/blogs.blogger.controller';
 import { PostsBloggerService } from './features/posts/application/posts.blogger.service';
 import { BlogsSaController } from './features/blogs/controllers/blogs.sa.controller';
+import { BlogsSaService } from './features/blogs/application/blogs.sa.service';
 
 @Module({
   imports: [
@@ -120,6 +121,7 @@ import { BlogsSaController } from './features/blogs/controllers/blogs.sa.control
     IsBlogExist,
     BlogsPublicService,
     BlogsRepository,
+    BlogsSaService,
     BlogsQueryRepository,
     PostsQueryRepository,
     PostsRepository,

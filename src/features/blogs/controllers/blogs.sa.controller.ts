@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   HttpCode,
@@ -9,23 +8,21 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { BlogsQueryRepository } from '../repository/blogs.query.repository';
-import { UpdateBlogDto } from '../dto/UpdateBlogDto';
 import {
   BlogInputQueryType,
   blogQueryMapper,
 } from '../../utils/query-mappers/blog-query-mapper';
 
 import { Exceptions } from '../../utils/throwException';
-import { CurrentUser } from '../../common/decorators/current.user.decorator';
-import { BlogsBloggerService } from '../application/blogs.blogger.service';
-import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
+import { BlogsSaService } from '../application/blogs.sa.service';
+import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 
 @Controller('sa/blogs')
 export class BlogsSaController {
   constructor(
-    private readonly blogsService: BlogsBloggerService,
+    private readonly blogsService: BlogsSaService,
     private readonly blogsQueryRepository: BlogsQueryRepository,
   ) {}
   @Get()
@@ -36,22 +33,22 @@ export class BlogsSaController {
     return await this.blogsQueryRepository.getAllBlogsForSa(blogQuery);
   }
 
-  @Put(':id')
+  @Put(':blogId/bind-with-user/:userId')
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updateBlog(
-    @Param('id') id: string,
-    @Body() dto: UpdateBlogDto,
-    @CurrentUser() user,
+    @Param('blogId') blogId: string,
+    @Param('userId') userId: string,
   ) {
-    const result: CustomResponse<any> = await this.blogsService.updateBlog(
-      dto,
-      id,
-      user.id,
+    const isSuccessful: boolean = await this.blogsService.bindUserToBlog(
+      blogId,
+      userId,
     );
-
-    if (!result.isSuccess) Exceptions.throwHttpException(result.errStatusCode);
-
-    return;
+    if (!isSuccessful)
+      Exceptions.throwHttpException(
+        CustomResponseEnum.badRequest,
+        'bad request',
+        'query',
+      );
   }
 }
