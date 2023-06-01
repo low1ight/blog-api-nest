@@ -29,6 +29,7 @@ import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 import { PostsBloggerService } from '../../posts/application/posts.blogger.service';
 import { CreatePostInputDto } from '../../posts/dto/CreatePostInputDto';
 import { UpdatePostInputDto } from '../../posts/dto/UpdatePostInputDto';
+import { AuthUserData } from '../../common/types/AuthUserData';
 
 @Controller('blogger/blogs')
 export class BlogsBloggerController {
@@ -52,11 +53,11 @@ export class BlogsBloggerController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
-  async createBlog(@Body() dto: CreateBlogDto, @CurrentUser() user) {
-    const createdBlogId: string = await this.blogsService.createBlog(
-      dto,
-      user.id,
-    );
+  async createBlog(
+    @Body() dto: CreateBlogDto,
+    @CurrentUser() user: AuthUserData,
+  ) {
+    const createdBlogId: string = await this.blogsService.createBlog(dto, user);
 
     return await this.blogsQueryRepository.getBlogById(createdBlogId);
   }

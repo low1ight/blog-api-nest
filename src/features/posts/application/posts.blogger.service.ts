@@ -6,16 +6,13 @@ import { UpdatePostInputDto } from '../dto/UpdatePostInputDto';
 import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 import { PostDocument } from '../schemas/post.schema';
-import { LikesService } from '../../likes/likes.service';
-import { CreateUpdateBlogPostDto } from '../dto/CreateUpdateBlogPostDto';
 import { BlogDocument } from '../../blogs/entities/blog.entity';
 
 @Injectable()
 export class PostsBloggerService {
   constructor(
     private readonly postRepository: PostsRepository,
-    private readonly blogRepository: BlogsRepository,
-    private readonly likeService: LikesService,
+    private readonly blogRepository: BlogsRepository, //private readonly likeService: LikesService,
   ) {}
 
   async createPost(
@@ -117,7 +114,7 @@ export class PostsBloggerService {
     if (!blog)
       return new CustomResponse(false, CustomResponseEnum.notExist, null);
 
-    if (blog.ownerId.toString() !== currentUserId)
+    if (blog.blogOwnerInfo.userId.toString() !== currentUserId)
       return new CustomResponse(false, CustomResponseEnum.forbidden, null);
 
     return new CustomResponse(true, null, blog);

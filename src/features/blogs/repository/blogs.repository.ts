@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument, BlogModel } from '../entities/blog.entity';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { CreateBlogDto } from '../dto/CreateBlogDto';
-import { blogObjToViewModel } from './mappers/toBlogViewModel';
-import { BlogViewModel } from '../types/Blog.view.model';
+import { AuthUserData } from '../../common/types/AuthUserData';
 
 Injectable();
 export class BlogsRepository {
@@ -12,11 +11,11 @@ export class BlogsRepository {
 
   async createBlog(
     dto: CreateBlogDto,
-    currentUserId: string,
+    authUserData: AuthUserData,
   ): Promise<BlogDocument> {
     return await this.blogModel.createBlogForUser(
       dto,
-      currentUserId,
+      authUserData,
       this.blogModel,
     );
   }

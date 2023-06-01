@@ -1,30 +1,35 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogDocument } from '../entities/blog.entity';
 import { Model, Types } from 'mongoose';
-import {
-  blogObjToViewModel,
-  blogsArrToViewModel,
-} from './mappers/toBlogViewModel';
 import { BlogQueryType } from '../../utils/query-mappers/blog-query-mapper';
 import { createFindByOneFieldObj } from '../../utils/paginatorHelpers/createFindByOneFieldObj';
 import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
 import { calcSkipCount } from '../../utils/paginatorHelpers/calcSkipCount';
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 import { Injectable } from '@nestjs/common';
+import { BlogViewModel } from '../types/Blog.view.model';
 
 Injectable();
 export class BlogsQueryRepository {
   constructor(@InjectModel(Blog.name) private blogModel: Model<Blog>) {}
   async getBlogs(query: BlogQueryType) {
-    return await this.findBlogWithQuery(query);
+    return await this.findBlogWithQuery(
+      query,
+      {},
+      this.blogObjToPublicViewModel,
+    );
   }
   async getBlogsWitchCurrentUserIsOwner(
     query: BlogQueryType,
     currentUserId: string,
   ) {
-    return await this.findBlogWithQuery(query, {
-      ownerId: new Types.ObjectId(currentUserId),
-    });
+    return await this.findBlogWithQuery(
+      query,
+      {
+        ownerId: new Types.ObjectId(currentUserId),
+      },
+      this.blogObjToPublicViewModel,
+    );
   }
 
   async getBlogById(id: string) {
@@ -33,7 +38,7 @@ export class BlogsQueryRepository {
     const user: BlogDocument | null = await this.blogModel.findById(id);
     if (!user) return null;
 
-    return blogObjToViewModel(user);
+    return this.blogObjToPublicViewModel(user);
   }
 
   async findBlogWithQuery(
@@ -45,6 +50,7 @@ export class BlogsQueryRepository {
       pageSize,
     }: BlogQueryType,
     additionFindParams: object = null,
+    toViewModelFunc,
   ) {
     const findParams = createFindByOneFieldObj('name', searchNameTerm);
 
@@ -68,7 +74,7 @@ export class BlogsQueryRepository {
       .countDocuments(findParams)
       .exec();
 
-    const blogsViewModel = blogsArrToViewModel(blogs);
+    const blogsViewModel = this.blogsArrToViewModel(blogs, toViewModelFunc);
 
     return toViwModelWithPaginator(
       blogsViewModel,
@@ -77,4 +83,30 @@ export class BlogsQueryRepository {
       totalElemCount,
     );
   }
+
+  blogsArrToViewModel = (arr: BlogDocument[], toModelFunc): BlogViewModel[] => {
+    return arr.map((item) => toModelFunc(item));
+  };
+
+  blogObjToPublicViewModel = (item: BlogDocument): BlogViewModel => {
+    return {
+      id: item._id.toString(),
+      name: item.name,
+      description: item.description,
+      websiteUrl: item.websiteUrl,
+      createdAt: item.createdAt,
+      isMembership: item.isMembership,
+    };
+  };
+
+  blogObjToSaViewModel = (item: BlogDocument): BlogViewModel => {
+    return {
+      id: item._id.toString(),
+      name: item.name,
+      description: item.description,
+      websiteUrl: item.websiteUrl,
+      createdAt: item.createdAt,
+      isMembership: item.isMembership,
+    };
+  };
 }

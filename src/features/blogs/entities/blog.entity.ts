@@ -2,15 +2,24 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model, Types } from 'mongoose';
 import { UpdateBlogDto } from '../dto/UpdateBlogDto';
 import { CreateBlogDto } from '../dto/CreateBlogDto';
+import { AuthUserData } from '../../common/types/AuthUserData';
 
 export type BlogDocument = HydratedDocument<Blog>;
 
 export interface BlogModel extends Model<Blog> {
   createBlogForUser(
     dto: CreateBlogDto,
-    userId: string,
+    authUserData: AuthUserData,
     blogModel: Model<Blog>,
   ): Promise<BlogDocument>;
+}
+@Schema({ _id: false })
+class BlogOwnerInfo {
+  @Prop({ type: Types.ObjectId, required: true })
+  userId: Types.ObjectId;
+
+  @Prop({ type: String, required: true })
+  userLogin: string;
 }
 
 @Schema({ timestamps: true })
@@ -27,8 +36,8 @@ export class Blog {
   @Prop({ type: Boolean, default: false })
   isMembership: boolean;
 
-  @Prop({ type: Types.ObjectId, required: true })
-  ownerId: Types.ObjectId;
+  @Prop({ type: BlogOwnerInfo, required: true })
+  blogOwnerInfo: BlogOwnerInfo;
 
   @Prop()
   createdAt: Date;
@@ -46,7 +55,7 @@ export class Blog {
 
   static async createBlogForUser(
     dto: CreateBlogDto,
-    userId: string,
+    { id, userName }: AuthUserData,
     blogModel: Model<Blog>,
   ) {
     return new blogModel({
@@ -54,7 +63,10 @@ export class Blog {
       description: dto.description,
       websiteUrl: dto.websiteUrl,
       isMembership: true,
-      ownerId: new Types.ObjectId(userId),
+      blogOwnerInfo: {
+        userId: new Types.ObjectId(id),
+        userLogin: userName,
+      },
     });
   }
 }
