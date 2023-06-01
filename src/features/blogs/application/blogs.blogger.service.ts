@@ -57,8 +57,4 @@ export class BlogsBloggerService {
 
     return new CustomResponse(true);
   }
-
-  async isBlogExist(blogId: string) {
-    return await this.blogRepository.isBlogExist(blogId);
-  }
 }
