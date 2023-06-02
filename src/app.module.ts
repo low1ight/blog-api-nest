@@ -62,8 +62,9 @@ import { BlogsSaController } from './features/blogs/controllers/blogs.sa.control
 import { BlogsSaService } from './features/blogs/application/blogs.sa.service';
 import { CqrsModule } from '@nestjs/cqrs';
 import { BanUserUseCase } from './features/users/application/sa/use-case/ban-user-use-case';
+import { CreateUserUseCase } from './features/users/application/sa/use-case/create-user-use-case';
 
-const useCases = [BanUserUseCase];
+const useCases = [BanUserUseCase, CreateUserUseCase];
 
 @Module({
   imports: [

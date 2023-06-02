@@ -10,14 +10,8 @@ import { CustomResponseEnum } from '../../../utils/customResponse/CustomResponse
 export class UsersSaService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async createUser(dto: CreateUserDto) {
-    dto.password = await bcrypt.hash(dto.password, +process.env.SALT_ROUNDS);
-
-    return await this.usersRepository.createConfirmedUser(dto);
-  }
-
   async registerUser(dto: CreateUserDto, confirmationCode: string) {
-    dto.password = await bcrypt.hash(dto.password, +process.env.SALT_ROUNDS);
+    dto.password = await this.hashPassword(dto.password);
     const user = await this.usersRepository.createUnconfirmedUser(
       dto,
       confirmationCode,
@@ -103,6 +97,10 @@ export class UsersSaService {
     await this.usersRepository.save(user);
 
     return new CustomResponse(true);
+  }
+
+  async hashPassword(password: string) {
+    return await bcrypt.hash(password, +process.env.SALT_ROUNDS);
   }
 
   async deleteUser(id: string): Promise<boolean> {

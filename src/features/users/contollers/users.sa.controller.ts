@@ -23,6 +23,7 @@ import { Exceptions } from '../../utils/throwException';
 import { BanUserDto } from '../dto/BanUserDto';
 import { CommandBus } from '@nestjs/cqrs';
 import { BanUserUseCaseCommand } from '../application/sa/use-case/ban-user-use-case';
+import { CreateUserUseCaseCommand } from '../application/sa/use-case/create-user-use-case';
 
 @Controller('sa/users')
 export class UsersSaController {
@@ -44,7 +45,7 @@ export class UsersSaController {
   @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createUser(@Body() dto: CreateUserDto) {
-    return await this.userService.createUser(dto);
+    return await this.commandBus.execute(new CreateUserUseCaseCommand(dto));
   }
 
   @Put(':id/ban')
