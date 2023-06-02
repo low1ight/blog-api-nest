@@ -75,7 +75,7 @@ export class BlogsQueryRepository {
     const blogs = await query.exec();
 
     const totalElemCount = await this.blogModel
-      .countDocuments(findParams)
+      .countDocuments({ ...findParams, ...additionFindParams })
       .exec();
 
     const blogsViewModel = this.blogsArrToViewModel(blogs, toViewModelFunc);
