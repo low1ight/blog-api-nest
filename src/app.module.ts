@@ -17,7 +17,7 @@ import { UsersSaController } from './features/users/contollers/users.sa.controll
 import { UsersQueryRepository } from './features/users/repositories/users.query.repository';
 import { User, UserEntity } from './features/users/entities/user.entity';
 import { UsersRepository } from './features/users/repositories/Users.repository';
-import { UsersSaService } from './features/users/application/users.sa.service';
+import { UsersSaService } from './features/users/application/sa/users.sa.service';
 import {
   Comment,
   CommentSchema,
@@ -60,6 +60,10 @@ import { BlogsBloggerController } from './features/blogs/controllers/blogs.blogg
 import { PostsBloggerService } from './features/posts/application/posts.blogger.service';
 import { BlogsSaController } from './features/blogs/controllers/blogs.sa.controller';
 import { BlogsSaService } from './features/blogs/application/blogs.sa.service';
+import { CqrsModule } from '@nestjs/cqrs';
+import { BanUserUseCase } from './features/users/application/sa/use-case/ban-user-use-case';
+
+const useCases = [BanUserUseCase];
 
 @Module({
   imports: [
@@ -99,6 +103,7 @@ import { BlogsSaService } from './features/blogs/application/blogs.sa.service';
     }),
     ThrottlerModule.forRoot({}),
     PassportModule,
+    CqrsModule,
   ],
   controllers: [
     AppController,
@@ -146,6 +151,7 @@ import { BlogsSaService } from './features/blogs/application/blogs.sa.service';
     LikeRepository,
     PostsBloggerService,
     BlogsBloggerService,
+    ...useCases,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

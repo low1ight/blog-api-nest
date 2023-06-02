@@ -16,15 +16,18 @@ import {
   userQueryMapper,
 } from '../../utils/query-mappers/user-query-mapper';
 import { CreateUserDto } from '../dto/CreateUserDto';
-import { UsersSaService } from '../application/users.sa.service';
+import { UsersSaService } from '../application/sa/users.sa.service';
 import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { Exceptions } from '../../utils/throwException';
 import { BanUserDto } from '../dto/BanUserDto';
+import { CommandBus } from '@nestjs/cqrs';
+import { BanUserUseCaseCommand } from '../application/sa/use-case/ban-user-use-case';
 
 @Controller('sa/users')
 export class UsersSaController {
   constructor(
+    private commandBus: CommandBus,
     private readonly userQueryRepository: UsersQueryRepository,
     private readonly userService: UsersSaService,
   ) {}
@@ -48,8 +51,9 @@ export class UsersSaController {
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async banUnbanUser(@Param('id') id: string, @Body() dto: BanUserDto) {
-    console.log(dto);
-    const result: boolean = await this.userService.banUnbanUser(id, dto);
+    const result: boolean = await this.commandBus.execute(
+      new BanUserUseCaseCommand(id, dto),
+    );
     if (!result) Exceptions.throwHttpException(CustomResponseEnum.notExist);
   }
 

@@ -4,7 +4,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { UsersSaService } from '../../users/application/users.sa.service';
+import { UsersSaService } from '../../users/application/sa/users.sa.service';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

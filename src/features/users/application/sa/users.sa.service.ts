@@ -1,51 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from '../repositories/Users.repository';
-import { CreateUserDto } from '../dto/CreateUserDto';
+import { UsersRepository } from '../../repositories/Users.repository';
+import { CreateUserDto } from '../../dto/CreateUserDto';
 import * as bcrypt from 'bcrypt';
-import { UserDocument } from '../entities/user.entity';
-import { CustomResponse } from '../../utils/customResponse/CustomResponse';
-import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
-import { BanUserDto } from '../dto/BanUserDto';
-import { LikeRepository } from '../../likes/repository/like.repository';
-import { CommentsRepository } from '../../comments/repository/comments.repository';
-import { DevicesRepository } from '../../devices/repository/devices.repository';
+import { UserDocument } from '../../entities/user.entity';
+import { CustomResponse } from '../../../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../../utils/customResponse/CustomResponseEnum';
 
 @Injectable()
 export class UsersSaService {
-  constructor(
-    private readonly usersRepository: UsersRepository,
-    private readonly likesRepository: LikeRepository,
-    private readonly commentsRepository: CommentsRepository,
-    private readonly devicesRepository: DevicesRepository,
-  ) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
   async createUser(dto: CreateUserDto) {
     dto.password = await bcrypt.hash(dto.password, +process.env.SALT_ROUNDS);
 
     return await this.usersRepository.createConfirmedUser(dto);
-  }
-
-  async banUnbanUser(id, dto: BanUserDto) {
-    //get user and set new ban status and ban reason
-    const user: UserDocument | null = await this.usersRepository.getUserById(
-      id,
-    );
-    if (!user) return false;
-
-    if (dto.isBanned) {
-      user.banUser(dto.banReason);
-      await this.devicesRepository.deleteALlUserDevices(id);
-    } else {
-      user.unbanUser();
-    }
-
-    await this.usersRepository.save(user);
-
-    //ban/unban all users comments and likes
-    await this.commentsRepository.setNewBanStatus(id, dto.isBanned);
-    await this.likesRepository.setNewBanStatus(id, dto.isBanned);
-
-    return true;
   }
 
   async registerUser(dto: CreateUserDto, confirmationCode: string) {

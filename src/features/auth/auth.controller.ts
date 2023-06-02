@@ -15,7 +15,7 @@ import { Response } from 'express';
 import { RefreshTokenGuard } from './guards/refresh.token.guard.';
 import { CreateUserDto } from '../users/dto/CreateUserDto';
 import { EmailConfirmationDto } from './dto/EmailConfirmationDto';
-import { UsersSaService } from '../users/application/users.sa.service';
+import { UsersSaService } from '../users/application/sa/users.sa.service';
 import { CustomResponse } from '../utils/customResponse/CustomResponse';
 import { EmailDto } from './dto/EmailDto';
 import { UsersQueryRepository } from '../users/repositories/users.query.repository';
