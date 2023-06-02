@@ -32,13 +32,14 @@ export class UsersSaService {
     );
     if (!user) return false;
 
-    user.setBanStatus(dto);
+    if (dto.isBanned) {
+      user.banUser(dto.banReason);
+      await this.devicesRepository.deleteALlUserDevices(id);
+    } else {
+      user.unbanUser();
+    }
 
     await this.usersRepository.save(user);
-
-    if (dto.isBanned) {
-      await this.devicesRepository.deleteALlUserDevices(id);
-    }
 
     //ban/unban all users comments and likes
     await this.commentsRepository.setNewBanStatus(id, dto.isBanned);
