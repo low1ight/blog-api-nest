@@ -103,13 +103,13 @@ export class UsersSaService {
     return await bcrypt.hash(password, +process.env.SALT_ROUNDS);
   }
 
-  async deleteUser(id: string): Promise<boolean> {
-    const isUserExist = await this.usersRepository.isUserExist(id);
-
-    if (!isUserExist) return false;
-
-    return await this.usersRepository.deleteUserById(id);
-  }
+  // async deleteUser(id: string): Promise<boolean> {
+  //   const isUserExist = await this.usersRepository.isUserExist(id);
+  //
+  //   if (!isUserExist) return false;
+  //
+  //   return await this.usersRepository.deleteUserById(id);
+  // }
 
   async isUserLoginExist(login: string) {
     return await this.usersRepository.isUserLoginExist(login);

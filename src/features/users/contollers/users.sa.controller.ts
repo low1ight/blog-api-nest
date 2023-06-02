@@ -16,7 +16,6 @@ import {
   userQueryMapper,
 } from '../../utils/query-mappers/user-query-mapper';
 import { CreateUserDto } from '../dto/CreateUserDto';
-import { UsersSaService } from '../application/sa/users.sa.service';
 import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { Exceptions } from '../../utils/throwException';
@@ -24,13 +23,13 @@ import { BanUserDto } from '../dto/BanUserDto';
 import { CommandBus } from '@nestjs/cqrs';
 import { BanUserUseCaseCommand } from '../application/sa/use-case/ban-user-use-case';
 import { CreateUserUseCaseCommand } from '../application/sa/use-case/create-user-use-case';
+import { DeleteUserUseCaseCommand } from '../application/sa/use-case/delete-user-use-case';
 
 @Controller('sa/users')
 export class UsersSaController {
   constructor(
     private commandBus: CommandBus,
     private readonly userQueryRepository: UsersQueryRepository,
-    private readonly userService: UsersSaService,
   ) {}
 
   @Get()
@@ -62,7 +61,9 @@ export class UsersSaController {
   @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteUser(@Param('id') id: string) {
-    const isDeleted = await this.userService.deleteUser(id);
+    const isDeleted = await this.commandBus.execute(
+      new DeleteUserUseCaseCommand(id),
+    );
 
     if (!isDeleted)
       return Exceptions.throwHttpException(CustomResponseEnum.notExist);
