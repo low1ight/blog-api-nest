@@ -71,7 +71,7 @@ export class Blog {
       name: dto.name,
       description: dto.description,
       websiteUrl: dto.websiteUrl,
-      isMembership: true,
+      isMembership: false,
       blogOwnerInfo: {
         userId: new Types.ObjectId(id),
         userLogin: userName,

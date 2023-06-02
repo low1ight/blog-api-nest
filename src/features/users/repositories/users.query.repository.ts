@@ -14,7 +14,8 @@ export class UsersQueryRepository {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async getUsers(query: UserQueryType) {
-    return this.getUsersWithPaginator(query);
+    const findByBanStatusObj = this.createFindByBanStatusObj(query.banStatus);
+    return this.getUsersWithPaginator(query, findByBanStatusObj);
   }
 
   async isUserBanned(userId: string) {
@@ -54,7 +55,7 @@ export class UsersQueryRepository {
       '$or',
     );
 
-    const query = this.userModel.find(findFields, additionalParams);
+    const query = this.userModel.find({ ...findFields, ...additionalParams });
 
     query.skip(skipCount);
 
@@ -65,7 +66,7 @@ export class UsersQueryRepository {
     query.setOptions({ lean: true });
 
     const totalElemCount = await this.userModel
-      .countDocuments(findFields, additionalParams)
+      .countDocuments({ ...findFields, ...additionalParams })
       .exec();
 
     const users = await query.exec();
@@ -78,5 +79,15 @@ export class UsersQueryRepository {
       pageSize,
       totalElemCount,
     );
+  }
+
+  createFindByBanStatusObj(banStatus: string) {
+    let searchByBanStatusObj = {};
+    if (banStatus === 'banned')
+      searchByBanStatusObj = { 'banInfo.isBanned': true };
+    if (banStatus === 'notBanned')
+      searchByBanStatusObj = { 'banInfo.isBanned': false };
+
+    return searchByBanStatusObj;
   }
 }

@@ -5,6 +5,7 @@ export const userQueryMapper = ({
   sortDirection,
   pageNumber,
   pageSize,
+  banStatus,
 }: UserInputQueryType): UserQueryType => {
   return {
     searchLoginTerm: searchLoginTerm || null,
@@ -13,6 +14,7 @@ export const userQueryMapper = ({
     sortDirection: sortDirection || 'desc',
     pageNumber: Number(pageNumber) || 1,
     pageSize: Number(pageSize) || 10,
+    banStatus: banStatus || 'all',
   };
 };
 
@@ -23,6 +25,7 @@ export type UserInputQueryType = {
   sortDirection: string | undefined;
   pageNumber: string | undefined;
   pageSize: string | undefined;
+  banStatus: string | undefined;
 };
 
 export type UserQueryType = {
@@ -32,4 +35,5 @@ export type UserQueryType = {
   sortDirection: string;
   pageNumber: number;
   pageSize: number;
+  banStatus: string;
 };
