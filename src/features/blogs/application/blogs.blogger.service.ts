@@ -50,7 +50,7 @@ export class BlogsBloggerService {
     );
     if (!blog) return new CustomResponse(false, CustomResponseEnum.notExist);
 
-    if (blog._id.toString() !== currentUserId)
+    if (blog.blogOwnerInfo.userId.toString() !== currentUserId)
       return new CustomResponse(false, CustomResponseEnum.forbidden);
 
     await this.blogRepository.deleteBlog(blogId);

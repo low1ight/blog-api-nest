@@ -87,7 +87,7 @@ export class BlogsBloggerController {
   async deleteBlog(@Param('id') id: string, @CurrentUser() user) {
     const result = await this.blogsService.deleteBlog(id, user.id);
 
-    if (!result) Exceptions.throwHttpException(CustomResponseEnum.notExist);
+    if (!result.isSuccess) Exceptions.throwHttpException(result.errStatusCode);
 
     return;
   }
