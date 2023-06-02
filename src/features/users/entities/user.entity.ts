@@ -4,7 +4,6 @@ import { CreateUserDto } from '../dto/CreateUserDto';
 import { EmailHelper } from '../../utils/emailHelper';
 import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
-import { BanUserDto } from '../dto/BanUserDto';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -96,10 +95,16 @@ export class User {
     return new CustomResponse(true);
   }
 
-  setBanStatus({ isBanned, banReason }: BanUserDto) {
-    this.banInfo.isBanned = isBanned;
+  banUser(banReason: string) {
+    this.banInfo.isBanned = true;
     this.banInfo.banReason = banReason;
     this.banInfo.banDate = new Date();
+  }
+
+  unbanUser() {
+    this.banInfo.isBanned = false;
+    this.banInfo.banReason = null;
+    this.banInfo.banDate = null;
   }
 
   setNewConfirmationCode(code: string) {
@@ -171,7 +176,8 @@ UserEntity.methods = {
   setNewConfirmationCode: User.prototype.setNewConfirmationCode,
   setPasswordRecoveryCode: User.prototype.setPasswordRecoveryCode,
   setNewPassword: User.prototype.setNewPassword,
-  setBanStatus: User.prototype.setBanStatus,
+  banUser: User.prototype.banUser,
+  unbanUser: User.prototype.unbanUser,
 };
 
 UserEntity.statics = {
