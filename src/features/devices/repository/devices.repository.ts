@@ -33,4 +33,8 @@ export class DevicesRepository {
   async getDeviceById(id: string) {
     return this.deviceModel.findById(id);
   }
+
+  async deleteALlUserDevices(userId: string) {
+    return this.deviceModel.deleteMany({ userId: new Types.ObjectId(userId) });
+  }
 }

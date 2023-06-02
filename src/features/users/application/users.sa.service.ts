@@ -8,6 +8,7 @@ import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnu
 import { BanUserDto } from '../dto/BanUserDto';
 import { LikeRepository } from '../../likes/repository/like.repository';
 import { CommentsRepository } from '../../comments/repository/comments.repository';
+import { DevicesRepository } from '../../devices/repository/devices.repository';
 
 @Injectable()
 export class UsersSaService {
@@ -15,6 +16,7 @@ export class UsersSaService {
     private readonly usersRepository: UsersRepository,
     private readonly likesRepository: LikeRepository,
     private readonly commentsRepository: CommentsRepository,
+    private readonly devicesRepository: DevicesRepository,
   ) {}
 
   async createUser(dto: CreateUserDto) {
@@ -33,6 +35,11 @@ export class UsersSaService {
     user.setBanStatus(dto);
 
     await this.usersRepository.save(user);
+
+    if (dto.isBanned) {
+      await this.devicesRepository.deleteALlUserDevices(id);
+    }
+
     //ban/unban all users comments and likes
     await this.commentsRepository.setNewBanStatus(id, dto.isBanned);
     await this.likesRepository.setNewBanStatus(id, dto.isBanned);
