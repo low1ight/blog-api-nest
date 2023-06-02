@@ -17,6 +17,11 @@ export class UsersQueryRepository {
     return this.getUsersWithPaginator(query);
   }
 
+  async isUserBanned(userId: string) {
+    const user = await this.userModel.findById(userId);
+    return !user || user.banInfo.isBanned;
+  }
+
   async getUserByIdForAuthMe(id: string) {
     const user: UserDocument | null = await this.userModel.findById(id);
 

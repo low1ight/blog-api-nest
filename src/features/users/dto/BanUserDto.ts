@@ -1,10 +1,11 @@
+import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
+
 export class BanUserDto {
-  // @IsNotEmpty()
-  // @IsBoolean()
+  @IsNotEmpty()
+  @IsBoolean()
   isBanned: boolean;
 
-  // @IsNotEmpty()
-  // @IsString()
-  // @MaxLength(20)
+  @IsNotEmpty()
+  @MaxLength(20)
   banReason: string;
 }

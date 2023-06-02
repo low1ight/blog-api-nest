@@ -18,12 +18,14 @@ import { CurrentUser } from '../common/decorators/current.user.decorator';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
 import { CommentDto } from './dto/CommentDto';
 import { Exceptions } from '../utils/throwException';
+import { UsersQueryRepository } from '../users/repositories/users.query.repository';
 
 @Controller('comments')
 export class CommentsController {
   constructor(
     private readonly commentQueryRepository: CommentsQueryRepository,
     private readonly commentsService: CommentsService,
+    private readonly usersQueryRepository: UsersQueryRepository,
   ) {}
 
   @Get(':id')
@@ -35,6 +37,12 @@ export class CommentsController {
       currentUserId,
     );
     if (!comment) Exceptions.throwHttpException(CustomResponseEnum.notExist);
+    const isCommentOwnerBanned = await this.usersQueryRepository.isUserBanned(
+      comment.commentatorInfo.userId,
+    );
+    if (isCommentOwnerBanned)
+      Exceptions.throwHttpException(CustomResponseEnum.notExist);
+
     return comment;
   }
   @UseGuards(JwtAuthGuard)
