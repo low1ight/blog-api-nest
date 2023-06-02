@@ -1,8 +1,7 @@
-import { IsBoolean, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
 export class BanUserDto {
   @IsNotEmpty()
-  @IsBoolean()
   isBanned: boolean;
 
   @IsNotEmpty()
