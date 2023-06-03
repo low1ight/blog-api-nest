@@ -23,7 +23,7 @@ import {
   CommentSchema,
 } from './features/comments/schemas/comment.schema';
 import { CommentsQueryRepository } from './features/comments/repository/comments.query.repository';
-import { CommentsController } from './features/comments/comments.controller';
+import { CommentsController } from './features/comments/controllers/comments.controller';
 import { TestingController } from './features/testing/testing.controller';
 import { TestingService } from './features/testing/testing.service';
 import { TestingRepository } from './features/testing/repository/testing.repository';
@@ -45,7 +45,7 @@ import { AccessTokenStrategy } from './features/auth/strategies/accessToken.stra
 import { RefreshTokenStrategy } from './features/auth/strategies/refreshToken.strategy';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailManager } from './features/adapters/email.manager';
-import { CommentsService } from './features/comments/comments.service';
+import { CommentsService } from './features/comments/application/blogger/comments.service';
 import { CommentsRepository } from './features/comments/repository/comments.repository';
 import { LikesService } from './features/likes/likes.service';
 import { LikeRepository } from './features/likes/repository/like.repository';
@@ -57,7 +57,7 @@ import { DevicesQueryRepository } from './features/devices/repository/devices.qu
 import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
 import { BlogsBloggerService } from './features/blogs/application/blogger/blogs.blogger.service';
 import { BlogsBloggerController } from './features/blogs/controllers/blogs.blogger.controller';
-import { PostsBloggerService } from './features/posts/application/posts.blogger.service';
+import { PostsBloggerService } from './features/posts/application/blogger/posts.blogger.service';
 import { BlogsSaController } from './features/blogs/controllers/blogs.sa.controller';
 import { BlogsSaService } from './features/blogs/application/sa/blogs.sa.service';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -76,6 +76,9 @@ import { BindUserToBlogUseCase } from './features/blogs/application/sa/use-cases
 import { CreateBlogUseCase } from './features/blogs/application/blogger/use-cases/create-blog-use-case';
 import { UpdateBlogUseCase } from './features/blogs/application/blogger/use-cases/update-blog-use-case';
 import { DeleteBlogUseCase } from './features/blogs/application/blogger/use-cases/delete-blog-use-case';
+import { CreatePostUseCase } from './features/posts/application/blogger/use-cases/create-post-use-case';
+import { UpdatePostUseCase } from './features/posts/application/blogger/use-cases/update-post-use-case';
+import { DeletePostUseCase } from './features/posts/application/blogger/use-cases/delete-post-use-case';
 
 const useCases = [
   BanUserUseCase,
@@ -93,6 +96,9 @@ const useCases = [
   CreateBlogUseCase,
   UpdateBlogUseCase,
   DeleteBlogUseCase,
+  CreatePostUseCase,
+  UpdatePostUseCase,
+  DeletePostUseCase,
 ];
 
 @Module({

@@ -1,11 +1,11 @@
-import { CommentsRepository } from './repository/comments.repository';
+import { CommentsRepository } from '../../repository/comments.repository';
 import { Injectable } from '@nestjs/common';
-import { PostsPublicService } from '../posts/application/posts.public.service';
-import { LikesService } from '../likes/likes.service';
-import { CommentDto } from './dto/CommentDto';
-import { CustomResponse } from '../utils/customResponse/CustomResponse';
-import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
-import { CommentDocument } from './schemas/comment.schema';
+import { PostsPublicService } from '../../../posts/application/posts.public.service';
+import { LikesService } from '../../../likes/likes.service';
+import { CommentDto } from '../../dto/CommentDto';
+import { CustomResponse } from '../../../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../../utils/customResponse/CustomResponseEnum';
+import { CommentDocument } from '../../schemas/comment.schema';
 @Injectable()
 export class CommentsService {
   constructor(

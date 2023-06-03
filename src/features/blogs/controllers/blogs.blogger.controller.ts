@@ -26,7 +26,7 @@ import { CurrentUser } from '../../common/decorators/current.user.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
 import { BlogsBloggerService } from '../application/blogger/blogs.blogger.service';
 import { CustomResponse } from '../../utils/customResponse/CustomResponse';
-import { PostsBloggerService } from '../../posts/application/posts.blogger.service';
+import { PostsBloggerService } from '../../posts/application/blogger/posts.blogger.service';
 import { CreatePostInputDto } from '../../posts/dto/CreatePostInputDto';
 import { UpdatePostInputDto } from '../../posts/dto/UpdatePostInputDto';
 import { AuthUserData } from '../../common/types/AuthUserData';
@@ -34,6 +34,9 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateBlogUseCaseCommand } from '../application/blogger/use-cases/create-blog-use-case';
 import { UpdateBlogUseCaseCommand } from '../application/blogger/use-cases/update-blog-use-case';
 import { DeleteBlogUseCaseCommand } from '../application/blogger/use-cases/delete-blog-use-case';
+import { CreatePostUseCaseCommand } from '../../posts/application/blogger/use-cases/create-post-use-case';
+import { UpdatePostUseCaseCommand } from '../../posts/application/blogger/use-cases/update-post-use-case';
+import { DeletePostUseCaseCommand } from '../../posts/application/blogger/use-cases/delete-post-use-case';
 
 @Controller('blogger/blogs')
 export class BlogsBloggerController {
@@ -110,7 +113,9 @@ export class BlogsBloggerController {
   ) {
     //create post and return created post id
     const response: CustomResponse<null | string> =
-      await this.postsService.createPost(dto, id, user.id);
+      await this.commandBus.execute(
+        new CreatePostUseCaseCommand(dto, id, user.id),
+      );
     if (!response.isSuccess)
       Exceptions.throwHttpException(response.errStatusCode);
 
@@ -133,11 +138,8 @@ export class BlogsBloggerController {
     @CurrentUser() user,
   ) {
     //create post and return created post id
-    const response: CustomResponse<any> = await this.postsService.updatePost(
-      dto,
-      blogId,
-      postId,
-      user.id,
+    const response: CustomResponse<any> = await this.commandBus.execute(
+      new UpdatePostUseCaseCommand(dto, blogId, postId, user.id),
     );
     if (!response.isSuccess)
       Exceptions.throwHttpException(response.errStatusCode);
@@ -152,10 +154,8 @@ export class BlogsBloggerController {
     @CurrentUser() user,
   ) {
     //create post and return created post id
-    const response: CustomResponse<any> = await this.postsService.deletePost(
-      blogId,
-      postId,
-      user.id,
+    const response: CustomResponse<any> = await this.commandBus.execute(
+      new DeletePostUseCaseCommand(blogId, postId, user.id),
     );
     if (!response.isSuccess)
       Exceptions.throwHttpException(response.errStatusCode);

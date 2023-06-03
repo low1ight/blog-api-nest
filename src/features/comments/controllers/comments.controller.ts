@@ -8,17 +8,17 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CommentsQueryRepository } from './repository/comments.query.repository';
-import { CustomResponse } from '../utils/customResponse/CustomResponse';
-import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
-import { LikeInputDto } from '../likes/dto/LikeInputDto';
-import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
-import { CommentsService } from './comments.service';
-import { CurrentUser } from '../common/decorators/current.user.decorator';
-import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
-import { CommentDto } from './dto/CommentDto';
-import { Exceptions } from '../utils/throwException';
-import { UsersQueryRepository } from '../users/repositories/users.query.repository';
+import { CommentsQueryRepository } from '../repository/comments.query.repository';
+import { CustomResponse } from '../../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
+import { LikeInputDto } from '../../likes/dto/LikeInputDto';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { CommentsService } from '../application/blogger/comments.service';
+import { CurrentUser } from '../../common/decorators/current.user.decorator';
+import { OptionalJwtAuthGuard } from '../../auth/guards/optional.jwt.guard';
+import { CommentDto } from '../dto/CommentDto';
+import { Exceptions } from '../../utils/throwException';
+import { UsersQueryRepository } from '../../users/repositories/users.query.repository';
 
 @Controller('comments')
 export class CommentsController {
