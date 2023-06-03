@@ -30,6 +30,10 @@ import { PostsBloggerService } from '../../posts/application/posts.blogger.servi
 import { CreatePostInputDto } from '../../posts/dto/CreatePostInputDto';
 import { UpdatePostInputDto } from '../../posts/dto/UpdatePostInputDto';
 import { AuthUserData } from '../../common/types/AuthUserData';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateBlogUseCaseCommand } from '../application/blogger/use-cases/create-blog-use-case';
+import { UpdateBlogUseCaseCommand } from '../application/blogger/use-cases/update-blog-use-case';
+import { DeleteBlogUseCaseCommand } from '../application/blogger/use-cases/delete-blog-use-case';
 
 @Controller('blogger/blogs')
 export class BlogsBloggerController {
@@ -38,6 +42,7 @@ export class BlogsBloggerController {
     private readonly blogsQueryRepository: BlogsQueryRepository,
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly postsService: PostsBloggerService,
+    private readonly commandBus: CommandBus,
   ) {}
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -57,7 +62,9 @@ export class BlogsBloggerController {
     @Body() dto: CreateBlogDto,
     @CurrentUser() user: AuthUserData,
   ) {
-    const createdBlogId: string = await this.blogsService.createBlog(dto, user);
+    const createdBlogId: string = await this.commandBus.execute(
+      new CreateBlogUseCaseCommand(dto, user),
+    );
 
     return await this.blogsQueryRepository.getBlogById(createdBlogId);
   }
@@ -70,10 +77,8 @@ export class BlogsBloggerController {
     @Body() dto: UpdateBlogDto,
     @CurrentUser() user,
   ) {
-    const result: CustomResponse<any> = await this.blogsService.updateBlog(
-      dto,
-      id,
-      user.id,
+    const result: CustomResponse<any> = await this.commandBus.execute(
+      new UpdateBlogUseCaseCommand(dto, id, user.id),
     );
 
     if (!result.isSuccess) Exceptions.throwHttpException(result.errStatusCode);
@@ -85,7 +90,9 @@ export class BlogsBloggerController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   async deleteBlog(@Param('id') id: string, @CurrentUser() user) {
-    const result = await this.blogsService.deleteBlog(id, user.id);
+    const result = await this.commandBus.execute(
+      new DeleteBlogUseCaseCommand(id, user.id),
+    );
 
     if (!result.isSuccess) Exceptions.throwHttpException(result.errStatusCode);
 

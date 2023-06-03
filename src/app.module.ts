@@ -73,6 +73,9 @@ import { SetNewPasswordUseCase } from './features/auth/application/public/use-ca
 import { ConfirmEmailUseCase } from './features/auth/application/public/use-cases/confirm-email-use-case';
 import { UpdateJwtTokensUseCase } from './features/auth/application/public/use-cases/update-jwt-tokens-use-case';
 import { BindUserToBlogUseCase } from './features/blogs/application/sa/use-cases/bind-user-to-blog-use-case';
+import { CreateBlogUseCase } from './features/blogs/application/blogger/use-cases/create-blog-use-case';
+import { UpdateBlogUseCase } from './features/blogs/application/blogger/use-cases/update-blog-use-case';
+import { DeleteBlogUseCase } from './features/blogs/application/blogger/use-cases/delete-blog-use-case';
 
 const useCases = [
   BanUserUseCase,
@@ -87,6 +90,9 @@ const useCases = [
   ConfirmEmailUseCase,
   UpdateJwtTokensUseCase,
   BindUserToBlogUseCase,
+  CreateBlogUseCase,
+  UpdateBlogUseCase,
+  DeleteBlogUseCase,
 ];
 
 @Module({
