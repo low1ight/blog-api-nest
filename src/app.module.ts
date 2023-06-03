@@ -67,6 +67,11 @@ import { DeleteUserUseCase } from './features/users/application/sa/use-case/dele
 import { LoginUseCase } from './features/auth/application/public/use-case/login-use-case';
 import { RegistrationEmailResendingUseCase } from './features/auth/application/public/use-case/registration-email-resending-use-case';
 import { RegistrationUseCase } from './features/auth/application/public/use-case/registration-use-case';
+import { LogoutUseCase } from './features/auth/application/public/use-case/logout-use-case';
+import { PasswordRecoveryUseCase } from './features/auth/application/public/use-case/password-recovery-use-case';
+import { SetNewPasswordUseCase } from './features/auth/application/public/use-case/set-new-password-use-case';
+import { ConfirmEmailUseCase } from './features/auth/application/public/use-case/confirm-email-use-case';
+import { UpdateJwtTokensUseCase } from './features/auth/application/public/use-case/update-jwt-tokens-use-case';
 
 const useCases = [
   BanUserUseCase,
@@ -75,6 +80,11 @@ const useCases = [
   LoginUseCase,
   RegistrationEmailResendingUseCase,
   RegistrationUseCase,
+  LogoutUseCase,
+  PasswordRecoveryUseCase,
+  SetNewPasswordUseCase,
+  ConfirmEmailUseCase,
+  UpdateJwtTokensUseCase,
 ];
 
 @Module({

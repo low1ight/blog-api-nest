@@ -3,60 +3,12 @@ import { UsersSaService } from '../../../users/application/sa/users.sa.service';
 import { UserDocument } from '../../../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { DevicesService } from '../../../devices/devices.service';
-import { v4 as uuidv4 } from 'uuid';
-import { EmailManager } from '../../../adapters/email.manager';
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersSaService,
     private readonly jwtService: JwtService,
-    private readonly deviceService: DevicesService,
-    private readonly emailManager: EmailManager,
   ) {}
-
-  // async registrationEmailResending(email): Promise<CustomResponse<any>> {
-  //   const confirmationCode = uuidv4();
-  //
-  //   const result: CustomResponse<any> =
-  //     await this.usersService.setNewConfirmationCode(email, confirmationCode);
-  //
-  //   if (!result.isSuccess) return result;
-  //
-  //   await this.emailManager.sendConfirmationCode(email, confirmationCode);
-  //
-  //   return new CustomResponse(true);
-  // }
-  //
-  // async registration(dto: CreateUserDto) {
-  //   const confirmationCode = uuidv4();
-  //
-  //   await this.usersService.registerUser(dto, confirmationCode);
-  //
-  //   await this.emailManager.sendConfirmationCode(dto.email, confirmationCode);
-  // }
-
-  async logout(deviceId) {
-    await this.deviceService.deleteDeviceById(deviceId);
-  }
-
-  async passwordRecovery(email: string) {
-    const isUserEmailExist = await this.usersService.isUserEmailExist(email);
-
-    if (!isUserEmailExist) return;
-
-    const passwordRecoveryCode = uuidv4();
-
-    await this.usersService.setNewPasswordRecoveryCode(
-      email,
-      passwordRecoveryCode,
-    );
-
-    await this.emailManager.sendPasswordRecoveryCode(
-      email,
-      passwordRecoveryCode,
-    );
-  }
 
   async validateUser(loginOrEmail: string, pass: string): Promise<any> {
     const user: UserDocument | null =
@@ -90,24 +42,5 @@ export class AuthService {
       accessToken: at,
       refreshToken: rt,
     };
-  }
-
-  async updateJwtTokens(
-    userId: string,
-    login: string,
-    deviceId: string,
-    title: string,
-    ip: string,
-  ) {
-    const sessionId = uuidv4();
-
-    await this.deviceService.updateDevice({
-      deviceId,
-      sessionId,
-      title,
-      ip,
-    });
-
-    return await this.createJwtTokens(userId, login, deviceId, sessionId);
   }
 }

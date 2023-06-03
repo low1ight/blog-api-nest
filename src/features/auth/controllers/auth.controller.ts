@@ -27,6 +27,11 @@ import { CommandBus } from '@nestjs/cqrs';
 import { LoginUseCaseCommand } from '../application/public/use-case/login-use-case';
 import { RegistrationEmailResendingUseCaseCommand } from '../application/public/use-case/registration-email-resending-use-case';
 import { RegistrationUseCaseCommand } from '../application/public/use-case/registration-use-case';
+import { PasswordRecoveryUseCaseCommand } from '../application/public/use-case/password-recovery-use-case';
+import { LogoutUseCaseCommand } from '../application/public/use-case/logout-use-case';
+import { SetNewPasswordUseCaseCommand } from '../application/public/use-case/set-new-password-use-case';
+import { ConfirmEmailUseCaseCommand } from '../application/public/use-case/confirm-email-use-case';
+import { UpdateJwtTokensUseCaseCommand } from '../application/public/use-case/update-jwt-tokens-use-case';
 
 @Controller('auth')
 @Throttle(5, 10)
@@ -91,27 +96,29 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   @HttpCode(204)
   async logout(@Request() req) {
-    await this.authService.logout(req.user.deviceId);
+    await this.commandBus.execute(new LogoutUseCaseCommand(req.user.deviceId));
   }
   @Post('password-recovery')
   @HttpCode(204)
   async passwordRecovery(@Body() dto: EmailDto) {
-    return await this.authService.passwordRecovery(dto.email);
+    return await this.commandBus.execute(
+      new PasswordRecoveryUseCaseCommand(dto.email),
+    );
   }
   @Post('new-password')
   @HttpCode(204)
   async newPassword(@Body() dto: PasswordRecoveryDto) {
-    return await this.usersService.setNewPassword(
-      dto.newPassword,
-      dto.recoveryCode,
+    return await this.commandBus.execute(
+      new SetNewPasswordUseCaseCommand(dto.newPassword, dto.recoveryCode),
     );
   }
 
   @Post('registration-confirmation')
   @HttpCode(204)
   async registrationConfirmation(@Body() dto: EmailConfirmationDto) {
-    const response: CustomResponse<any> =
-      await this.usersService.confirmUserEmail(dto.code);
+    const response: CustomResponse<any> = await this.commandBus.execute(
+      new ConfirmEmailUseCaseCommand(dto.code),
+    );
 
     if (!response.isSuccess)
       Exceptions.throwHttpException(
@@ -134,14 +141,9 @@ export class AuthController {
 
     const { userId, login, deviceId } = req.user;
 
-    const { refreshToken, accessToken } =
-      await this.authService.updateJwtTokens(
-        userId,
-        login,
-        deviceId,
-        title,
-        ip,
-      );
+    const { refreshToken, accessToken } = await this.commandBus.execute(
+      new UpdateJwtTokensUseCaseCommand(userId, login, deviceId, title, ip),
+    );
 
     response.cookie('refreshToken ', refreshToken, {
       httpOnly: true,
