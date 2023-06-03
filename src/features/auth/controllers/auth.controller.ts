@@ -9,20 +9,22 @@ import {
   HttpCode,
   Get,
 } from '@nestjs/common';
-import { LocalAuthGuard } from './guards/local.auth.guard';
-import { AuthService } from './auth.service';
+import { LocalAuthGuard } from '../guards/local.auth.guard';
+import { AuthService } from '../application/public/auth.service';
 import { Response } from 'express';
-import { RefreshTokenGuard } from './guards/refresh.token.guard.';
-import { CreateUserDto } from '../users/dto/CreateUserDto';
-import { EmailConfirmationDto } from './dto/EmailConfirmationDto';
-import { UsersSaService } from '../users/application/sa/users.sa.service';
-import { CustomResponse } from '../utils/customResponse/CustomResponse';
-import { EmailDto } from './dto/EmailDto';
-import { UsersQueryRepository } from '../users/repositories/users.query.repository';
-import { JwtAuthGuard } from './guards/jwt.auth.guard';
-import { PasswordRecoveryDto } from './dto/PasswordRecoveryDto';
+import { RefreshTokenGuard } from '../guards/refresh.token.guard.';
+import { CreateUserDto } from '../../users/dto/CreateUserDto';
+import { EmailConfirmationDto } from '../dto/EmailConfirmationDto';
+import { UsersSaService } from '../../users/application/sa/users.sa.service';
+import { CustomResponse } from '../../utils/customResponse/CustomResponse';
+import { EmailDto } from '../dto/EmailDto';
+import { UsersQueryRepository } from '../../users/repositories/users.query.repository';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { PasswordRecoveryDto } from '../dto/PasswordRecoveryDto';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
-import { Exceptions } from '../utils/throwException';
+import { Exceptions } from '../../utils/throwException';
+import { CommandBus } from '@nestjs/cqrs';
+import { LoginUseCaseCommand } from '../application/public/use-case/login-use-case';
 
 @Controller('auth')
 @Throttle(5, 10)
@@ -31,6 +33,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly usersService: UsersSaService,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private commandBus: CommandBus,
   ) {}
   @UseGuards(LocalAuthGuard)
   @HttpCode(200)
@@ -44,11 +47,8 @@ export class AuthController {
     const login = req.user.userData.login;
     const title = req.headers['user-agent'];
 
-    const { refreshToken, accessToken } = await this.authService.login(
-      id,
-      login,
-      title,
-      ip,
+    const { refreshToken, accessToken } = await this.commandBus.execute(
+      new LoginUseCaseCommand(id, login, title, ip),
     );
     //add httponly + secure
     response.cookie('refreshToken ', refreshToken, {

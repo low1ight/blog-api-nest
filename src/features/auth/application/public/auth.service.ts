@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { UsersSaService } from '../users/application/sa/users.sa.service';
-import { UserDocument } from '../users/entities/user.entity';
+import { UsersSaService } from '../../../users/application/sa/users.sa.service';
+import { UserDocument } from '../../../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { DevicesService } from '../devices/devices.service';
-import { CreateDeviceDto } from '../devices/dto/CreateDeviceDto';
+import { DevicesService } from '../../../devices/devices.service';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto } from '../users/dto/CreateUserDto';
-import { EmailManager } from '../adapters/email.manager';
-import { CustomResponse } from '../utils/customResponse/CustomResponse';
+import { CreateUserDto } from '../../../users/dto/CreateUserDto';
+import { EmailManager } from '../../../adapters/email.manager';
+import { CustomResponse } from '../../../utils/customResponse/CustomResponse';
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,24 +16,6 @@ export class AuthService {
     private readonly deviceService: DevicesService,
     private readonly emailManager: EmailManager,
   ) {}
-
-  async login(userId: string, login: string, title: string, ip: string) {
-    const newDeviceDto: CreateDeviceDto = {
-      sessionId: uuidv4(),
-      userId,
-      title,
-      ip,
-    };
-
-    const deviceId = await this.deviceService.createDevice(newDeviceDto);
-
-    return await this.createJwtTokens(
-      userId,
-      login,
-      deviceId,
-      newDeviceDto.sessionId,
-    );
-  }
 
   async registrationEmailResending(email): Promise<CustomResponse<any>> {
     const confirmationCode = uuidv4();

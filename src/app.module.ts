@@ -33,9 +33,9 @@ import {
   IsUserLoginAlreadyExist,
 } from './features/common/custromValidators/IsUserFieldsExist';
 import { PassportModule } from '@nestjs/passport';
-import { AuthService } from './features/auth/auth.service';
+import { AuthService } from './features/auth/application/public/auth.service';
 import { LocalStrategy } from './features/auth/strategies/local.strategy';
-import { AuthController } from './features/auth/auth.controller';
+import { AuthController } from './features/auth/controllers/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { Device, DeviceSchema } from './features/devices/schemas/device.schema';
@@ -64,8 +64,14 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { BanUserUseCase } from './features/users/application/sa/use-case/ban-user-use-case';
 import { CreateUserUseCase } from './features/users/application/sa/use-case/create-user-use-case';
 import { DeleteUserUseCase } from './features/users/application/sa/use-case/delete-user-use-case';
+import { LoginUseCase } from './features/auth/application/public/use-case/login-use-case';
 
-const useCases = [BanUserUseCase, CreateUserUseCase, DeleteUserUseCase];
+const useCases = [
+  BanUserUseCase,
+  CreateUserUseCase,
+  DeleteUserUseCase,
+  LoginUseCase,
+];
 
 @Module({
   imports: [
