@@ -65,12 +65,16 @@ import { BanUserUseCase } from './features/users/application/sa/use-case/ban-use
 import { CreateUserUseCase } from './features/users/application/sa/use-case/create-user-use-case';
 import { DeleteUserUseCase } from './features/users/application/sa/use-case/delete-user-use-case';
 import { LoginUseCase } from './features/auth/application/public/use-case/login-use-case';
+import { RegistrationEmailResendingUseCase } from './features/auth/application/public/use-case/registration-email-resending-use-case';
+import { RegistrationUseCase } from './features/auth/application/public/use-case/registration-use-case';
 
 const useCases = [
   BanUserUseCase,
   CreateUserUseCase,
   DeleteUserUseCase,
   LoginUseCase,
+  RegistrationEmailResendingUseCase,
+  RegistrationUseCase,
 ];
 
 @Module({

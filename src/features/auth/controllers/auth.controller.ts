@@ -25,6 +25,8 @@ import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { Exceptions } from '../../utils/throwException';
 import { CommandBus } from '@nestjs/cqrs';
 import { LoginUseCaseCommand } from '../application/public/use-case/login-use-case';
+import { RegistrationEmailResendingUseCaseCommand } from '../application/public/use-case/registration-email-resending-use-case';
+import { RegistrationUseCaseCommand } from '../application/public/use-case/registration-use-case';
 
 @Controller('auth')
 @Throttle(5, 10)
@@ -68,14 +70,15 @@ export class AuthController {
   @Post('registration')
   @HttpCode(204)
   async register(@Body() dto: CreateUserDto) {
-    await this.authService.registration(dto);
+    await this.commandBus.execute(new RegistrationUseCaseCommand(dto));
   }
 
   @Post('registration-email-resending')
   @HttpCode(204)
   async registrationEmailResending(@Body() dto: EmailDto) {
-    const result: CustomResponse<any> =
-      await this.authService.registrationEmailResending(dto.email);
+    const result: CustomResponse<any> = await this.commandBus.execute(
+      new RegistrationEmailResendingUseCaseCommand(dto.email),
+    );
     if (!result.isSuccess)
       Exceptions.throwHttpException(
         result.errStatusCode,

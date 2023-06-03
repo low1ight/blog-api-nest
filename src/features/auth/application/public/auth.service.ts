@@ -5,9 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { DevicesService } from '../../../devices/devices.service';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto } from '../../../users/dto/CreateUserDto';
 import { EmailManager } from '../../../adapters/email.manager';
-import { CustomResponse } from '../../../utils/customResponse/CustomResponse';
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,26 +15,26 @@ export class AuthService {
     private readonly emailManager: EmailManager,
   ) {}
 
-  async registrationEmailResending(email): Promise<CustomResponse<any>> {
-    const confirmationCode = uuidv4();
-
-    const result: CustomResponse<any> =
-      await this.usersService.setNewConfirmationCode(email, confirmationCode);
-
-    if (!result.isSuccess) return result;
-
-    await this.emailManager.sendConfirmationCode(email, confirmationCode);
-
-    return new CustomResponse(true);
-  }
-
-  async registration(dto: CreateUserDto) {
-    const confirmationCode = uuidv4();
-
-    await this.usersService.registerUser(dto, confirmationCode);
-
-    await this.emailManager.sendConfirmationCode(dto.email, confirmationCode);
-  }
+  // async registrationEmailResending(email): Promise<CustomResponse<any>> {
+  //   const confirmationCode = uuidv4();
+  //
+  //   const result: CustomResponse<any> =
+  //     await this.usersService.setNewConfirmationCode(email, confirmationCode);
+  //
+  //   if (!result.isSuccess) return result;
+  //
+  //   await this.emailManager.sendConfirmationCode(email, confirmationCode);
+  //
+  //   return new CustomResponse(true);
+  // }
+  //
+  // async registration(dto: CreateUserDto) {
+  //   const confirmationCode = uuidv4();
+  //
+  //   await this.usersService.registerUser(dto, confirmationCode);
+  //
+  //   await this.emailManager.sendConfirmationCode(dto.email, confirmationCode);
+  // }
 
   async logout(deviceId) {
     await this.deviceService.deleteDeviceById(deviceId);
