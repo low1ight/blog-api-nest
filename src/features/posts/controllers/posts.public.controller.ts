@@ -12,35 +12,36 @@ import {
 import {
   PostInputQueryType,
   postQueryMapper,
-} from '../utils/query-mappers/post-query-mapper';
-import { PostsQueryRepository } from './repository/posts.query.repository';
-import { PostsPublicService } from './application/posts.public.service';
-import { CustomResponseEnum } from '../utils/customResponse/CustomResponseEnum';
+} from '../../utils/query-mappers/post-query-mapper';
+import { PostsQueryRepository } from '../repository/posts.query.repository';
+import { PostsPublicService } from '../application/posts.public.service';
+import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 import {
   CommentInputQueryType,
   commentQueryMapper,
-} from '../utils/query-mappers/comment-query-mapper';
-import { CommentsQueryRepository } from '../comments/repository/comments.query.repository';
-import { CommentDto } from '../comments/dto/CommentDto';
-import { JwtAuthGuard } from '../auth/guards/jwt.auth.guard';
-import { CommentsService } from '../comments/application/blogger/comments.service';
-import { CurrentUser } from '../common/decorators/current.user.decorator';
-import { LikeInputDto } from '../likes/dto/LikeInputDto';
-import { OptionalJwtAuthGuard } from '../auth/guards/optional.jwt.guard';
-import { Exceptions } from '../utils/throwException';
+} from '../../utils/query-mappers/comment-query-mapper';
+import { CommentsQueryRepository } from '../../comments/repository/comments.query.repository';
+import { CommentDto } from '../../comments/dto/CommentDto';
+import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
+import { CurrentUser } from '../../common/decorators/current.user.decorator';
+import { LikeInputDto } from '../../likes/dto/LikeInputDto';
+import { OptionalJwtAuthGuard } from '../../auth/guards/optional.jwt.guard';
+import { Exceptions } from '../../utils/throwException';
+import { CommandBus } from '@nestjs/cqrs';
+import { CreateCommentUseCaseCommand } from '../../comments/application/public/use-cases/create-comment-use-case';
 
 @Controller('posts')
-export class PostsController {
+export class PostsPublicController {
   constructor(
     private readonly postQueryRepository: PostsQueryRepository,
     private readonly postService: PostsPublicService,
     private readonly commentQueryRepository: CommentsQueryRepository,
-    private readonly commentsService: CommentsService,
+    private commandBus: CommandBus,
   ) {}
 
   @Get()
   @UseGuards(OptionalJwtAuthGuard)
-  async getBlogs(@Query() query: PostInputQueryType, @CurrentUser() user) {
+  async getPosts(@Query() query: PostInputQueryType, @CurrentUser() user) {
     const postQuery = postQueryMapper(query);
     const currentUserId = user?.id || null;
 
@@ -85,13 +86,9 @@ export class PostsController {
     @Body() dto: CommentDto,
     @CurrentUser() user: { id: string; userName: string },
   ) {
-    const createdCommentId: string | null =
-      await this.commentsService.createComment(
-        dto.content,
-        id,
-        user.id,
-        user.userName,
-      );
+    const createdCommentId: string | null = await this.commandBus.execute(
+      new CreateCommentUseCaseCommand(dto.content, id, user.id, user.userName),
+    );
     if (!createdCommentId)
       Exceptions.throwHttpException(CustomResponseEnum.notExist);
     const comment = await this.commentQueryRepository.getCommentById(

@@ -13,12 +13,15 @@ import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 import { LikeInputDto } from '../../likes/dto/LikeInputDto';
 import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
-import { CommentsService } from '../application/blogger/comments.service';
+import { CommentsService } from '../application/public/comments.service';
 import { CurrentUser } from '../../common/decorators/current.user.decorator';
 import { OptionalJwtAuthGuard } from '../../auth/guards/optional.jwt.guard';
 import { CommentDto } from '../dto/CommentDto';
 import { Exceptions } from '../../utils/throwException';
 import { UsersQueryRepository } from '../../users/repositories/users.query.repository';
+import { CommandBus } from '@nestjs/cqrs';
+import { UpdateCommentUseCaseCommand } from '../application/public/use-cases/update-comment-use-case';
+import { DeleteCommentUseCaseCommand } from '../application/public/use-cases/delete-comment-use-case';
 
 @Controller('comments')
 export class CommentsController {
@@ -26,6 +29,7 @@ export class CommentsController {
     private readonly commentQueryRepository: CommentsQueryRepository,
     private readonly commentsService: CommentsService,
     private readonly usersQueryRepository: UsersQueryRepository,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Get(':id')
@@ -53,8 +57,9 @@ export class CommentsController {
     @Param('id') id: string,
     @CurrentUser() user,
   ) {
-    const isUpdated: CustomResponse<any> =
-      await this.commentsService.updateComment(dto, id, user.id);
+    const isUpdated: CustomResponse<any> = await this.commandBus.execute(
+      new UpdateCommentUseCaseCommand(dto, id, user.id),
+    );
 
     if (!isUpdated.isSuccess)
       Exceptions.throwHttpException(isUpdated.errStatusCode);
@@ -64,9 +69,8 @@ export class CommentsController {
   @Delete(':id')
   @HttpCode(204)
   async deleteComment(@Param('id') id: string, @CurrentUser() user) {
-    const deletingResult = await this.commentsService.deleteComment(
-      id,
-      user.id,
+    const deletingResult = await this.commandBus.execute(
+      new DeleteCommentUseCaseCommand(id, user.id),
     );
 
     if (!deletingResult.isSuccess)

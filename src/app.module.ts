@@ -7,7 +7,7 @@ import { BlogsRepository } from './features/blogs/repository/blogs.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BlogEntity, Blog } from './features/blogs/entities/blog.entity';
 import { BlogsQueryRepository } from './features/blogs/repository/blogs.query.repository';
-import { PostsController } from './features/posts/posts.controller';
+import { PostsPublicController } from './features/posts/controllers/posts.public.controller';
 import { PostsQueryRepository } from './features/posts/repository/posts.query.repository';
 import { Post, PostSchema } from './features/posts/schemas/post.schema';
 import { Like, LikeSchema } from './features/likes/schemas/like.schema';
@@ -45,7 +45,7 @@ import { AccessTokenStrategy } from './features/auth/strategies/accessToken.stra
 import { RefreshTokenStrategy } from './features/auth/strategies/refreshToken.strategy';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailManager } from './features/adapters/email.manager';
-import { CommentsService } from './features/comments/application/blogger/comments.service';
+import { CommentsService } from './features/comments/application/public/comments.service';
 import { CommentsRepository } from './features/comments/repository/comments.repository';
 import { LikesService } from './features/likes/likes.service';
 import { LikeRepository } from './features/likes/repository/like.repository';
@@ -79,6 +79,9 @@ import { DeleteBlogUseCase } from './features/blogs/application/blogger/use-case
 import { CreatePostUseCase } from './features/posts/application/blogger/use-cases/create-post-use-case';
 import { UpdatePostUseCase } from './features/posts/application/blogger/use-cases/update-post-use-case';
 import { DeletePostUseCase } from './features/posts/application/blogger/use-cases/delete-post-use-case';
+import { DeleteCommentUseCase } from './features/comments/application/public/use-cases/delete-comment-use-case';
+import { CreateCommentUseCase } from './features/comments/application/public/use-cases/create-comment-use-case';
+import { UpdateCommentUseCase } from './features/comments/application/public/use-cases/update-comment-use-case';
 
 const useCases = [
   BanUserUseCase,
@@ -99,6 +102,9 @@ const useCases = [
   CreatePostUseCase,
   UpdatePostUseCase,
   DeletePostUseCase,
+  DeleteCommentUseCase,
+  CreateCommentUseCase,
+  UpdateCommentUseCase,
 ];
 
 @Module({
@@ -144,7 +150,7 @@ const useCases = [
   controllers: [
     AppController,
     BlogsPublicController,
-    PostsController,
+    PostsPublicController,
     UsersSaController,
     CommentsController,
     BlogsSaController,
