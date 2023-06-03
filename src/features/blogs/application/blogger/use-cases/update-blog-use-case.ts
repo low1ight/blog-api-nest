@@ -2,6 +2,7 @@ import { UpdateBlogDto } from '../../../dto/UpdateBlogDto';
 import { CustomResponse } from '../../../../utils/customResponse/CustomResponse';
 import { BlogsBloggerService } from '../blogs.blogger.service';
 import { BlogsRepository } from '../../../repository/blogs.repository';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 export class UpdateBlogUseCaseCommand {
   constructor(
@@ -10,8 +11,10 @@ export class UpdateBlogUseCaseCommand {
     public currentUserId: string,
   ) {}
 }
-
-export class UpdateBlogUseCase {
+@CommandHandler(UpdateBlogUseCaseCommand)
+export class UpdateBlogUseCase
+  implements ICommandHandler<UpdateBlogUseCaseCommand>
+{
   constructor(
     private blogsService: BlogsBloggerService,
     private blogsRepository: BlogsRepository,
@@ -27,9 +30,11 @@ export class UpdateBlogUseCase {
       currentUserId,
     );
 
+    if (!gettingBlogResult.isSuccess) return gettingBlogResult;
+
     const blog = gettingBlogResult.content;
 
-    gettingBlogResult.content.updateData(dto);
+    blog.updateData(dto);
 
     await this.blogsRepository.save(blog);
 
