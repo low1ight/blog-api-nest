@@ -21,9 +21,9 @@ import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { Exceptions } from '../../utils/throwException';
 import { BanUserDto } from '../dto/BanUserDto';
 import { CommandBus } from '@nestjs/cqrs';
-import { BanUserUseCaseCommand } from '../application/sa/use-case/ban-user-use-case';
-import { CreateUserUseCaseCommand } from '../application/sa/use-case/create-user-use-case';
-import { DeleteUserUseCaseCommand } from '../application/sa/use-case/delete-user-use-case';
+import { BanUserUseCaseCommand } from '../application/sa/use-cases/ban-user-use-case';
+import { CreateUserUseCaseCommand } from '../application/sa/use-cases/create-user-use-case';
+import { DeleteUserUseCaseCommand } from '../application/sa/use-cases/delete-user-use-case';
 
 @Controller('sa/users')
 export class UsersSaController {

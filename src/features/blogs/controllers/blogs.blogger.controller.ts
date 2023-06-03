@@ -24,7 +24,7 @@ import { PostViewModel } from '../../posts/types/post.types';
 import { Exceptions } from '../../utils/throwException';
 import { CurrentUser } from '../../common/decorators/current.user.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt.auth.guard';
-import { BlogsBloggerService } from '../application/blogs.blogger.service';
+import { BlogsBloggerService } from '../application/blogger/blogs.blogger.service';
 import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 import { PostsBloggerService } from '../../posts/application/posts.blogger.service';
 import { CreatePostInputDto } from '../../posts/dto/CreatePostInputDto';

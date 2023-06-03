@@ -16,14 +16,15 @@ import {
 import { Exceptions } from '../../utils/throwException';
 
 import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
-import { BlogsSaService } from '../application/blogs.sa.service';
 import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
+import { CommandBus } from '@nestjs/cqrs';
+import { BindUserToBlogUseCaseCommand } from '../application/sa/use-cases/bind-user-to-blog-use-case';
 
 @Controller('sa/blogs')
 export class BlogsSaController {
   constructor(
-    private readonly blogsService: BlogsSaService,
     private readonly blogsQueryRepository: BlogsQueryRepository,
+    private readonly commandBus: CommandBus,
   ) {}
   @Get()
   @UseGuards(BasicAuthGuard)
@@ -40,9 +41,8 @@ export class BlogsSaController {
     @Param('blogId') blogId: string,
     @Param('userId') userId: string,
   ) {
-    const isSuccessful: boolean = await this.blogsService.bindUserToBlog(
-      blogId,
-      userId,
+    const isSuccessful: boolean = await this.commandBus.execute(
+      new BindUserToBlogUseCaseCommand(blogId, userId),
     );
     if (!isSuccessful)
       Exceptions.throwHttpException(

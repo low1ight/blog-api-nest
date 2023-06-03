@@ -24,14 +24,14 @@ import { PasswordRecoveryDto } from '../dto/PasswordRecoveryDto';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { Exceptions } from '../../utils/throwException';
 import { CommandBus } from '@nestjs/cqrs';
-import { LoginUseCaseCommand } from '../application/public/use-case/login-use-case';
-import { RegistrationEmailResendingUseCaseCommand } from '../application/public/use-case/registration-email-resending-use-case';
-import { RegistrationUseCaseCommand } from '../application/public/use-case/registration-use-case';
-import { PasswordRecoveryUseCaseCommand } from '../application/public/use-case/password-recovery-use-case';
-import { LogoutUseCaseCommand } from '../application/public/use-case/logout-use-case';
-import { SetNewPasswordUseCaseCommand } from '../application/public/use-case/set-new-password-use-case';
-import { ConfirmEmailUseCaseCommand } from '../application/public/use-case/confirm-email-use-case';
-import { UpdateJwtTokensUseCaseCommand } from '../application/public/use-case/update-jwt-tokens-use-case';
+import { LoginUseCaseCommand } from '../application/public/use-cases/login-use-case';
+import { RegistrationEmailResendingUseCaseCommand } from '../application/public/use-cases/registration-email-resending-use-case';
+import { RegistrationUseCaseCommand } from '../application/public/use-cases/registration-use-case';
+import { PasswordRecoveryUseCaseCommand } from '../application/public/use-cases/password-recovery-use-case';
+import { LogoutUseCaseCommand } from '../application/public/use-cases/logout-use-case';
+import { SetNewPasswordUseCaseCommand } from '../application/public/use-cases/set-new-password-use-case';
+import { ConfirmEmailUseCaseCommand } from '../application/public/use-cases/confirm-email-use-case';
+import { UpdateJwtTokensUseCaseCommand } from '../application/public/use-cases/update-jwt-tokens-use-case';
 
 @Controller('auth')
 @Throttle(5, 10)

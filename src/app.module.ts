@@ -55,23 +55,24 @@ import { APP_GUARD } from '@nestjs/core';
 import { DevicesController } from './features/devices/devices.controller';
 import { DevicesQueryRepository } from './features/devices/repository/devices.query.repository';
 import { IsBlogExist } from './features/common/custromValidators/isBlogExist';
-import { BlogsBloggerService } from './features/blogs/application/blogs.blogger.service';
+import { BlogsBloggerService } from './features/blogs/application/blogger/blogs.blogger.service';
 import { BlogsBloggerController } from './features/blogs/controllers/blogs.blogger.controller';
 import { PostsBloggerService } from './features/posts/application/posts.blogger.service';
 import { BlogsSaController } from './features/blogs/controllers/blogs.sa.controller';
-import { BlogsSaService } from './features/blogs/application/blogs.sa.service';
+import { BlogsSaService } from './features/blogs/application/sa/blogs.sa.service';
 import { CqrsModule } from '@nestjs/cqrs';
-import { BanUserUseCase } from './features/users/application/sa/use-case/ban-user-use-case';
-import { CreateUserUseCase } from './features/users/application/sa/use-case/create-user-use-case';
-import { DeleteUserUseCase } from './features/users/application/sa/use-case/delete-user-use-case';
-import { LoginUseCase } from './features/auth/application/public/use-case/login-use-case';
-import { RegistrationEmailResendingUseCase } from './features/auth/application/public/use-case/registration-email-resending-use-case';
-import { RegistrationUseCase } from './features/auth/application/public/use-case/registration-use-case';
-import { LogoutUseCase } from './features/auth/application/public/use-case/logout-use-case';
-import { PasswordRecoveryUseCase } from './features/auth/application/public/use-case/password-recovery-use-case';
-import { SetNewPasswordUseCase } from './features/auth/application/public/use-case/set-new-password-use-case';
-import { ConfirmEmailUseCase } from './features/auth/application/public/use-case/confirm-email-use-case';
-import { UpdateJwtTokensUseCase } from './features/auth/application/public/use-case/update-jwt-tokens-use-case';
+import { BanUserUseCase } from './features/users/application/sa/use-cases/ban-user-use-case';
+import { CreateUserUseCase } from './features/users/application/sa/use-cases/create-user-use-case';
+import { DeleteUserUseCase } from './features/users/application/sa/use-cases/delete-user-use-case';
+import { LoginUseCase } from './features/auth/application/public/use-cases/login-use-case';
+import { RegistrationEmailResendingUseCase } from './features/auth/application/public/use-cases/registration-email-resending-use-case';
+import { RegistrationUseCase } from './features/auth/application/public/use-cases/registration-use-case';
+import { LogoutUseCase } from './features/auth/application/public/use-cases/logout-use-case';
+import { PasswordRecoveryUseCase } from './features/auth/application/public/use-cases/password-recovery-use-case';
+import { SetNewPasswordUseCase } from './features/auth/application/public/use-cases/set-new-password-use-case';
+import { ConfirmEmailUseCase } from './features/auth/application/public/use-cases/confirm-email-use-case';
+import { UpdateJwtTokensUseCase } from './features/auth/application/public/use-cases/update-jwt-tokens-use-case';
+import { BindUserToBlogUseCase } from './features/blogs/application/sa/use-cases/bind-user-to-blog-use-case';
 
 const useCases = [
   BanUserUseCase,
@@ -85,6 +86,7 @@ const useCases = [
   SetNewPasswordUseCase,
   ConfirmEmailUseCase,
   UpdateJwtTokensUseCase,
+  BindUserToBlogUseCase,
 ];
 
 @Module({
