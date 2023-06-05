@@ -13,6 +13,7 @@ export interface BlogModel extends Model<Blog> {
     blogModel: Model<Blog>,
   ): Promise<BlogDocument>;
 }
+
 @Schema({ _id: false })
 class BlogOwnerInfo {
   @Prop({ type: Types.ObjectId, required: true })
@@ -20,6 +21,26 @@ class BlogOwnerInfo {
 
   @Prop({ type: String, required: true })
   userLogin: string;
+}
+
+@Schema({ _id: false })
+export class BannedUserItem {
+  @Prop({ type: Types.ObjectId, default: false })
+  useId: Types.ObjectId;
+
+  @Prop({ type: Date, default: false })
+  banDate: Date;
+
+  @Prop({ type: String, default: false })
+  banReason: string;
+}
+@Schema({ _id: false })
+export class BlogBanInfo {
+  @Prop({ type: Boolean, default: false })
+  isBanned: boolean;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+  bannedUserForThisBlog: Types.ObjectId[];
 }
 
 @Schema({ timestamps: true })
@@ -38,6 +59,9 @@ export class Blog {
 
   @Prop({ type: BlogOwnerInfo, required: true })
   blogOwnerInfo: BlogOwnerInfo;
+
+  @Prop({ type: BlogBanInfo, default: () => new BlogBanInfo() })
+  BlogBanInfo: BlogBanInfo;
 
   @Prop()
   createdAt: Date;

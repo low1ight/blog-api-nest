@@ -12,12 +12,14 @@ export class LoginUseCaseCommand {
     public ip: string,
   ) {}
 }
+
 @CommandHandler(LoginUseCaseCommand)
 export class LoginUseCase implements ICommandHandler<LoginUseCaseCommand> {
   constructor(
     private authService: AuthService,
     private devicesService: DevicesService,
   ) {}
+
   async execute({ userId, title, ip, login }: LoginUseCaseCommand) {
     const newDeviceDto: CreateDeviceDto = {
       sessionId: uuidv4(),

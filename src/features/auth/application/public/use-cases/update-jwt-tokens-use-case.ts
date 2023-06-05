@@ -12,6 +12,7 @@ export class UpdateJwtTokensUseCaseCommand {
     public ip: string,
   ) {}
 }
+
 @CommandHandler(UpdateJwtTokensUseCaseCommand)
 export class UpdateJwtTokensUseCase
   implements ICommandHandler<UpdateJwtTokensUseCaseCommand>

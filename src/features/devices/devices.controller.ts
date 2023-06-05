@@ -25,6 +25,7 @@ export class DevicesController {
   async getAllUserDevices(@CurrentUser() user) {
     return await this.devicesQueryRepository.getUserDevices(user.userId);
   }
+
   @Delete('/devices')
   @HttpCode(204)
   @UseGuards(RefreshTokenGuard)
