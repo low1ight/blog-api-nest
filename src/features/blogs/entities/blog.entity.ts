@@ -24,23 +24,28 @@ class BlogOwnerInfo {
 }
 
 @Schema({ _id: false })
-export class BannedUserItem {
-  @Prop({ type: Types.ObjectId, default: false })
-  useId: Types.ObjectId;
+export class BannedUser {
+  @Prop({ type: Types.ObjectId })
+  userId: Types.ObjectId;
 
-  @Prop({ type: Date, default: false })
+  @Prop({ type: Date })
   banDate: Date;
 
-  @Prop({ type: String, default: false })
+  @Prop({ type: String })
   banReason: string;
 }
+
+const BannedUserSchema = SchemaFactory.createForClass(BannedUser);
 @Schema({ _id: false })
 export class BlogBanInfo {
   @Prop({ type: Boolean, default: false })
   isBanned: boolean;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
-  bannedUserForThisBlog: Types.ObjectId[];
+  @Prop({
+    type: [BannedUserSchema],
+    default: [],
+  })
+  bannedUserForThisBlog: BannedUser[];
 }
 
 @Schema({ timestamps: true })
@@ -61,7 +66,7 @@ export class Blog {
   blogOwnerInfo: BlogOwnerInfo;
 
   @Prop({ type: BlogBanInfo, default: () => new BlogBanInfo() })
-  BlogBanInfo: BlogBanInfo;
+  blogBanInfo: BlogBanInfo;
 
   @Prop()
   createdAt: Date;
@@ -75,6 +80,22 @@ export class Blog {
       this.description = description;
       this.websiteUrl = websiteUrl;
     }
+  }
+
+  addUserToBanList(userId: string, banReason: string) {
+    this.blogBanInfo.bannedUserForThisBlog.push({
+      userId: new Types.ObjectId(userId),
+      banDate: new Date(),
+      banReason: banReason,
+    });
+  }
+
+  isUserInBanList(userId: string): boolean {
+    //check user is in ban list of current blog
+    const item = this.blogBanInfo.bannedUserForThisBlog.find(
+      (item) => item.userId.toString() === userId,
+    );
+    return !!item;
   }
 
   isCanBeBoundToUser(): boolean {
@@ -110,6 +131,8 @@ BlogEntity.methods = {
   updateData: Blog.prototype.updateData,
   isCanBeBoundToUser: Blog.prototype.isCanBeBoundToUser,
   bindToUser: Blog.prototype.bindToUser,
+  isUserInBanList: Blog.prototype.isUserInBanList,
+  addUserToBanList: Blog.prototype.addUserToBanList,
 };
 
 BlogEntity.statics = {
