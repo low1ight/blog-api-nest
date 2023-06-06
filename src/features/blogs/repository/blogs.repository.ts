@@ -20,6 +20,20 @@ export class BlogsRepository {
     );
   }
 
+  async removeUserFromBanList(blogId: string, userId: string) {
+    const result = await this.blogModel.updateOne(
+      { _id: new Types.ObjectId(blogId) },
+      {
+        $pull: {
+          'blogBanInfo.bannedUserForThisBlog': {
+            userId: new Types.ObjectId(userId),
+          },
+        },
+      },
+    );
+    return result.matchedCount === 1;
+  }
+
   async save(blog: BlogDocument): Promise<string> {
     const savedBlog = await blog.save();
     return savedBlog._id.toString();

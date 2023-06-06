@@ -82,6 +82,9 @@ import { DeletePostUseCase } from './features/posts/application/blogger/use-case
 import { DeleteCommentUseCase } from './features/comments/application/public/use-cases/delete-comment-use-case';
 import { CreateCommentUseCase } from './features/comments/application/public/use-cases/create-comment-use-case';
 import { UpdateCommentUseCase } from './features/comments/application/public/use-cases/update-comment-use-case';
+import { UserBloggerService } from './features/users/application/blogger/user.blogger.service';
+import { BanUserForBlogUseCase } from './features/users/application/blogger/use-cases/ban-user-for-blog-use-case';
+import { UsersBloggerController } from './features/users/contollers/users.blogger.controller';
 
 const useCases = [
   BanUserUseCase,
@@ -105,6 +108,7 @@ const useCases = [
   DeleteCommentUseCase,
   CreateCommentUseCase,
   UpdateCommentUseCase,
+  BanUserForBlogUseCase,
 ];
 
 @Module({
@@ -158,6 +162,7 @@ const useCases = [
     AuthController,
     DevicesController,
     BlogsBloggerController,
+    UsersBloggerController,
   ],
   providers: [
     AppService,
@@ -193,6 +198,7 @@ const useCases = [
     LikeRepository,
     PostsBloggerService,
     BlogsBloggerService,
+    UserBloggerService,
     ...useCases,
     {
       provide: APP_GUARD,
