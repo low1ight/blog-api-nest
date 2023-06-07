@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Param,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
@@ -14,18 +16,35 @@ import { BanUserForBlog } from '../dto/BanUserForBlog';
 import { BanUserForBlogUseCaseCommand } from '../application/blogger/use-cases/ban-user-for-blog-use-case';
 import { CurrentUser } from '../../common/decorators/current.user.decorator';
 import { CustomResponse } from '../../utils/customResponse/CustomResponse';
+import {
+  UserInputQueryType,
+  userQueryMapper,
+} from '../../utils/query-mappers/user-query-mapper';
+import { UsersQueryRepository } from '../repositories/users.query.repository';
+import { BlogsRepository } from '../../blogs/repository/blogs.repository';
 
 @Controller('blogger/users')
 export class UsersBloggerController {
-  constructor(private commandBus: CommandBus) {}
+  constructor(
+    private commandBus: CommandBus,
+    private usersQueryRepository: UsersQueryRepository,
+    private blogsRepository: BlogsRepository,
+  ) {}
 
-  // @Get()
-  // @UseGuards(BasicAuthGuard)
-  // async getUsers(@Query() query: UserInputQueryType) {
-  //   const userQuery = userQueryMapper(query);
-  //
-  //   return await this.userQueryRepository.getUsers(userQuery);
-  // }
+  @Get('blog/:id')
+  @UseGuards(JwtAuthGuard)
+  async getUsers(@Query() query: UserInputQueryType, @Param('id') id) {
+    const userQuery = userQueryMapper(query);
+
+    const blog = await this.blogsRepository.getBlogById(id);
+
+    const bannedUserList = blog?.blogBanInfo.bannedUserForThisBlog || [];
+
+    return await this.usersQueryRepository.getUsersByArrOfId(
+      userQuery,
+      bannedUserList,
+    );
+  }
 
   @Put(':id/ban')
   @UseGuards(JwtAuthGuard)

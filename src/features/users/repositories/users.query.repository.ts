@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User, UserDocument } from '../entities/user.entity';
 import { UserQueryType } from '../../utils/query-mappers/user-query-mapper';
 import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
@@ -8,6 +8,7 @@ import { calcSkipCount } from '../../utils/paginatorHelpers/calcSkipCount';
 import { createFindBySeveralFieldObj } from '../../utils/paginatorHelpers/createFindBySeveralFieldObj';
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 import { usersArrToViewModel } from './mappers/toUserViewModel';
+import { BannedUser } from '../../blogs/entities/blog.entity';
 
 Injectable();
 export class UsersQueryRepository {
@@ -16,6 +17,11 @@ export class UsersQueryRepository {
   async getUsers(query: UserQueryType) {
     const findByBanStatusObj = this.createFindByBanStatusObj(query.banStatus);
     return this.getUsersWithPaginator(query, findByBanStatusObj);
+  }
+
+  async getUsersByArrOfId(query, bannedUserArr: BannedUser[]) {
+    const arrOfId = bannedUserArr.map((i) => new Types.ObjectId(i.userId));
+    return await this.getUsersWithPaginator(query, { _id: { $in: arrOfId } });
   }
 
   async isUserBanned(userId: string) {

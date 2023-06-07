@@ -35,7 +35,7 @@ export class BannedUser {
   banReason: string;
 }
 
-const BannedUserSchema = SchemaFactory.createForClass(BannedUser);
+export const BannedUserSchema = SchemaFactory.createForClass(BannedUser);
 @Schema({ _id: false })
 export class BlogBanInfo {
   @Prop({ type: Boolean, default: false })
