@@ -17,7 +17,9 @@ export class PostsQueryRepository {
   constructor(@InjectModel(Post.name) private postModel: Model<Post>) {}
 
   async getPosts(query: PostQueryType, currentUserId: string | null) {
-    return this.getPostWithPaginator(query, currentUserId);
+    return this.getPostWithPaginator(query, currentUserId, {
+      isBlogOfThisPostBanned: { $ne: true },
+    });
   }
 
   async getPostById(id: string, currentAuthUserId: string | null) {
