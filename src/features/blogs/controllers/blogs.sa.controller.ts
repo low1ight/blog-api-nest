@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -19,6 +20,8 @@ import { BasicAuthGuard } from '../../auth/guards/basic.auth.guard';
 import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 import { CommandBus } from '@nestjs/cqrs';
 import { BindUserToBlogUseCaseCommand } from '../application/sa/use-cases/bind-user-to-blog-use-case';
+import { BanBlogDto } from '../dto/BanBlogDto';
+import { BanBlogUseCaseCommand } from '../application/sa/use-cases/ban-blog-use-case';
 
 @Controller('sa/blogs')
 export class BlogsSaController {
@@ -50,5 +53,10 @@ export class BlogsSaController {
         'bad request',
         'query',
       );
+  }
+
+  @Put(':id/ban')
+  async banBlog(@Param('id') id, @Body() dto: BanBlogDto) {
+    await this.commandBus.execute(new BanBlogUseCaseCommand(id, dto.isBanned));
   }
 }

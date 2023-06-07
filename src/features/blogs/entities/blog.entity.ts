@@ -107,6 +107,10 @@ export class Blog {
     this.blogOwnerInfo.userLogin = userLogin;
   }
 
+  setBanStatus(isBanned: boolean) {
+    this.blogBanInfo.isBanned = isBanned;
+  }
+
   static async createBlogForUser(
     dto: CreateBlogDto,
     { id, userName }: AuthUserData,
@@ -133,6 +137,7 @@ BlogEntity.methods = {
   bindToUser: Blog.prototype.bindToUser,
   isUserInBanList: Blog.prototype.isUserInBanList,
   addUserToBanList: Blog.prototype.addUserToBanList,
+  setBanStatus: Blog.prototype.setBanStatus,
 };
 
 BlogEntity.statics = {

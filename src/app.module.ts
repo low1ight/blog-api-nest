@@ -85,6 +85,7 @@ import { UpdateCommentUseCase } from './features/comments/application/public/use
 import { UserBloggerService } from './features/users/application/blogger/user.blogger.service';
 import { BanUserForBlogUseCase } from './features/users/application/blogger/use-cases/ban-user-for-blog-use-case';
 import { UsersBloggerController } from './features/users/contollers/users.blogger.controller';
+import { BanBlogUseCase } from './features/blogs/application/sa/use-cases/ban-blog-use-case';
 
 const useCases = [
   BanUserUseCase,
@@ -109,6 +110,7 @@ const useCases = [
   CreateCommentUseCase,
   UpdateCommentUseCase,
   BanUserForBlogUseCase,
+  BanBlogUseCase,
 ];
 
 @Module({
