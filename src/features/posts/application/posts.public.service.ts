@@ -28,6 +28,10 @@ export class PostsPublicService {
     return true;
   }
 
+  async getPostById(id: string) {
+    return await this.postRepository.getPostById(id);
+  }
+
   async checkIsPostExistById(id: string) {
     return await this.postRepository.isPostExist(id);
   }

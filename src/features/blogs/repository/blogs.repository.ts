@@ -47,6 +47,14 @@ export class BlogsRepository {
     return deleteResult.deletedCount > 0;
   }
 
+  async isUserBannedForBlog(blogId: string, userId: string): Promise<boolean> {
+    const elem = await this.blogModel.findOne({
+      _id: blogId,
+      'blogBanInfo.bannedUserForThisBlog.userId': new Types.ObjectId(userId),
+    });
+
+    return !!elem;
+  }
   async getBlogById(id: string): Promise<BlogDocument | null> {
     if (!Types.ObjectId.isValid(id)) return null;
 

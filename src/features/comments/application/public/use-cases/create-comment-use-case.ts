@@ -1,6 +1,7 @@
 import { PostsPublicService } from '../../../../posts/application/posts.public.service';
 import { CommentsRepository } from '../../../repository/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { BlogsRepository } from '../../../../blogs/repository/blogs.repository';
 
 export class CreateCommentUseCaseCommand {
   constructor(
@@ -18,6 +19,7 @@ export class CreateCommentUseCase
   constructor(
     private postsService: PostsPublicService,
     private commentsRepository: CommentsRepository,
+    private blogsRepository: BlogsRepository,
   ) {}
 
   async execute({
@@ -26,9 +28,17 @@ export class CreateCommentUseCase
     commentatorId,
     commentatorName,
   }: CreateCommentUseCaseCommand) {
-    const isPostExist = await this.postsService.checkIsPostExistById(postId);
+    const post = await this.postsService.getPostById(postId);
 
-    if (!isPostExist) return null;
+    if (!post) return null;
+
+    const isUserBannedForThisBlog =
+      await this.blogsRepository.isUserBannedForBlog(
+        post.blogId.toString(),
+        commentatorId,
+      );
+
+    if (isUserBannedForThisBlog) return null;
 
     const comment = await this.commentsRepository.createComment({
       content,
