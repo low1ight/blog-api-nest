@@ -15,7 +15,7 @@ export class BlogsQueryRepository {
   async getBlogs(query: BlogQueryType) {
     return await this.findBlogWithQuery(
       query,
-      {},
+      { 'blogBanInfo.isBanned': false },
       this.blogObjToPublicViewModel,
     );
   }
