@@ -22,6 +22,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { BindUserToBlogUseCaseCommand } from '../application/sa/use-cases/bind-user-to-blog-use-case';
 import { BanBlogDto } from '../dto/BanBlogDto';
 import { BanBlogUseCaseCommand } from '../application/sa/use-cases/ban-blog-use-case';
+import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 
 @Controller('sa/blogs')
 export class BlogsSaController {
@@ -56,7 +57,12 @@ export class BlogsSaController {
   }
 
   @Put(':id/ban')
+  @HttpCode(204)
   async banBlog(@Param('id') id, @Body() dto: BanBlogDto) {
-    await this.commandBus.execute(new BanBlogUseCaseCommand(id, dto.isBanned));
+    const result: CustomResponse<any> = await this.commandBus.execute(
+      new BanBlogUseCaseCommand(id, dto.isBanned),
+    );
+    if (!result.isSuccess)
+      return Exceptions.throwHttpException(result.errStatusCode);
   }
 }

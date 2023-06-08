@@ -18,10 +18,11 @@ export class BanBlogUseCase implements ICommandHandler<BanBlogUseCaseCommand> {
 
     if (!blog) return new CustomResponse(false, CustomResponseEnum.badRequest);
 
-    if (blog.blogBanInfo.isBanned === isBanned) return new CustomResponse(true);
-
-    blog.setBanStatus(isBanned);
-    await this.postsRepository.setBlogBanStatusForAllPosts(id, isBanned);
-    await this.blogsRepository.save(blog);
+    if (blog.blogBanInfo.isBanned !== isBanned) {
+      blog.setBanStatus(isBanned);
+      await this.postsRepository.setBlogBanStatusForAllPosts(id, isBanned);
+      await this.blogsRepository.save(blog);
+    }
+    return new CustomResponse(true);
   }
 }
