@@ -13,7 +13,7 @@ export const toViwModelWithPaginator = (
   pageNumber: number,
   pageSize: number,
   elementCount: number,
-): PaginatorModel<[]> => {
+): PaginatorModel<any[]> => {
   return {
     pagesCount: calculatePageCount(elementCount, pageSize),
     page: pageNumber,

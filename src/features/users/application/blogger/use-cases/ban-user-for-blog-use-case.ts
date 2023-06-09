@@ -36,7 +36,7 @@ export class BanUserForBlogUseCase
     const isUserExist = await this.usersRepository.isUserExist(userIdForBan);
 
     if (!isUserExist)
-      return new CustomResponse(false, CustomResponseEnum.badRequest);
+      return new CustomResponse(false, CustomResponseEnum.notExist);
     //get blog and check is blog belong to current user
     const getBlogResult: CustomResponse<null | BlogDocument> =
       await this.blogsService.getBlogAndCheckOwnership(

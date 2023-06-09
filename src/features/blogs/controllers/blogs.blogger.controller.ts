@@ -37,6 +37,8 @@ import { DeleteBlogUseCaseCommand } from '../application/blogger/use-cases/delet
 import { CreatePostUseCaseCommand } from '../../posts/application/blogger/use-cases/create-post-use-case';
 import { UpdatePostUseCaseCommand } from '../../posts/application/blogger/use-cases/update-post-use-case';
 import { DeletePostUseCaseCommand } from '../../posts/application/blogger/use-cases/delete-post-use-case';
+import { commentQueryMapper } from '../../utils/query-mappers/comment-query-mapper';
+import { CommentsQueryRepository } from '../../comments/repository/comments.query.repository';
 
 @Controller('blogger/blogs')
 export class BlogsBloggerController {
@@ -45,6 +47,7 @@ export class BlogsBloggerController {
     private readonly blogsQueryRepository: BlogsQueryRepository,
     private readonly postsQueryRepository: PostsQueryRepository,
     private readonly postsService: PostsBloggerService,
+    private readonly commentsQueryRepository: CommentsQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
   @Get()
@@ -54,6 +57,26 @@ export class BlogsBloggerController {
 
     return await this.blogsQueryRepository.getBlogsWitchCurrentUserIsOwner(
       blogQuery,
+      user.id,
+    );
+  }
+
+  @Get('/comments')
+  @UseGuards(JwtAuthGuard)
+  async getComments(@Query() query: BlogInputQueryType, @CurrentUser() user) {
+    const commentsQuery = commentQueryMapper(query);
+
+    const allUserBlogsId = await this.blogsQueryRepository.getAllUserBlogsId(
+      user.id,
+    );
+
+    const allPostsId = await this.postsQueryRepository.getAllPostsId(
+      allUserBlogsId,
+    );
+
+    return await this.commentsQueryRepository.getCommentsByPostsIdArr(
+      commentsQuery,
+      allPostsId,
       user.id,
     );
   }

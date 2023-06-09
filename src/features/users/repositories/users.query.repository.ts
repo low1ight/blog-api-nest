@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { User, UserDocument } from '../entities/user.entity';
 import { UserQueryType } from '../../utils/query-mappers/user-query-mapper';
 import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
@@ -9,6 +9,8 @@ import { createFindBySeveralFieldObj } from '../../utils/paginatorHelpers/create
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 import { usersArrToViewModel } from './mappers/toUserViewModel';
 import { BannedUser } from '../../blogs/entities/blog.entity';
+import { UserViewModel } from '../types/User.view.model';
+import { PaginatorModel } from '../../utils/paginatorHelpers/paginator.types';
 
 Injectable();
 export class UsersQueryRepository {
@@ -20,8 +22,29 @@ export class UsersQueryRepository {
   }
 
   async getUsersByArrOfId(query, bannedUserArr: BannedUser[]) {
-    const arrOfId = bannedUserArr.map((i) => new Types.ObjectId(i.userId));
-    return await this.getUsersWithPaginator(query, { _id: { $in: arrOfId } });
+    const arrOfId = bannedUserArr.map((i) => i.userId);
+    const arrOfBannedUsers: PaginatorModel<UserViewModel[]> =
+      await this.getUsersWithPaginator(query, {
+        _id: { $in: arrOfId },
+      });
+
+    const bannedUserWithCorrectBanInfo: UserViewModel[] =
+      arrOfBannedUsers.items.map((user: any) => {
+        const userBanInfo = bannedUserArr.find(
+          (i) => i.userId.toString() === user.id,
+        );
+        user.banInfo = {
+          isBanned: true,
+          banDate: userBanInfo.banDate,
+          banReason: userBanInfo.banReason,
+        };
+
+        return user;
+      });
+
+    arrOfBannedUsers.items = bannedUserWithCorrectBanInfo;
+
+    return arrOfBannedUsers;
   }
 
   async isUserBanned(userId: string) {

@@ -2,6 +2,8 @@ import { PostsPublicService } from '../../../../posts/application/posts.public.s
 import { CommentsRepository } from '../../../repository/comments.repository';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BlogsRepository } from '../../../../blogs/repository/blogs.repository';
+import { CustomResponse } from '../../../../utils/customResponse/CustomResponse';
+import { CustomResponseEnum } from '../../../../utils/customResponse/CustomResponseEnum';
 
 export class CreateCommentUseCaseCommand {
   constructor(
@@ -30,7 +32,7 @@ export class CreateCommentUseCase
   }: CreateCommentUseCaseCommand) {
     const post = await this.postsService.getPostById(postId);
 
-    if (!post) return null;
+    if (!post) return new CustomResponse(false, CustomResponseEnum.notExist);
 
     const isUserBannedForThisBlog =
       await this.blogsRepository.isUserBannedForBlog(
@@ -38,7 +40,8 @@ export class CreateCommentUseCase
         commentatorId,
       );
 
-    if (isUserBannedForThisBlog) return null;
+    if (isUserBannedForThisBlog)
+      return new CustomResponse(false, CustomResponseEnum.forbidden);
 
     const comment = await this.commentsRepository.createComment({
       content,
@@ -47,6 +50,7 @@ export class CreateCommentUseCase
       commentatorName,
     });
     //save comment and return saved comment id
-    return await this.commentsRepository.save(comment);
+    const commentId = await this.commentsRepository.save(comment);
+    return new CustomResponse(true, null, commentId);
   }
 }

@@ -41,6 +41,9 @@ export class BlogBanInfo {
   @Prop({ type: Boolean, default: false })
   isBanned: boolean;
 
+  @Prop({ type: Date, default: null })
+  banDate: Date;
+
   @Prop({
     type: [BannedUserSchema],
     default: [],
@@ -109,6 +112,8 @@ export class Blog {
 
   setBanStatus(isBanned: boolean) {
     this.blogBanInfo.isBanned = isBanned;
+    if (!isBanned) this.blogBanInfo.banDate = null;
+    this.blogBanInfo.banDate = new Date();
   }
 
   static async createBlogForUser(

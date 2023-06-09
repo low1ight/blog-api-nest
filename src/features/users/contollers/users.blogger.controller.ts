@@ -22,6 +22,7 @@ import {
 } from '../../utils/query-mappers/user-query-mapper';
 import { UsersQueryRepository } from '../repositories/users.query.repository';
 import { BlogsRepository } from '../../blogs/repository/blogs.repository';
+import { CustomResponseEnum } from '../../utils/customResponse/CustomResponseEnum';
 
 @Controller('blogger/users')
 export class UsersBloggerController {
@@ -33,10 +34,20 @@ export class UsersBloggerController {
 
   @Get('blog/:id')
   @UseGuards(JwtAuthGuard)
-  async getUsers(@Query() query: UserInputQueryType, @Param('id') id) {
+  async getUsers(
+    @Query() query: UserInputQueryType,
+    @Param('id') id,
+    @CurrentUser() user,
+  ) {
     const userQuery = userQueryMapper(query);
 
     const blog = await this.blogsRepository.getBlogById(id);
+
+    if (!blog)
+      return Exceptions.throwHttpException(CustomResponseEnum.notExist);
+
+    if (blog.blogOwnerInfo.userId.toString() !== user.id)
+      return Exceptions.throwHttpException(CustomResponseEnum.forbidden);
 
     const bannedUserList = blog?.blogBanInfo.bannedUserForThisBlog || [];
 

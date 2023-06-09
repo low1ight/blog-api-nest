@@ -39,7 +39,10 @@ export class BlogsQueryRepository {
   async getBlogById(id: string) {
     if (!Types.ObjectId.isValid(id)) return null;
 
-    const user: BlogDocument | null = await this.blogModel.findById(id);
+    const user: BlogDocument | null = await this.blogModel.findOne({
+      _id: id,
+      'blogBanInfo.isBanned': false,
+    });
     if (!user) return null;
 
     return this.blogObjToPublicViewModel(user);
@@ -92,6 +95,14 @@ export class BlogsQueryRepository {
     return arr.map((item) => toModelFunc(item));
   };
 
+  async getAllUserBlogsId(userId: string) {
+    const blogs = await this.blogModel.find({
+      'blogOwnerInfo.userId': new Types.ObjectId(userId),
+    });
+
+    return blogs.map((i) => i._id);
+  }
+
   blogObjToPublicViewModel = (item: BlogDocument): BlogViewModel => {
     return {
       id: item._id.toString(),
@@ -114,6 +125,10 @@ export class BlogsQueryRepository {
       blogOwnerInfo: {
         userId: item.blogOwnerInfo.userId.toString(),
         userLogin: item.blogOwnerInfo.userLogin,
+      },
+      banInfo: {
+        isBanned: item.blogBanInfo.isBanned,
+        banDate: item.blogBanInfo.banDate,
       },
     };
   };

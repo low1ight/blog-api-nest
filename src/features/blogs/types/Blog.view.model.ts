@@ -12,4 +12,8 @@ export type BlogSaViewModel = BlogViewModel & {
     userId: string;
     userLogin: string;
   };
+  banInfo: {
+    isBanned: boolean;
+    banDate: Date | null;
+  };
 };

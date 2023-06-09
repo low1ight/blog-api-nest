@@ -26,6 +26,7 @@ import { CreateUserUseCaseCommand } from '../application/sa/use-cases/create-use
 import { DeleteUserUseCaseCommand } from '../application/sa/use-cases/delete-user-use-case';
 
 @Controller('sa/users')
+@UseGuards(BasicAuthGuard)
 export class UsersSaController {
   constructor(
     private commandBus: CommandBus,
@@ -33,7 +34,6 @@ export class UsersSaController {
   ) {}
 
   @Get()
-  @UseGuards(BasicAuthGuard)
   async getUsers(@Query() query: UserInputQueryType) {
     const userQuery = userQueryMapper(query);
 
@@ -41,14 +41,12 @@ export class UsersSaController {
   }
 
   @Post()
-  @UseGuards(BasicAuthGuard)
   @HttpCode(201)
   async createUser(@Body() dto: CreateUserDto) {
     return await this.commandBus.execute(new CreateUserUseCaseCommand(dto));
   }
 
   @Put(':id/ban')
-  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async banUnbanUser(@Param('id') id: string, @Body() dto: BanUserDto) {
     const result: boolean = await this.commandBus.execute(
@@ -58,7 +56,6 @@ export class UsersSaController {
   }
 
   @Delete(':id')
-  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async deleteUser(@Param('id') id: string) {
     const isDeleted = await this.commandBus.execute(

@@ -25,13 +25,13 @@ import { BanBlogUseCaseCommand } from '../application/sa/use-cases/ban-blog-use-
 import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 
 @Controller('sa/blogs')
+@UseGuards(BasicAuthGuard)
 export class BlogsSaController {
   constructor(
     private readonly blogsQueryRepository: BlogsQueryRepository,
     private readonly commandBus: CommandBus,
   ) {}
   @Get()
-  @UseGuards(BasicAuthGuard)
   async getBlogs(@Query() query: BlogInputQueryType) {
     const blogQuery = blogQueryMapper(query);
 
@@ -39,7 +39,6 @@ export class BlogsSaController {
   }
 
   @Put(':blogId/bind-with-user/:userId')
-  @UseGuards(BasicAuthGuard)
   @HttpCode(204)
   async updateBlog(
     @Param('blogId') blogId: string,

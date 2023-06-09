@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Post } from '../schemas/post.schema';
 import { PostQueryType } from '../../utils/query-mappers/post-query-mapper';
 import { createSortObject } from '../../utils/paginatorHelpers/createSortObject';
@@ -23,7 +23,10 @@ export class PostsQueryRepository {
   }
 
   async getPostById(id: string, currentAuthUserId: string | null) {
-    const query = this.postModel.findOne({ _id: id });
+    const query = this.postModel.findOne({
+      _id: id,
+      isBlogOfThisPostBanned: false,
+    });
 
     query.populate('likes');
 
@@ -40,6 +43,14 @@ export class PostsQueryRepository {
     currentUserId: string | null,
   ) {
     return this.getPostWithPaginator(query, currentUserId, { blogId });
+  }
+
+  async getAllPostsId(blogsIdArr: Types.ObjectId[]) {
+    const posts = await this.postModel.find({
+      blogId: { $in: blogsIdArr },
+    });
+
+    return posts.map((i) => i._id);
   }
 
   async getPostWithPaginator(

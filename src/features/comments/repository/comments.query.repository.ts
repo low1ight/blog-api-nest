@@ -32,6 +32,17 @@ export class CommentsQueryRepository {
     return commentsObjToViewModel(comment, currentAuthUserId);
   }
 
+  async getCommentsByPostsIdArr(
+    query: CommentQueryType,
+    postsIdArr: Types.ObjectId[],
+    currentAuthUserId: string,
+  ) {
+    return await this.getCommentsWithPaginator(query, currentAuthUserId, {
+      postId: { $in: postsIdArr },
+      isCommentOwnerBanned: false,
+    });
+  }
+
   async getPostCommentsWithPaginator(
     query: CommentQueryType,
     postId: string,

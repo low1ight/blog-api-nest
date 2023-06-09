@@ -29,6 +29,7 @@ import { OptionalJwtAuthGuard } from '../../auth/guards/optional.jwt.guard';
 import { Exceptions } from '../../utils/throwException';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateCommentUseCaseCommand } from '../../comments/application/public/use-cases/create-comment-use-case';
+import { CustomResponse } from '../../utils/customResponse/CustomResponse';
 
 @Controller('posts')
 export class PostsPublicController {
@@ -86,14 +87,20 @@ export class PostsPublicController {
     @Body() dto: CommentDto,
     @CurrentUser() user: { id: string; userName: string },
   ) {
-    const createdCommentId: string | null = await this.commandBus.execute(
-      new CreateCommentUseCaseCommand(dto.content, id, user.id, user.userName),
-    );
-    if (!createdCommentId)
-      Exceptions.throwHttpException(CustomResponseEnum.notExist);
+    const creatingCommentResponse: CustomResponse<null | string> =
+      await this.commandBus.execute(
+        new CreateCommentUseCaseCommand(
+          dto.content,
+          id,
+          user.id,
+          user.userName,
+        ),
+      );
+    if (!creatingCommentResponse.isSuccess)
+      Exceptions.throwHttpException(creatingCommentResponse.errStatusCode);
     const comment = await this.commentQueryRepository.getCommentById(
-      createdCommentId,
-      null,
+      creatingCommentResponse.content,
+      id,
     );
     if (!comment) Exceptions.throwHttpException(CustomResponseEnum.notExist);
     return comment;
