@@ -34,7 +34,7 @@ import { ConfirmEmailUseCaseCommand } from '../application/public/use-cases/conf
 import { UpdateJwtTokensUseCaseCommand } from '../application/public/use-cases/update-jwt-tokens-use-case';
 
 @Controller('auth')
-@Throttle(5, 10)
+//@Throttle(5, 10)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
