@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, Types } from 'mongoose';
 import { Comment } from '../schemas/comment.schema';
 import {
+  commentsArrToViewBloggerModel,
   commentsArrToViewModel,
   commentsObjToViewModel,
 } from './mappers/toCommentViewModel';
@@ -37,10 +38,15 @@ export class CommentsQueryRepository {
     postsIdArr: Types.ObjectId[],
     currentAuthUserId: string,
   ) {
-    return await this.getCommentsWithPaginator(query, currentAuthUserId, {
-      postId: { $in: postsIdArr },
-      isCommentOwnerBanned: false,
-    });
+    return await this.getCommentsWithPaginator(
+      query,
+      currentAuthUserId,
+      commentsArrToViewBloggerModel,
+      {
+        postId: { $in: postsIdArr },
+        isCommentOwnerBanned: false,
+      },
+    );
   }
 
   async getPostCommentsWithPaginator(
@@ -48,15 +54,21 @@ export class CommentsQueryRepository {
     postId: string,
     currentAuthUserId: string,
   ) {
-    return await this.getCommentsWithPaginator(query, currentAuthUserId, {
-      postId: new Types.ObjectId(postId),
-      isCommentOwnerBanned: false,
-    });
+    return await this.getCommentsWithPaginator(
+      query,
+      currentAuthUserId,
+      commentsArrToViewModel,
+      {
+        postId: new Types.ObjectId(postId),
+        isCommentOwnerBanned: false,
+      },
+    );
   }
 
   async getCommentsWithPaginator(
     { sortBy, sortDirection, pageNumber, pageSize }: CommentQueryType,
     currentAuthUserId: null | string,
+    toViewModelFunc,
     additionalParams: object = {},
   ) {
     const sortObj = createSortObject(sortBy, sortDirection);
@@ -73,16 +85,15 @@ export class CommentsQueryRepository {
 
     query.populate('likes');
 
+    query.populate('post');
+
     const totalElemCount = await this.commentModel
       .countDocuments(additionalParams)
       .exec();
 
     const comments: CommentPopulatedDocument[] = await query.exec();
 
-    const commentsViewModel = commentsArrToViewModel(
-      comments,
-      currentAuthUserId,
-    );
+    const commentsViewModel = toViewModelFunc(comments, currentAuthUserId);
 
     return toViwModelWithPaginator(
       commentsViewModel,

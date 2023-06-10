@@ -80,3 +80,9 @@ CommentSchema.virtual('likes', {
   foreignField: 'targetId',
   options: { match: { isLikeOwnerBanned: false } },
 });
+
+CommentSchema.virtual('post', {
+  ref: 'Post',
+  localField: 'postId',
+  foreignField: '_id',
+});

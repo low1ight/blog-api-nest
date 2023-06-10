@@ -1,8 +1,8 @@
 import {
   CommentPopulatedDocument,
+  CommentViewBloggerModel,
   CommentViewModel,
 } from '../../types/comment.types';
-import { CommentDocument } from '../../schemas/comment.schema';
 
 export const commentsArrToViewModel = (
   arr: CommentPopulatedDocument[],
@@ -11,10 +11,19 @@ export const commentsArrToViewModel = (
   return arr.map((item) => commentsObjToViewModel(item, currentAuthUserId));
 };
 
+export const commentsArrToViewBloggerModel = (
+  arr: CommentPopulatedDocument[],
+  currentAuthUserId: null | string,
+): CommentViewBloggerModel[] => {
+  return arr.map((item) =>
+    commentsObjToViewModelForBlogger(item, currentAuthUserId),
+  );
+};
+
 export const commentsObjToViewModel = (
   item: CommentPopulatedDocument,
   currentAuthUserId: null | string,
-): CommentViewModel => {
+) => {
   let likeItem;
   let likeCount = 0;
   let dislikeCount = 0;
@@ -31,14 +40,28 @@ export const commentsObjToViewModel = (
     );
   }
 
+  return createCommentWithLikeViewModel(
+    item,
+    likeCount,
+    dislikeCount,
+    likeItem,
+  );
+};
+
+const createCommentWithLikeViewModel = (
+  comment,
+  likeCount,
+  dislikeCount,
+  likeItem,
+) => {
   return {
-    id: item._id.toString(),
-    content: item.content,
+    id: comment._id.toString(),
+    content: comment.content,
     commentatorInfo: {
-      userId: item.commentatorInfo.userId.toString(),
-      userLogin: item.commentatorInfo.userLogin,
+      userId: comment.commentatorInfo.userId.toString(),
+      userLogin: comment.commentatorInfo.userLogin,
     },
-    createdAt: item.createdAt,
+    createdAt: comment.createdAt,
     likesInfo: {
       likesCount: likeCount,
       dislikesCount: dislikeCount,
@@ -46,21 +69,22 @@ export const commentsObjToViewModel = (
     },
   };
 };
-export const createdCommentToViewModel = (
-  item: CommentDocument,
-): CommentViewModel => {
+
+const commentsObjToViewModelForBlogger = (
+  item: CommentPopulatedDocument,
+  currentAuthUserId: null | string,
+): CommentViewBloggerModel => {
+  const commentWithLike = commentsObjToViewModel(item, currentAuthUserId);
+
+  const post = item.post[0];
+
   return {
-    id: item._id.toString(),
-    content: item.content,
-    commentatorInfo: {
-      userId: item.commentatorInfo.userId.toString(),
-      userLogin: item.commentatorInfo.userLogin,
-    },
-    createdAt: item.createdAt,
-    likesInfo: {
-      likesCount: 0,
-      dislikesCount: 0,
-      myStatus: 'None',
+    ...commentWithLike,
+    postInfo: {
+      blogId: post.blogId.toString(),
+      blogName: post.blogName,
+      title: post.title,
+      id: post._id.toString(),
     },
   };
 };
