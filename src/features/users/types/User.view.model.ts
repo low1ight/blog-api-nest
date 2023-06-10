@@ -9,3 +9,12 @@ export type UserViewModel = {
     banDate: Date;
   };
 };
+export type BannedUserViewModel = {
+  id: string;
+  login: string;
+  banInfo: {
+    isBanned: boolean;
+    banReason: string;
+    banDate: Date;
+  };
+};

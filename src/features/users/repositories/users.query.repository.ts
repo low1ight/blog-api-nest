@@ -9,7 +9,7 @@ import { createFindBySeveralFieldObj } from '../../utils/paginatorHelpers/create
 import { toViwModelWithPaginator } from '../../utils/paginatorHelpers/toViwModelWithPaginator';
 import { usersArrToViewModel } from './mappers/toUserViewModel';
 import { BannedUser } from '../../blogs/entities/blog.entity';
-import { UserViewModel } from '../types/User.view.model';
+import { BannedUserViewModel } from '../types/User.view.model';
 import { PaginatorModel } from '../../utils/paginatorHelpers/paginator.types';
 
 Injectable();
@@ -23,23 +23,25 @@ export class UsersQueryRepository {
 
   async getUsersByArrOfId(query, bannedUserArr: BannedUser[]) {
     const arrOfId = bannedUserArr.map((i) => i.userId);
-    const arrOfBannedUsers: PaginatorModel<UserViewModel[]> =
+    const arrOfBannedUsers: PaginatorModel<BannedUserViewModel[]> =
       await this.getUsersWithPaginator(query, {
         _id: { $in: arrOfId },
       });
 
-    const bannedUserWithCorrectBanInfo: UserViewModel[] =
+    const bannedUserWithCorrectBanInfo: BannedUserViewModel[] =
       arrOfBannedUsers.items.map((user: any) => {
         const userBanInfo = bannedUserArr.find(
           (i) => i.userId.toString() === user.id,
         );
-        user.banInfo = {
-          isBanned: true,
-          banDate: userBanInfo.banDate,
-          banReason: userBanInfo.banReason,
+        return {
+          id: user.id,
+          login: user.login,
+          banInfo: {
+            isBanned: true,
+            banDate: userBanInfo.banDate,
+            banReason: userBanInfo.banReason,
+          },
         };
-
-        return user;
       });
 
     arrOfBannedUsers.items = bannedUserWithCorrectBanInfo;
